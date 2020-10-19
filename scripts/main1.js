@@ -2,6 +2,7 @@
 let rootUrl="https://www.pakfirst.org/intellcarelite_p/api/";
 //objects//
 const container = document.getElementById('container');
+const container2 = document.getElementById('container2');
 //--objects--//
 
 // document.addEventListener('load', e=>{
@@ -282,6 +283,7 @@ async function indexDbRead() {
         {activityLogId: "4", activityId: "4", actionId:"4", contentId:"4", activityName:"APPOINTMENT BOOKING", actionName:"APPOINTMENT_ACKNOWLEDGE", contentName:"VSIT PLAN DIAGNOSE FEVER"}        
     ];
     container.innerHTML = bulkArrAct.map(mapAct).join('\n\n');
+    container2.innerHTML = bulkArrAct.map(mapAct2).join('\n\n');
     // console.log("reading all records");
     // db.table("activities").toArray()
     // .then(function (data)
@@ -540,6 +542,27 @@ function mapAct(activities)
                 <i class="fa fa-angle-right">
                 </i>
             </a>`;
+    // return `
+    // <div class="activities">            
+    //         <h4>${activities.activityLogId}</h4>
+    //         <h3>${activities.activityName}</h3>            
+    //         <p>${activities.contentName}</p>            
+    //     </div>
+    //     `;
+}
+function mapAct2(activities)
+{
+
+    // indexDbAdd(user.id, user.email, user.pass);
+
+    console.log("mapping act 2");
+    return `<li><a>${activities.activityName}</a>
+                <ul>
+                    <li><a>${activities.activityLogId}</a></li>
+                    <li><a>${activities.contentName}</a></li>
+                </ul>
+            </li>`;
+            
     // return `
     // <div class="activities">            
     //         <h4>${activities.activityLogId}</h4>
