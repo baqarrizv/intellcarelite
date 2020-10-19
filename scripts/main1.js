@@ -556,12 +556,22 @@ function mapAct2(activities)
     // indexDbAdd(user.id, user.email, user.pass);
 
     console.log("mapping act 2");
-    return `<li><a>${activities.activityName}</a>
-                <ul>
-                    <li><a>${activities.activityLogId}</a></li>
-                    <li><a>${activities.contentName}</a></li>
-                </ul>
-            </li>`;
+    return `<div class="list-group list-custom-small list-icon-0">
+                <a data-toggle="collapse" href="#collapse-${activities.activityLogId}">
+                    <i class="fa font-14 fa fa-user color-blue2-dark"></i>
+                    <span class="font-14">${activities.activityName}</span>
+                    <i class="fa fa-angle-down"></i>
+                </a>
+            </div>
+            <div class="collapse" id="collapse-${activities.activityLogId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#">
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${activities.contentName}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div>`;
             
     // return `
     // <div class="activities">            
