@@ -1,5 +1,3 @@
-// let rootUrl="https://192.168.0.103/intellcarelite_p/api/";
-// let rootUrl="https://www.pakfirst.org/intellcarelite_p/api/";
 // let rootUrl="http://10.190.14.14:1700/IntellCareLite/";
 let rootUrl="http://203.99.60.222:1700/IntellCareLite/";//{live}
 //objects//
@@ -222,6 +220,7 @@ const validateLogin = function (params)
 
 //data handling
 async function login(userName, password)
+
 {
     console.log("login username=>"+userName+", pass=>"+password);   
 
@@ -232,55 +231,68 @@ async function login(userName, password)
         try {
 
             //dummy login
-            if (userName=="interactive@ppl.com" && password=="987") 
-            {
-                showLoader(false);
-                // showMessage("Login successfull");
+            // if (userName=="interactive@ppl.com" && password=="987") 
+            // {
+            //     showLoader(false);
+            //     // showMessage("Login successfull");
 
-                window.location.replace("page1.html");
-            } 
-            else 
-            {
-                showLoader(false);
-                showMessage("incorrect username or password");
-            }
+                // window.sessionStorage.setItem("userName",userName);
+                // window.sessionStorage.setItem("password",password);
+
+            //     window.location.replace("page1.html");
+            // } 
+            // else 
+            // {
+            //     showLoader(false);
+            //     showMessage("incorrect username or password");
+            // }
             //--dummy login
 
-            // const url=rootUrl+"auth/getall";
-            // const url=rootUrl+"login";
-            // console.log("complete url=> "+url);
+            
+            const url=rootUrl+"login";
+            console.log("complete url=> "+url);
 
-            // // showLoader(true);
-            // showMessage("processing. please wait.");
             // showLoader(true);
-            // // jquery post
-            // await $.post(url, 
-            //         {
-            //             userName:userName,
-            //             password:password
-            //         },
-            //         function (data, status)
-            //         {
-            //             showLoader(false);
-            //             showMessage("data fetch successfull");                
-            //             console.log("Success: " + data.success+", message: "+data.message + "\nStatus: " + status);
-            //             // alert("Success: " + data.success+", message: "+data.message + "\nStatus: " + status);
-            //             container.innerHTML = data.user.map(mapUser).join('\n');
-            //         }
-            //     );
+            showMessage("processing. please wait.");
+            showLoader(true);
+            // jquery post
+            await $.post(url, 
+                            {
+                                userName:userName,
+                                password:password
+                            },
+                    function (data, status)
+                    {
+                        showLoader(false);
+                        showMessage("data fetch successfull");                
+                        console.log("Success: " + data.success+", message: "+data.message + "\nStatus: " + status);
+                        console.log("user found :: personId=>"+data.person.personId+", name=>"+data.person.name);
+
+                        //session
+                        window.sessionStorage.setItem("userName",userName);
+                        window.sessionStorage.setItem("password",password);
+
+                        window.location.replace("page1.html");
+                        // alert("Success: " + data.success+", message: "+data.message + "\nStatus: " + status);
+                        // container.innerHTML = data.person.map(mapUser).join('\n');
+                    }
+                );
 
             
         } catch (error) 
         {
             showLoader(false);
             console.log("error=> "+error.value);
-            showMessage("Error in data fetching");
+            showMessage("Error in data fetching => "+error.value);
+            loginOffline(userName, password);
             // fetchOfflineActivities();
             // indexDbReadAll();
         }
     }
     else{
         console.log("fetching offline vals");
+        showMessage("app offline");
+        loginOffline(userName, password);
         // fetchOfflineActivities();
         // indexDbReadAll();
     }
@@ -289,24 +301,56 @@ async function login(userName, password)
 
 
 ///////////////OFLINE Handling//////////////////////
-function fetchOfflineActivities()
+function loginOffline(userName, password)
 {
-    indexDbReadAll();
-    // switch(key)
-    // {
-    //     case "login":
-    //     {
-    //         showMessage("fetch from offline okok");
-    //         break;
-    //     }
+    if (userName == "interactive@ppl.com" && password=="987") 
+    {
 
-    //     default:
-    //         {
-    //             showMessage("incorrect key for offline fetch");
-    //             break;
-    //         }
-    // }
+        // db.person.where({name: "Dr. INTERACTIVE Group", personId: "38995"}).first(friend => {
+        db.person.where({personId: "38995"})
+        .first(friend => {
+            console.log("Found Person: " + JSON.stringify(friend));
+            window.location.replace("page1.html");
+        }).catch(error => {
+            console.error(error.stack || error);
+        });
+
+        
+    } else {
+        
+        console.log("no user found");
+        showMessage("No User Found");
+
+    }
+    
 }
+
+// function fetchOfflineActivities()
+// {
+//     console.log("reading all records");
+//      db.table("activities").toArray()
+//      .then(function (data)
+//       {
+//         container.innerHTML = data.map(mapAct).join('\n\n');
+//          console.log(data);
+//         }
+//      );
+//     // indexDbReadAll();
+//     // switch(key)
+//     // {
+//     //     case "login":
+//     //     {
+//     //         showMessage("fetch from offline okok");
+//     //         break;
+//     //     }
+
+//     //     default:
+//     //         {
+//     //             showMessage("incorrect key for offline fetch");
+//     //             break;
+//     //         }
+//     // }
+// }
 function indexDbInit()
 {
     let dbname = "icalite_index";
@@ -314,32 +358,90 @@ function indexDbInit()
 
     db = new Dexie(dbname);
     db.version(dbversion).stores({
-        user: 'id',
-        activities: 'activityLogId'
+        person: 'personId',
+        activities: 'id',
+        actions: 'id'
     });
 
+    //Persons
     const bulkArr=[
-                    {id: "0010", email: "test@gmail", pass:"test123", date_create:"12:01:00"},
-                    {id: "0011", email: "test2@gmail", pass:"test2123", date_create:"12:02:00"}
+                    {
+                        personId: "38995",
+                        name: "Dr. INTERACTIVE Group", 
+                        mrNo:"01-18-0042756", 
+                        gender:"Male", 
+                        age:"48 year(s)  1  month(s) 15 day(s) ( Adult)", 
+                        number:"null", 
+                        bloodGroup:"A-"
+                    }
                 ];
-    db.user.bulkPut(bulkArr)
+    db.person.bulkPut(bulkArr)
     .catch(Dexie.bulkError, function(error) {
-        alert ("user Ooops: " + error);
+        alert ("person Ooops: " + error);
     });
 
+    //Activities
     const bulkArrAct=[
-        {activityLogId: "4", activityId: "4", actionId:"4", contentId:"5", activityName:"APPOINTMENT BOOKING", actionName:"APPOINTMENT_ACKNOWLEDGE", contentName:"VSIT PLAN DIAGNOSE INVESTIGATION"},
-        {activityLogId: "5", activityId: "5", actionId:"5", contentId:"6", activityName:"MY VITALS", actionName:"VVIEW VITALS", contentName:"VIEW VITAL PULSE"},
-        {activityLogId: "6", activityId: "6", actionId:"7", contentId:"10", activityName:"MEDICATION", actionName:"PREVIOUS MEDICATION", contentName:"MEDICINE FREQUENCY"},
-        {activityLogId: "4", activityId: "4", actionId:"4", contentId:"4", activityName:"APPOINTMENT BOOKING", actionName:"APPOINTMENT_ACKNOWLEDGE", contentName:"VSIT PLAN DIAGNOSE FEVER"}        
+        {id: "5", name: "MY VITALS"},
+        {id: "7", name: "Demographics"},
+        {id: "6", name: "MEDICATION"},
+        {id: "4", name: "APPOINTMENT BOOKING"}
     ];
-db.activities.bulkPut(bulkArrAct)
-.catch(Dexie.bulkError, function(error) {
-alert ("actvities Ooops: " + error);
-});
+    db.activities.bulkPut(bulkArrAct)
+    .catch(Dexie.bulkError, function(error) {
+    alert ("actvities Ooops: " + error);
+    });
 
 
-    
+    //actions
+    const bulkArrAction=[
+        {
+            id: "9",
+            activityId: "7", 
+            name:"Update Demographics", 
+            contents:"null"
+        },
+        {
+            id: "8",
+            activityId: "7", 
+            name:"View Demographics", 
+            contents:"null"
+        },
+        {
+            id: "7",
+            activityId: "6", 
+            name:"PREVIOUS MEDICATION", 
+            contents:"null"
+        },
+        {
+            id: "4",
+            activityId: "4", 
+            name:"APPOINTMENT_ACKNOWLEDGE", 
+            contents:"null"
+        },
+        {
+            id: "10",
+            activityId: "4", 
+            name:"VIEW APPOINTMENT", 
+            contents:"null"
+        },
+        {
+            id: "5",
+            activityId: "5", 
+            name:"View Vitals", 
+            contents:"null"
+        },
+        {
+            id: "6",
+            activityId: "5", 
+            name:"PREVIOUS VITALS", 
+            contents:"null"
+        },
+    ];
+    db.actions.bulkPut(bulkArrAction)
+    .catch(Dexie.bulkError, function(error) {
+    alert ("action Ooops: " + error);
+    }); 
 }
 
 async function indexDbRead() {
@@ -374,23 +476,7 @@ async function indexDbRead() {
     // };
  }
  
- function indexDbReadAll() {
-    //  db.table("user").toArray()
-    //  .then(function (data)
-    //   {
-    //     container.innerHTML = data.map(mapUser).join('\n\n');
-    //      console.log(data);
-    //     }
-    //  );
-    console.log("reading all records");
-     db.table("activities").toArray()
-     .then(function (data)
-      {
-        container.innerHTML = data.map(mapAct).join('\n\n');
-         console.log(data);
-        }
-     );
- } 
+ 
 
  function indexDbAdd(id, email, pass) {
     db.user.put({id: id, email: email, pass:pass})
@@ -420,212 +506,6 @@ async function indexDbRead() {
  }
 //-----------------------------------------------//
 
-const testAlert = function(){
-    if (navigator.onLine) 
-    {
-        alert("login in process, username=> "+inp_username.value+", pass=>"+inp_password.value); 
-        
-        // indexDbRead();
-        indexDbReadAll();
-    }
-    else{
-        alert("no internet connection");
-    }
-    
-}
-
-const submitLogin = function(ev)
-{
-    ev.preventDefault();
-    ev.stopPropagation();
-    // alert('hello how are');
-
-
-    let valid = true;
-
-    let email = document.getElementById('input_email');
-    let pass = document.getElementById('input_pass');
-
-    let errorMsg ="";
-    if(email.value === "")
-    {
-        valid = false;
-        errorMsg="Email ";
-        // showMessage("email cannot be null");
-        // alert('email cannot be null');
-    }
-    
-    if(pass.value === "")
-    {
-        valid = false;
-        // alert('password cannot be null');
-        errorMsg+=", Password ";
-    }
-
-    if (valid) 
-    {
-        createUser(email.value, pass.value);
-    }
-     else 
-    {
-        // alert('incorrect vallue');
-        errorMsg=" value incorrect!";
-        showMessage(errorMsg);
-
-    }
-
-}
-
-// const createUser = function(email, pass)
-async function createUser(email, pass)
-{  
-
-    try {
-        const url=rootUrl+"auth/login";
-
-        // showLoader(true);
-        showMessage("creating user");
-        indexDbAdd(lastInsertedId, email, pass);
-        //jquery get
-        await $.get(url, {param:email, param2:pass},
-            function(data, status){ 
-            showMessage("user created successfully");            
-            // showLoader(false);
-            // alert("Success: " + data.success+", message: "+data.message + "\nStatus: " + status);
-        });
-        
-    } catch (error) 
-    {
-        // showLoader(false);
-        showMessage("No Internet Connection");
-    }
-
-    
-
-    //jquery post
-    // $.post(url,
-    // {
-    //     login_id: "Donald Duck",
-    //     pass: "Duckburg"
-    // },
-    // function(data, status){
-    //     alert("success: " + data.success+"\nMessage: "+ data.message + "\nStatus: " + status);
-    // });
-
-    // const url=rootUrl+"auth/login";
-    // alert("okok, url=>"+url);
-    // // const data={
-    // //     login_id:email,
-    // //     pass:pass
-    // // };
-
-    // const otherParams = {
-    //     mehtod:'POST',
-    //     // credentials:'same-origin',
-    //     headers:{
-    //         'Content-Type':'application/json',
-    //     },
-    //     body : JSON.stringify({
-    //         'login_id' : email,
-    //         'pass' : pass
-
-    //     })
-    // };
-
-    // // fetch("https://jsonplaceholder.typicode.com/posts", { 
-    // fetch(url, 
-    //     { 
-      
-    //     // Adding method type 
-    //     method: "POST", 
-        
-    //     // Adding body or contents to send 
-    //     body: JSON.stringify({ 
-    //         login_id: email, 
-    //         pass: pass
-    //     }), 
-        
-    //     // Adding headers to the request 
-    //     headers: { 
-    //         "Content-type": "application/json; charset=UTF-8"
-    //     } 
-    // }) 
-  
-    // // Converting to JSON 
-    // .then(response => response.json()) 
-    
-    // // Displaying results to console 
-    // .then(json => console.log(json));
-
-
-
-
-
-    ////
-//     fetch('https://jsonplaceholder.typicode.com/todos/1')
-//   .then(response => response.json())
-//   .then(json => console.log(json))
-
-
-    // const response = await fetch(url, otherParams)
-    // .then(response=>{console.log(response.json());})
-    // .then(data=>{console.log('success:',data);})
-    // .catch(error=>{console.error('Error:',error);})
-}
-
-async function viewdata()
-{
-    //dexie.js, dexie-syncable.js e.t.c
-    // alert('loading data view. please wait...');
-
-    try {
-        const url=rootUrl+"auth/getall";
-
-        // const res= await fetch(url);
-        // const json = await res.json();
-        // container.innerHTML = json.user.map(mapUser).join('\n');
-
-        // showLoader(true);
-        showMessage("processing. please wait.");
-        // jquery get
-        await $.get(url, 
-            function(data, status){
-            // showLoader(false);
-            showMessage("data fetch successfull");
-            
-            // alert("Success: " + data.success+", message: "+data.message + "\nStatus: " + status);
-            container.innerHTML = data.user.map(mapUser).join('\n');
-            
-        })
-        .fail(function(){
-            // showLoader(false);
-            showMessage("unable to load data");
-            //   alert("no internet connection");
-            
-        });
-    } catch (error) 
-    {
-        // showLoader(false);
-        showMessage("No Internet Connection");
-    }
-
-    
-
-    
-}
-function mapUser(user)
-{
-
-    // indexDbAdd(user.id, user.email, user.pass);
-
-    return `
-    <div class="user">            
-            <h4>${user.email}</h4>
-            <h3>${user.pass}</h3>            
-            <p>${user.date_create}</p>            
-        </div>
-        `;
-}
 
 function mapAct(activities)
 {
@@ -639,12 +519,6 @@ function mapAct(activities)
             <p>${activities.contentName}</p>            
         </div>
         `;
-}
-
-function signup()
-{
-    // showLoader(false);
-    showMessage(false);
 }
 
 function showLoader(show)
@@ -674,19 +548,3 @@ function showMessage(message)
 
 
 document.addEventListener('DOMContentLoaded', initialize);
-
-
-
-
-// const otherParams = {
-    // mehtod:'POST',
-    // mode:'cors',
-    // cache:'no-cache',
-    // credentials:'same-origin',
-    // headers:{
-    //     'Content-Type':'application/json; charset=UTF-8'
-    // },
-    // redirect:'follow',
-    // referrerPolicy:'no-referrer',
-//     body:JSON.stringify(Data)
-// };

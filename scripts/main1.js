@@ -1,20 +1,38 @@
-// let rootUrl="https://192.168.0.103/intellcarelite_p/api/";
+// import Dexie from 'dexie';
+
 let rootUrl="https://www.pakfirst.org/intellcarelite_p/api/";
 //objects//
-const container = document.getElementById('container');
 const container2 = document.getElementById('container2');
+const preLoader = document.getElementById('loader');
+const messageInd2 = document.getElementById('messageIndicator2');
+const username = document.getElementById('username');
+const btn_addToHome2 = document.getElementById('btn_addToHome2');
+
 //--objects--//
-
-// document.addEventListener('load', e=>{
-// indexDbReadAll();
-// });
-
 var db;
+let befInstalPrompt;
+
+//window before install
+window.addEventListener('beforeinstallprompt', (e) => {
+    console.log("before install");
+    e.preventDefault();
+    befInstalPrompt = e;
+    btn_addToHome2.addEventListener('click',addToHome2);
+    // btn_addToHome.addEventListener('click',checkAppOpenStat());
+});
+
+//window app insalled
+window.addEventListener('appinstalled', (e)=>{
+    console.log("App is installed");
+    location.reload();
+});
 
 //window load
 window.addEventListener('load', e=>{
     // updateNews();
     // updateLocalNews();
+    // console.log("second page load");
+    // alert("second page load");
 
     // servie worker registration
     if ('serviceWorker' in navigator) {
@@ -32,122 +50,183 @@ const initialize = function(){
     //
     importLibraries();
     //--//
+
+    // userName.innerHTML = window.sessionStorage.getItem("userName");
+    
+    // btn_addToHome2.addEventListener('click',addToHome2);
+
     fetchOfflineActivities();
+    populaateFromSession();
     // btn_login.addEventListener('click',validateLogin);
     // indexDbReadAll();
-    // indexDbInit();
+    // indexDbInitp2();
 }
 
 async function importLibraries()
 {
     //jquery import
     var jQueryScript = document.createElement('script');  
-    jQueryScript.setAttribute('src','https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js');
+    jQueryScript.setAttribute('src','https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js');
     document.head.appendChild(jQueryScript);
+
+    //Bootstrap import
+    var bsScript = document.createElement('script');  
+    bsScript.setAttribute('src','https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js');
+    document.head.appendChild(bsScript);
     //--//
+
     //DEXIE import
     var dexieScript = document.createElement('script');  
     dexieScript.setAttribute('src','https://unpkg.com/dexie@latest/dist/dexie.js');
     document.head.appendChild(dexieScript);
-    // indexDbInit();
-    //--//
 }
 
 //CUSTOMS//
-const validateLogin = function (params) 
+function populaateFromSession()
 {
-    if(navigator.onLine)
-    {
-        showMessage(false);
-        let username = inp_username.value;
-        let pass = inp_password.value;
-        let errcount=0;
-        let errmsg = "";
-
-        if (username=="") {
-            errcount++;
-            errmsg="user name can not be empty\n";
-        }
-
-        if (pass=="" ) 
-        {
-            errcount++;
-            errmsg+="password can not be empty";
-        }
-
-        if (errcount==0) 
-        {
-            login(username, pass);
-        }
-        else{
-            showMessage(errmsg);
-        }
-
-    }
-    else{
-        // showMessage("No Internet Connection!");
-        fetchOfflineActivities();
-    }
-};
-
-//data handling
-function login(userName, password)
-{
-
-    if (navigator.onLine) 
-    {
-        try {
-            const url=rootUrl+"auth/getall";
-
-            // showLoader(true);
-            // showMessage("processing. please wait.");
-            // // jquery get
-            // await $.get(url, 
-            //     function(data, status){
-            //     showLoader(false);
-            //     showMessage("data fetch successfull");                
-            //     // alert("Success: " + data.success+", message: "+data.message + "\nStatus: " + status);
-            //     container.innerHTML = data.user.map(mapUser).join('\n');
-                
-            // })
-            // .fail(function(){
-            //     showLoader(false);
-            //     showMessage("unable to load data");
-            //     //   alert("no internet connection");
-                
-            // });
-            // showLoader(false);
-            // showMessage("online fetch okok");
-            // if (userName=="interactive@ppl.com" && password=="987") 
-            if (userName=="asd" && password=="asd") 
-            {
-                window.location.replace("page1.html");
-            }
-            else{
-                showMessage("incorrect username or password");
-            }
-
-
-        } catch (error) 
-        {
-            // showLoader(false);
-            showMessage("No Internet Connection");
-            fetchOfflineActivities();
-            // indexDbReadAll();
-        }
-    }
-    else{
-        fetchOfflineActivities();
-        // indexDbReadAll();
-    }
-
+    username.innerHTML = window.sessionStorage.getItem('userName');
 }
+
+
+const addToHome2 = function()
+{
+
+
+    // alert("adding to home");
+    console.log("adding to home");
+    // $('#notification-1').toast('show');
+    // $('#notification-1').toast('show');
+
+    // notification1.toast('show');
+    // $('#notification-1').toast('show');
+
+    if (navigator.platform == "iPhone" || navigator.platform == "iPad" || navigator.platform == "iPod")
+    {
+        // console.log("IOS detected");
+        showMessage("IOS DETECTED");
+        alert("IOS detected");
+    }
+     else 
+     {
+        showMessage("Other Than IOS");
+        console.log("Other than IOS");
+
+        befInstalPrompt.prompt();
+        befInstalPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome=='accepted') 
+            {
+                console.log('accepted the install prompt');
+            } else {
+                console.log('rejected the install prompt');
+            }
+        });
+    }
+
+
+    
+}
+
+
+
 
 
 ///////////////OFLINE Handling//////////////////////
 function fetchOfflineActivities()
 {
-    indexDbReadAll();
+    const bulkArrAct=[
+        {
+            "id": 5,
+            "name": "MY VITALS",
+            "actions": [
+                {
+                    "id": 5,
+                    "activityId": 5,
+                    "name": "View Vitals",
+                    "contents": null
+                },
+                {
+                    "id": 6,
+                    "activityId": 5,
+                    "name": "PREVIOUS VITALS",
+                    "contents": null
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "name": "Demographics",
+            "actions": [
+                {
+                    "id": 8,
+                    "activityId": 7,
+                    "name": "View Demographics",
+                    "contents": null
+                },
+                {
+                    "id": 9,
+                    "activityId": 7,
+                    "name": "Update Demographics",
+                    "contents": null
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "name": "MEDICATION",
+            "actions": [
+                {
+                    "id": 7,
+                    "activityId": 6,
+                    "name": "PREVIOUS MEDICATION",
+                    "contents": null
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "name": "APPOINTMENT BOOKING",
+            "actions": [
+                {
+                    "id": 4,
+                    "activityId": 4,
+                    "name": "APPOINTMENT_ACKNOWLEDGE",
+                    "contents": null
+                },
+                {
+                    "id": 10,
+                    "activityId": 4,
+                    "name": "VIEW APPOINTMENT",
+                    "contents": null
+                }
+            ]
+        }
+    ];
+    container2.innerHTML = bulkArrAct.map(mapAct2).join('\n\n');
+    // db.activities.bulkPut(bulkArrAct)
+    // .then(function(){
+    //     // indexDbReadAll();
+    // })
+    // .catch(Dexie.bulkError, function(error) {
+    // alert ("actvities Ooops: " + error);
+    // });
+
+
+
+    // indexDbInit();
+
+    // console.log("reading all records");
+    //  db.table("activities").toArray()
+    //  .then(function (data)
+    //   {
+    //     container2.innerHTML = data.map(mapAct2).join('\n\n');
+    //      console.log(data);
+    //     }
+    //  );
+    // container.innerHTML = bulkArrAct.map(mapAct).join('\n\n');
+    // container2.innerHTML = bulkArrAct.map(mapAct2).join('\n\n');
+
+    // indexDbReadAll();
+
     // switch(key)
     // {
     //     case "login":
@@ -163,15 +242,16 @@ function fetchOfflineActivities()
     //         }
     // }
 }
-function indexDbInit()
+function indexDbInitp2()
 {
     let dbname = "icalite_index";
     let dbversion=1;
 
     db = new Dexie(dbname);
+    db.version(dbversion);
     db.open()
     .then(function(){
-        indexDbReadAll();
+        fetchOfflineActivities();
     })
     .catch(function(err)
     {
@@ -258,41 +338,107 @@ async function indexDbRead() {
     // };
  }
  
- function indexDbReadAll() {
-    //  db.table("user").toArray()
-    //  .then(function (data)
-    //   {
-    //     container.innerHTML = data.map(mapUser).join('\n\n');
-    //      console.log(data);
-    //     }
-    //  );
-    // console.log("read all");
-    // console.log("reading all records");
-    //  db.table("activities").toArray()
-    //  .then(function (data)
-    //   {
-    //     container.innerHTML = data.map(mapAct).join('\n\n');
-    //      console.log(data);
-    //     }
-    //  );
+//  function indexDbReadAll() {
+//     //  db.table("user").toArray()
+//     //  .then(function (data)
+//     //   {
+//     //     container.innerHTML = data.map(mapUser).join('\n\n');
+//     //      console.log(data);
+//     //     }
+//     //  );
+//     // console.log("read all");
+//     // console.log("reading all records");
+//     //  db.table("activities").toArray()
+//     //  .then(function (data)
+//     //   {
+//     //     container.innerHTML = data.map(mapAct).join('\n\n');
+//     //      console.log(data);
+//     //     }
+//     //  );
 
-    const bulkArrAct=[
-        {activityLogId: "4", activityId: "4", actionId:"4", contentId:"5", activityName:"APPOINTMENT BOOKING", actionName:"APPOINTMENT_ACKNOWLEDGE", contentName:"VSIT PLAN DIAGNOSE INVESTIGATION"},
-        {activityLogId: "5", activityId: "5", actionId:"5", contentId:"6", activityName:"MY VITALS", actionName:"VVIEW VITALS", contentName:"VIEW VITAL PULSE"},
-        {activityLogId: "6", activityId: "6", actionId:"7", contentId:"10", activityName:"MEDICATION", actionName:"PREVIOUS MEDICATION", contentName:"MEDICINE FREQUENCY"},
-        {activityLogId: "4", activityId: "4", actionId:"4", contentId:"4", activityName:"APPOINTMENT BOOKING", actionName:"APPOINTMENT_ACKNOWLEDGE", contentName:"VSIT PLAN DIAGNOSE FEVER"}        
-    ];
-    container.innerHTML = bulkArrAct.map(mapAct).join('\n\n');
-    container2.innerHTML = bulkArrAct.map(mapAct2).join('\n\n');
-    // console.log("reading all records");
-    // db.table("activities").toArray()
-    // .then(function (data)
-    //  {
-    //    container.innerHTML = data.map(mapAct).join('\n\n');
-    //     console.log(data);
-    //    }
-    // );
- } 
+//     // const bulkArrAct=[
+//     //     {activityLogId: "4", activityId: "4", actionId:"4", contentId:"5", activityName:"APPOINTMENT BOOKING", actionName:"APPOINTMENT_ACKNOWLEDGE", contentName:"VSIT PLAN DIAGNOSE INVESTIGATION"},
+//     //     {activityLogId: "5", activityId: "5", actionId:"5", contentId:"6", activityName:"MY VITALS", actionName:"VVIEW VITALS", contentName:"VIEW VITAL PULSE"},
+//     //     {activityLogId: "6", activityId: "6", actionId:"7", contentId:"10", activityName:"MEDICATION", actionName:"PREVIOUS MEDICATION", contentName:"MEDICINE FREQUENCY"},
+//     //     {activityLogId: "4", activityId: "4", actionId:"4", contentId:"4", activityName:"APPOINTMENT BOOKING", actionName:"APPOINTMENT_ACKNOWLEDGE", contentName:"VSIT PLAN DIAGNOSE FEVER"}        
+//     // ];
+//     // const bulkArrAct=[
+//     //     {
+//     //         id: "7",
+//     //         name: "Demographics",
+//     //         actions: 
+//     //         [
+//     //             {
+//     //                 id: "9",
+//     //                 activityId: "7",
+//     //                 name: "Update (Demographics)",
+//     //                 contents: "null"
+//     //             },
+//     //             {
+//     //                 id: "8",
+//     //                 activityId: "7",
+//     //                 name: "View (Demographics)",
+//     //                 contents: null
+//     //             }
+//     //         ]
+//     //     },
+//     //     {
+//     //         id: "6",
+//     //         name: "MEDICATION",
+//     //         actions: 
+//     //         [
+//     //             {
+//     //                 id: "7",
+//     //                 activityId: "6",
+//     //                 name: "PREVIOUS MEDICATION",
+//     //                 contents: "null"
+//     //             }
+//     //         ]
+//     //     },
+//     //     {
+//     //         id: "4",
+//     //         name: "APPOINTMENT BOOKING",
+//     //         actions: 
+//     //         [
+//     //             {
+//     //                 id: "4",
+//     //                 activityId: "4",
+//     //                 name: "APPOINTMENT_ACKNOWLEDGE",
+//     //                 contents: "null"
+//     //             }
+//     //         ]
+//     //     },
+//     //     {
+//     //         id: "5",
+//     //         name: "MY VITALS",
+//     //         actions: 
+//     //         [
+//     //             {
+//     //                 id: "5",
+//     //                 activityId: "5",
+//     //                 name: "VVIEW VITALS",
+//     //                 contents: "null"
+//     //             },
+//     //             {
+//     //                 id: "6",
+//     //                 activityId: "5",
+//     //                 name: "PREVIOUS VITALS",
+//     //                 contents: "null"
+//     //             }
+//     //         ]
+//     //     }
+//     // ];
+//     // // container.innerHTML = bulkArrAct.map(mapAct).join('\n\n');
+//     // container2.innerHTML = bulkArrAct.map(mapAct2).join('\n\n');
+//     // console.log("reading all records");
+//     // db.table("activities").toArray()
+//     // .then(function (data)
+//     //  {
+//     //    container.innerHTML = data.map(mapAct).join('\n\n');
+//     //     console.log(data);
+//     //    }
+//     // );
+//  } 
 
  function indexDbAdd(id, email, pass) {
     db.user.put({id: id, email: email, pass:pass})
@@ -322,234 +468,6 @@ async function indexDbRead() {
  }
 //-----------------------------------------------//
 
-const testAlert = function(){
-    if (navigator.onLine) 
-    {
-        alert("login in process, username=> "+inp_username.value+", pass=>"+inp_password.value); 
-        
-        // indexDbRead();
-        indexDbReadAll();
-    }
-    else{
-        alert("no internet connection");
-    }
-    
-}
-
-const submitLogin = function(ev)
-{
-    ev.preventDefault();
-    ev.stopPropagation();
-    // alert('hello how are');
-
-
-    let valid = true;
-
-    let email = document.getElementById('input_email');
-    let pass = document.getElementById('input_pass');
-
-    let errorMsg ="";
-    if(email.value === "")
-    {
-        valid = false;
-        errorMsg="Email ";
-        // showMessage("email cannot be null");
-        // alert('email cannot be null');
-    }
-    
-    if(pass.value === "")
-    {
-        valid = false;
-        // alert('password cannot be null');
-        errorMsg+=", Password ";
-    }
-
-    if (valid) 
-    {
-        createUser(email.value, pass.value);
-    }
-     else 
-    {
-        // alert('incorrect vallue');
-        errorMsg=" value incorrect!";
-        showMessage(errorMsg);
-
-    }
-
-}
-
-// const createUser = function(email, pass)
-async function createUser(email, pass)
-{  
-
-    try {
-        const url=rootUrl+"auth/login";
-
-        // showLoader(true);
-        showMessage("creating user");
-        indexDbAdd(lastInsertedId, email, pass);
-        //jquery get
-        await $.get(url, {param:email, param2:pass},
-            function(data, status){ 
-            showMessage("user created successfully");            
-            // showLoader(false);
-            // alert("Success: " + data.success+", message: "+data.message + "\nStatus: " + status);
-        });
-        
-    } catch (error) 
-    {
-        // showLoader(false);
-        showMessage("No Internet Connection");
-    }
-
-    
-
-    //jquery post
-    // $.post(url,
-    // {
-    //     login_id: "Donald Duck",
-    //     pass: "Duckburg"
-    // },
-    // function(data, status){
-    //     alert("success: " + data.success+"\nMessage: "+ data.message + "\nStatus: " + status);
-    // });
-
-    // const url=rootUrl+"auth/login";
-    // alert("okok, url=>"+url);
-    // // const data={
-    // //     login_id:email,
-    // //     pass:pass
-    // // };
-
-    // const otherParams = {
-    //     mehtod:'POST',
-    //     // credentials:'same-origin',
-    //     headers:{
-    //         'Content-Type':'application/json',
-    //     },
-    //     body : JSON.stringify({
-    //         'login_id' : email,
-    //         'pass' : pass
-
-    //     })
-    // };
-
-    // // fetch("https://jsonplaceholder.typicode.com/posts", { 
-    // fetch(url, 
-    //     { 
-      
-    //     // Adding method type 
-    //     method: "POST", 
-        
-    //     // Adding body or contents to send 
-    //     body: JSON.stringify({ 
-    //         login_id: email, 
-    //         pass: pass
-    //     }), 
-        
-    //     // Adding headers to the request 
-    //     headers: { 
-    //         "Content-type": "application/json; charset=UTF-8"
-    //     } 
-    // }) 
-  
-    // // Converting to JSON 
-    // .then(response => response.json()) 
-    
-    // // Displaying results to console 
-    // .then(json => console.log(json));
-
-
-
-
-
-    ////
-//     fetch('https://jsonplaceholder.typicode.com/todos/1')
-//   .then(response => response.json())
-//   .then(json => console.log(json))
-
-
-    // const response = await fetch(url, otherParams)
-    // .then(response=>{console.log(response.json());})
-    // .then(data=>{console.log('success:',data);})
-    // .catch(error=>{console.error('Error:',error);})
-}
-
-async function viewdata()
-{
-    //dexie.js, dexie-syncable.js e.t.c
-    // alert('loading data view. please wait...');
-
-    try {
-        const url=rootUrl+"auth/getall";
-
-        // const res= await fetch(url);
-        // const json = await res.json();
-        // container.innerHTML = json.user.map(mapUser).join('\n');
-
-        // showLoader(true);
-        showMessage("processing. please wait.");
-        // jquery get
-        await $.get(url, 
-            function(data, status){
-            // showLoader(false);
-            showMessage("data fetch successfull");
-            
-            // alert("Success: " + data.success+", message: "+data.message + "\nStatus: " + status);
-            container.innerHTML = data.user.map(mapUser).join('\n');
-            
-        })
-        .fail(function(){
-            // showLoader(false);
-            showMessage("unable to load data");
-            //   alert("no internet connection");
-            
-        });
-    } catch (error) 
-    {
-        // showLoader(false);
-        showMessage("No Internet Connection");
-    }
-
-    
-
-    
-}
-function mapUser(user)
-{
-
-    // indexDbAdd(user.id, user.email, user.pass);
-
-    return `
-    <div class="user">            
-            <h4>${user.email}</h4>
-            <h3>${user.pass}</h3>            
-            <p>${user.date_create}</p>            
-        </div>
-        `;
-}
-
-function mapAct(activities)
-{
-
-    // indexDbAdd(user.id, user.email, user.pass);
-
-    console.log("mapping act");
-    return `<a href="#">
-                <i class="fa fa-user color-blue2-dark">
-                </i>
-                <span>${activities.contentName}</span>
-                <i class="fa fa-angle-right">
-                </i>
-            </a>`;
-    // return `
-    // <div class="activities">            
-    //         <h4>${activities.activityLogId}</h4>
-    //         <h3>${activities.activityName}</h3>            
-    //         <p>${activities.contentName}</p>            
-    //     </div>
-    //     `;
-}
 function mapAct2(activities)
 {
 
@@ -557,13 +475,17 @@ function mapAct2(activities)
 
     console.log("mapping act 2");
     return `<div class="list-group list-custom-small list-icon-0">
-                <a data-toggle="collapse" href="#collapse-${activities.activityLogId}">
+                <a data-toggle="collapse" href="#collapse-${activities.id}">
                     <i class="fa font-14 fa fa-user color-blue2-dark"></i>
-                    <span class="font-14">${activities.activityName}</span>
+                    <span class="font-14">${activities.name}</span>
                     <i class="fa fa-angle-down"></i>
                 </a>
             </div>
-            <div class="collapse" id="collapse-${activities.activityLogId}">
+            `
+            +
+            activities.actions.map(mapAction2).join("\n\n");
+            
+{/* <div class="collapse" id="collapse-${activities.activityLogId}">
                 <div class="list-group list-custom-small pl-3">
                     <a href="#">
                         <i class="fab font-13 fa fa-user color-blue2-dark"></i>
@@ -571,8 +493,8 @@ function mapAct2(activities)
                         <i class="fa fa-angle-right"></i>
                     </a>
                 </div>
-            </div>`;
-            
+            </div> */}
+
     // return `
     // <div class="activities">            
     //         <h4>${activities.activityLogId}</h4>
@@ -581,33 +503,40 @@ function mapAct2(activities)
     //     </div>
     //     `;
 }
-
-function signup()
+function mapAction2(actions)
 {
-    // showLoader(false);
-    showMessage(false);
+    return `<div class="collapse" id="collapse-${actions.activityId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#">
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${actions.name}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div>`;
 }
-
-// function showLoader(show)
-// {
-//     if (show) 
-//     {
-//         loader.style.visibility = "visible";
-//     }
-//     else{
-//         loader.style.visibility = "hidden";
-//     }
-// }
+function showLoader(show)
+{
+    if (show) 
+    {
+        preLoader.style.visibility = "visible";
+        console.log("loader visible");
+    }
+    else{
+        preLoader.style.visibility = "hidden";
+        console.log("loader hidden");
+    }
+}
 
 function showMessage(message)
 {
     if (!message) 
     {
-        messageInd.style.visibility = "hidden";
+        messageInd2.style.visibility = "hidden";
     }
     else{
-        messageInd.style.visibility = "visible";
-        messageInd.innerHTML = message;
+        messageInd2.style.visibility = "visible";
+        messageInd2.innerHTML = message;
     }
 }
 ///////////INDEX DB MANAGEMENT///////////////////////////
