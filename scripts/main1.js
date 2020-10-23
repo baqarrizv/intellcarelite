@@ -58,7 +58,7 @@ const initialize = function(){
     // btn_addToHome2.addEventListener('click',addToHome2);
 
     fetchOfflineActivities();
-    populaateFromSession();
+    // populaateFromSession();
     // btn_login.addEventListener('click',validateLogin);
     // indexDbReadAll();
     // indexDbInitp2();
@@ -105,12 +105,12 @@ const addToHome2 = function()
     if (navigator.platform == "iPhone" || navigator.platform == "iPad" || navigator.platform == "iPod")
     {
         // console.log("IOS detected");
-        showMessage("IOS DETECTED");
+        // showMessage("IOS DETECTED");
         alert("IOS detected");
     }
      else 
      {
-        showMessage("Other Than IOS");
+        // showMessage("Other Than IOS");
         console.log("Other than IOS");
 
         befInstalPrompt.prompt();
@@ -640,17 +640,17 @@ function showLoader(show)
     }
 }
 
-function showMessage(message)
-{
-    if (!message) 
-    {
-        messageInd2.style.visibility = "hidden";
-    }
-    else{
-        messageInd2.style.visibility = "visible";
-        messageInd2.innerHTML = message;
-    }
-}
+// function showMessage(message)
+// {
+//     if (!message) 
+//     {
+//         messageInd2.style.visibility = "hidden";
+//     }
+//     else{
+//         messageInd2.style.visibility = "visible";
+//         messageInd2.innerHTML = message;
+//     }
+// }
 ///////////INDEX DB MANAGEMENT///////////////////////////
 
 // function indexDbInit()
