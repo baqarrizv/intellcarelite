@@ -92,6 +92,8 @@ async function importLibraries()
 }
 
 //CUSTOMS//
+
+//add to home
 const addToHome = function()
 {
 
@@ -106,19 +108,20 @@ const addToHome = function()
 
     if (navigator.platform == "iPhone" || navigator.platform == "iPad" || navigator.platform == "iPod")
     {
-        // console.log("IOS detected");
-        showMessage("IOS DETECTED");
-        alert("IOS detected");
+        console.log("IOS detected");
+        // showMessage("IOS DETECTED");
+        // alert("IOS detected");
     }
      else 
      {
-        showMessage("Other Than IOS");
+        // showMessage("Other Than IOS");
         console.log("Other than IOS");
 
         befInstalPrompt.prompt();
         befInstalPrompt.userChoice.then((choiceResult) => {
             if (choiceResult.outcome=='accepted') 
             {
+                // location.reload();
                 console.log('accepted the install prompt');
             } else {
                 console.log('rejected the install prompt');
@@ -176,6 +179,7 @@ function checkAppOpenStat()
     }
     // console.log();
 }
+//--add to home
 
 const validateLogin = function (params) 
 {
@@ -308,8 +312,12 @@ function loginOffline(userName, password)
 
         // db.person.where({name: "Dr. INTERACTIVE Group", personId: "38995"}).first(friend => {
         db.person.where({personId: "38995"})
-        .first(friend => {
-            console.log("Found Person: " + JSON.stringify(friend));
+        .first(person => {
+            window.sessionStorage.setItem("userName", userName);
+            window.sessionStorage.setItem("password", password);
+            window.sessionStorage.setItem("name", person.name);
+
+            console.log("Found Person: " + JSON.stringify(person));
             window.location.replace("page1.html");
         }).catch(error => {
             console.error(error.stack || error);
@@ -367,10 +375,10 @@ function indexDbInit()
     const bulkArr=[
                     {
                         personId: "38995",
-                        name: "Dr. INTERACTIVE Group", 
+                        name: "Interactive Group", 
                         mrNo:"01-18-0042756", 
                         gender:"Male", 
-                        age:"48 year(s)  1  month(s) 15 day(s) ( Adult)", 
+                        age:"48 year(s)  1  month(s) 18 day(s) ( Adult)", 
                         number:"null", 
                         bloodGroup:"A-"
                     }
@@ -396,15 +404,27 @@ function indexDbInit()
     //actions
     const bulkArrAction=[
         {
-            id: "9",
-            activityId: "7", 
-            name:"Update Demographics", 
+            id: "5",
+            activityId: "5", 
+            name:"View Vitals", 
+            contents:"null"
+        },
+        {
+            id: "6",
+            activityId: "5", 
+            name:"PREVIOUS VITALS", 
             contents:"null"
         },
         {
             id: "8",
             activityId: "7", 
             name:"View Demographics", 
+            contents:"null"
+        },
+        {
+            id: "9",
+            activityId: "7", 
+            name:"Update Demographics", 
             contents:"null"
         },
         {
@@ -423,18 +443,6 @@ function indexDbInit()
             id: "10",
             activityId: "4", 
             name:"VIEW APPOINTMENT", 
-            contents:"null"
-        },
-        {
-            id: "5",
-            activityId: "5", 
-            name:"View Vitals", 
-            contents:"null"
-        },
-        {
-            id: "6",
-            activityId: "5", 
-            name:"PREVIOUS VITALS", 
             contents:"null"
         },
     ];

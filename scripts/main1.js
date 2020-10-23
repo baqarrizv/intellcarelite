@@ -51,6 +51,8 @@ const initialize = function(){
     importLibraries();
     //--//
 
+
+
     // userName.innerHTML = window.sessionStorage.getItem("userName");
     
     // btn_addToHome2.addEventListener('click',addToHome2);
@@ -84,7 +86,7 @@ async function importLibraries()
 //CUSTOMS//
 function populaateFromSession()
 {
-    username.innerHTML = window.sessionStorage.getItem('userName');
+    username.innerHTML = window.sessionStorage.getItem('name');
 }
 
 
@@ -505,7 +507,81 @@ function mapAct2(activities)
 }
 function mapAction2(actions)
 {
-    return `<div class="collapse" id="collapse-${actions.activityId}">
+    if (actions.name == "APPOINTMENT_ACKNOWLEDGE") 
+    {
+        return `<div class="collapse" id="collapse-${actions.activityId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#" onclick="goToAppointmentNew()">
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${actions.name}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div>`;
+    }
+    else if (actions.name == "VIEW APPOINTMENT") 
+    {
+        return `<div class="collapse" id="collapse-${actions.activityId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#" onclick="goToAppointmentView()">
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${actions.name}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div>`;
+    }
+    else if (actions.name == "View Vitals") 
+    {
+        return `<div class="collapse" id="collapse-${actions.activityId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#" onclick="goToVitalView()">
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${actions.name}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div>`;
+    }    
+    else if (actions.name == "PREVIOUS VITALS") 
+    {
+        return `<div class="collapse" id="collapse-${actions.activityId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#" >
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${actions.name}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div>`;
+    }
+    else if (actions.name == "View Demographics") 
+    {
+        return `<div class="collapse" id="collapse-${actions.activityId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#" onclick="goToDemographView()">
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${actions.name}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div>`;
+    }
+    else if (actions.name == "Update Demographics") 
+    {
+        return `<div class="collapse" id="collapse-${actions.activityId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#" onclick="goToDemographUpdate()">
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${actions.name}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div>`;
+    }
+    else
+    {
+        return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
                     <a href="#">
                         <i class="fab font-13 fa fa-user color-blue2-dark"></i>
@@ -514,7 +590,42 @@ function mapAction2(actions)
                     </a>
                 </div>
             </div>`;
+    }
+    
 }
+
+function goToAppointmentView()
+{
+    console.log("going to next view");
+    window.location.href = "view_appointment.html";
+}
+
+function goToAppointmentNew()
+{
+    console.log("going to next view");
+    window.location.href = "new_appointment.html";
+}
+function goToVitalView()
+{
+    console.log("going to next view");
+    window.location.href = "list_vitals.html";
+}
+function goToDemographView()
+{
+    console.log("going to next view");
+    window.location.href = "view_demographics.html";
+}
+function goToDemographUpdate()
+{
+    console.log("going to next view");
+    window.location.href = "edit_demographics.html";
+}
+// function goToVitalList()
+// {
+//     console.log("going to next view");
+//     window.location.href = "list_vitals.html";
+// }
+
 function showLoader(show)
 {
     if (show) 
