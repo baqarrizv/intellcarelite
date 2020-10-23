@@ -597,7 +597,8 @@ function mapAction2(actions)
 function goToAppointmentView()
 {
     console.log("going to next view");
-    window.location.href = "view_appointment.html";
+    // window.location.href = "view_appointment.html";
+    window.location.href = "list_appointment.html";
 }
 
 function goToAppointmentNew()
