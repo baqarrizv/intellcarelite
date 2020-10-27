@@ -1,5 +1,6 @@
 // let rootUrl="http://10.190.14.14:1700/IntellCareLite/";
-let rootUrl="http://203.99.60.222:1700/IntellCareLite/";//{live}
+// let rootUrl="http://203.99.60.222:1700/IntellCareLite/";//{live}
+let rootUrl="https://203.99.60.222:1701/IntellCareLite/";//{live}
 //objects//
 const inp_username = document.getElementById('inp_uname');
 const inp_password = document.getElementById('inp_pass');
@@ -253,42 +254,97 @@ async function login(userName, password)
             //--dummy login
 
             
-            const url=rootUrl+"login";
-            console.log("complete url=> "+url);
+            // const url=rootUrl+"login";
+            // console.log("complete url=> "+url);
 
             // showLoader(true);
             showMessage("processing. please wait.");
             showLoader(true);
-            // jquery post
-            await $.post(url, 
-                            {
-                                userName:userName,
-                                password:password
-                            },
-                    function (data, status)
+
+
+
+            //conn check
+            // await $.get("http://203.99.60.222:1700/IntellCareLite/checkGet", function(data, status){
+                const url=rootUrl+"checkGet";
+                console.log("complete url=> "+url);
+                // await $.get(rootUrl+"checkGet", function(data, status){
+                
+                //     console.log(`${data}`);
+                // });
+
+                //check for internal connectivity of live ip
+                // 10.190.14.35
+
+                let promise = await fetch(url, 
                     {
-                        showLoader(false);
-                        showMessage("data fetch successfull");                
-                        console.log("Success: " + data.success+", message: "+data.message + "\nStatus: " + status);
-                        console.log("user found :: personId=>"+data.person.personId+", name=>"+data.person.name);
+                        method: "GET", // POST, PUT, DELETE, etc.
+                        headers: 
+                        {
+                        // the content type header value is usually auto-set
+                        // depending on the request body
+                        "Content-Type": "text/plain;charset=UTF-8",
+                        "Host": "203.99.60.222:1700",
+                        // "Origin": "http://localhost:81"
+                        "Origin": "https://admin.aldermin.com"
+                        },
+                        body: undefined, // string, FormData, Blob, BufferSource, or URLSearchParams
+                        referrer: "about:client", // or "" to send no Referer header,
+                        // or an url from the current origin
+                        referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
+                        mode: "no-cors", // same-origin, no-cors
+                        credentials: "same-origin", // omit, include
+                        cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached
+                        redirect: "follow", // manual, error
+                        integrity: "", // a hash, like "sha256-abcdef1234567890"
+                        keepalive: false, // true
+                        signal: undefined, // AbortController to abort request
+                        window: window // null
+                  })
+                  .then(data => console.log(data));
 
-                        //session
-                        window.sessionStorage.setItem("userName",userName);
-                        window.sessionStorage.setItem("password",password);
+                  console.log("response:: "+promise.json());
 
-                        window.location.replace("page1.html");
-                        // alert("Success: " + data.success+", message: "+data.message + "\nStatus: " + status);
-                        // container.innerHTML = data.person.map(mapUser).join('\n');
-                    }
-                );
+            // jquery post
+        //     await $.post(url, 
+        //                     {
+        //                         userName:userName,
+        //                         password:password
+        //                     },
+        //             function (data, status)
+        //             {
+        //                 showLoader(false);
+        //                 showMessage("data fetch successfull");                
+        //                 console.log("Success: " + data.success+", message: "+data.message + "\nStatus: " + status);
+        //                 console.log("user found :: personId=>"+data.person.personId+", name=>"+data.person.name);
+
+        //                 //session
+        //                 window.sessionStorage.setItem("userName",userName);
+        //                 window.sessionStorage.setItem("password",password);
+
+        //                 // window.location.replace("page1.html");
+        //                 // alert("Success: " + data.success+", message: "+data.message + "\nStatus: " + status);
+        //                 // container.innerHTML = data.person.map(mapUser).join('\n');
+        //             },
+        //             "json"
+        //         )
+        //         .done(function(msg){})
+        //         .fail(function(xhr, status, error)
+        //         {
+        //             console.log("err xhr:: "+xhr);
+        //             console.log("err status:: "+status);
+        //             console.log("err error:: "+error);
+        //         });
 
             
         } catch (error) 
         {
             showLoader(false);
-            console.log("error=> "+error.value);
+            console.log("error=> "+error);
+            console.log("error=> "+error.name);
+            console.log("error=> "+error.message);
+            console.log("error=> "+error.stack);
             showMessage("Error in data fetching => "+error.value);
-            loginOffline(userName, password);
+            // loginOffline(userName, password);
             // fetchOfflineActivities();
             // indexDbReadAll();
         }
@@ -296,7 +352,7 @@ async function login(userName, password)
     else{
         console.log("fetching offline vals");
         showMessage("app offline");
-        loginOffline(userName, password);
+        // loginOffline(userName, password);
         // fetchOfflineActivities();
         // indexDbReadAll();
     }
