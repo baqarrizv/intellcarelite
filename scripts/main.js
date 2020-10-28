@@ -287,21 +287,21 @@ async function login(userName, password)
         try {
 
             //dummy login
-            // if (userName=="interactive@ppl.com" && password=="987") 
-            // {
-            //     showLoader(false);
-            //     // showMessage("Login successfull");
+            if (userName=="interactive@ppl.com" && password=="987") 
+            {
+                showLoader(false);
+                // showMessage("Login successfull");
 
-            //     window.sessionStorage.setItem("userName",userName);
-            //     window.sessionStorage.setItem("password",password);
+                window.sessionStorage.setItem("userName",userName);
+                window.sessionStorage.setItem("password",password);
 
-            //     window.location.replace("page1.html");
-            // } 
-            // else 
-            // {
-            //     showLoader(false);
-            //     showMessage("incorrect username or password");
-            // }
+                window.location.replace("page1.html");
+            } 
+            else 
+            {
+                showLoader(false);
+                showMessage("incorrect username or password");
+            }
             //--dummy login
 
             
@@ -358,43 +358,57 @@ async function login(userName, password)
 
 
 
-                const url=rootUrl+"login";
-                console.log("complete url=> "+url);
+                // const url=rootUrl+"login";
+                // console.log("complete url=> "+url);
 
-                  //post
-                  let promise = await fetch(url, 
-                    {
-                        method: "POST", // POST, PUT, DELETE, etc.
-                        headers: 
-                        {
-                        // the content type header value is usually auto-set
-                        // depending on the request body
-                        "Content-Type": "application/json;charset=UTF-8",
-                        "Host": "203.99.60.222:1700",
-                        // "Origin": "http://localhost:81"
-                        "Origin": "https://admin.aldermin.com"
-                        },
-                        body: JSON.stringify(
-                                {
-                                    userName:userName,
-                                    password:password
-                                }
-                            ), // string, FormData, Blob, BufferSource, or URLSearchParams
-                        // referrer: "about:client", // or "" to send no Referer header,
-                        // or an url from the current origin
-                        // referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
-                        mode: "cors", // same-origin, no-cors
-                        credentials: "same-origin", // omit, include
-                        cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached
-                        redirect: "follow", // manual, error
-                        integrity: "", // a hash, like "sha256-abcdef1234567890"
-                        keepalive: false, // true
-                        signal: undefined, // AbortController to abort request
-                        window: window // null
-                  })
-                  .then(data => console.log(data));
+                //   //post
+                //   let promise = await fetch(url, 
+                //     {
+                //         method: "POST", // POST, PUT, DELETE, etc.
+                //         headers: 
+                //         {
+                //         // the content type header value is usually auto-set
+                //         // depending on the request body
+                //         "Content-Type": "application/json;charset=UTF-8",
+                //         "Host": "203.99.60.222:1701",
+                //         // "Origin": "http://localhost:81"
+                //         "Origin": "https://admin.aldermin.com"
+                //         },
+                //         body: JSON.stringify(
+                //                 {
+                //                     userName:userName,
+                //                     password:password
+                //                 }
+                //             ), // string, FormData, Blob, BufferSource, or URLSearchParams
+                //         // referrer: "about:client", // or "" to send no Referer header,
+                //         // or an url from the current origin
+                //         // referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
+                //         mode: "cors", // same-origin, no-cors
+                //         credentials: "same-origin", // omit, include
+                //         cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached
+                //         redirect: "follow", // manual, error
+                //         integrity: "", // a hash, like "sha256-abcdef1234567890"
+                //         keepalive: false, // true
+                //         signal: undefined, // AbortController to abort request
+                //         window: window // null
+                //   })
+                //   .then(response => {
+                //     if (!response.ok) {
+                //         console.log(response.json())
+                //             .catch(() => {
+                //                 // Couldn't parse the JSON
+                //                 throw new Error(response.status);
+                //             })
+                //             .then(({message}) => {
+                //                 // Got valid JSON with error response, use it
+                //                 throw new Error(message || response.status);
+                //             });
+                //     }
+                //     // Successful response, parse the JSON and return the data
+                //     console.log(response.json());
+                // });
 
-                  console.log("response:: "+promise.json());
+                //   console.log("response:: "+promise.json());
 
 
 
