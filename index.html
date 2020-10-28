@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover" />
         <title>IntellCare Lite</title>
         <link rel="stylesheet" type="text/css" href="styles/style.css" />
-        <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900,900i|Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i,900,900i&amp;display=swap" rel="stylesheet" />
+        <link href="fonts/roboto_all.css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="fonts/css/fontawesome-all.min.css" />
         <!-- <link rel="manifest" href="manifest.json" data-pwa-version="set_in_manifest_and_pwa_js" /> -->
         <link rel="manifest" href="manifest.json" />
@@ -30,7 +30,7 @@
                     	<div class="text-center mb-3">
 	                    	<a  href="#" ><img src="images/Intellcare.png"></a>
                     	</div>
-                        <p class="bottom-0 text-center color-highlight font-11">let's get you logged in - v.1.2</p>
+                        <p class="bottom-0 text-center color-highlight font-11">let's get you logged in</p>
                         <div class="input-style has-icon input-style-1 input-required pb-1">
                             <i class="input-icon fa fa-user color-theme"></i>
                             <span>Username</span>
@@ -56,6 +56,10 @@
                             <!-- <div class="w-50 font-11 pb-2 color-theme opacity-60 pb-3 text-left"><a href="#" class="color-theme"></a></div> -->
                             <div class="w-50 font-11 pb-2 color-theme pb-3 text-left"><div id="loader" style="visibility: hidden;" class="spinner-border color-highlight" role="status"></div></div>
                             <div class="w-50 font-11 pb-2 color-theme opacity-60 pb-3 text-right"><a href="#" class="color-theme">Forgot Credentials</a></div>
+                            <a href="#" data-menu="ios-add-modal" class="border-0">
+                                <span>show modal ios</span>
+                            </a>
+                                                        
                         </div>
                         <div id="container">
                             
@@ -86,7 +90,14 @@
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit,
             </p>
         </div>
-        
+        <div id="ios-add-modal" class="menu menu-box-modal menu-box-round-medium menu-box-detached rounded-s" data-menu-width="225" data-menu-height="225" data-menu-effect="menu-over" data-menu-select="page-components">
+            <div class="boxed-text-xl mt-4">
+                <h1 class="mb-3"><img src="images/Intellcare.png"></h1>
+                <p>
+                    Add to this web app to the home screen: tap <span class="fa-fw select-all fas"></span> and then <strong>add to home screen.</strong>
+                </p>
+            </div>
+        </div>
         <script type="text/javascript" src="scripts/bootstrap.min.js"></script>
         <script type="text/javascript" src="scripts/custom.js"></script>
         <script type="text/javascript" src="scripts/main.js"></script>
