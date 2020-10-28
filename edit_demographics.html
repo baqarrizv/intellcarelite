@@ -1,161 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
-    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover" />
-        <title>IntellCare Lite</title>
-        <link rel="stylesheet" type="text/css" href="styles/style.css" />
-        <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900,900i|Source+Sans+Pro:300,300i,400,400i,600,600i,700,700i,900,900i&amp;display=swap" rel="stylesheet" />
-        <link rel="stylesheet" type="text/css" href="fonts/css/fontawesome-all.min.css" />
-        <link rel="manifest" href="manifest.json"/>
-        <link rel="apple-touch-icon" sizes="180x180" href="app/icons/icon-192x192.png" />
-    </head>
-    <body class="theme-light" data-background="none" data-highlight="red2">
-        <div id="preloader"><div class="spinner-border color-highlight" role="status"></div></div>
-        <div id="page">
-            <div style="z-index:97!important" class="header header-fixed bg-blue2-dark header-logo-center">
-                <a href="#" data-back-button="" class="header-icon header-icon-1"><i class="fas fa-arrow-left"></i></a>
-                <a href="" class="header-title color-white">Intellcare Lite</a>
-                <a data-menu="menu-sidebar-left-1" href="#" class="header-icon color-white header-icon-4"><i class="fas fa-bars"></i></a>
-                <a href="#" id="btn_addToHome2" class="header-icon color-white header-icon-3" title="Install IntellCare Lite"><i class="fas fa-plus-circle"></i></a>
-            </div>
-           
-            <div class="page-content header-clear-medium">
-                <div class="card card-style">
-                    <div class="content mb-0">
-                        <h3>Edit Demographics</h3>
-                        <p>Personal Details</p>
-                        <div class="input-style input-style-2 has-icon input-required">
-                            <span class="color-highlight input-style-1-inactive">Gender </span>
-                            <em>(required)</em>
-                            <select class="form-control" required="">
-                                <option value="" disabled="" selected="">Select Gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div class="input-style input-style-2 input-required">
-                            <span class="color-highlight">First Name</span>
-                            <em>(required)</em>
-                            <input class="form-control" type="text" placeholder="" required=""/>
-                        </div>
-                        <div class="input-style input-style-2 input-required">
-                            <span class="color-highlight">Middle Name</span>
-                            <em>(required)</em>
-                            <input class="form-control" type="text" placeholder="" required=""/>
-                        </div>
-                        <div class="input-style input-style-2 input-required">
-                            <span class="color-highlight">Last Name</span>
-                            <em>(required)</em>
-                            <input class="form-control" type="text" placeholder="" required=""/>
-                        </div>
-                        <div class="input-style input-style-2 input-required">
-                            <span class="color-highlight">Date Of Birth</span>
-                            <em>(required)</em>
-                            <input class="form-control" type="date" placeholder="" required=""/>
-                        </div>
-                        <div class="input-style input-style-2 has-icon input-required">
-                            <span class="color-highlight input-style-1-inactive">Marital Status </span>
-                            <em>(required)</em>
-                            <select class="form-control" required="">
-                                <option value="" disabled="" selected="">Select Status</option>
-                                <option value="Single">Single</option>
-                                <option value="Married">Married</option>
-                            </select>
-                        </div>
-                        <div class="input-style input-style-2 input-required">
-                            <span class="color-highlight">Blood Group</span>
-                            <em>(required)</em>
-                            <input class="form-control" type="text" placeholder="" required=""/>
-                        </div>
-                        <div class="input-style input-style-2 input-required">
-                            <span class="color-highlight">CNIC No</span>
-                            <em>(required)</em>
-                            <input class="form-control" type="text" placeholder="" required=""/>
-                        </div>
-                        <div class="input-style input-style-2 input-required">
-                            <span class="color-highlight">Email</span>
-                            <em>(required)</em>
-                            <input class="form-control" type="email" placeholder="" required=""/>
-                        </div>
-                        <div class="input-style input-style-2 input-required">
-                            <span class="color-highlight">Phone Number</span>
-                            <em>(required)</em>
-                            <input class="form-control" type="tel" placeholder="" />
-                        </div>
-                        <div class="input-style input-style-2 input-required">
-                            <span>Address</span>
-                            <em>(required)</em>
-                            <textarea class="form-control" placeholder=""></textarea>
-                        </div>
-                        <p class="font-400 mb-1 mb-n0">Attach Picture :</p>
-                        <input type="file" class="form-control rounded-s" >
-                        <br>
-                        <div class="input-style input-style-2 input-required">
-                            <button class="form-control btn btn-m btn-full rounded-xl text-uppercase font-900 shadow-s bg-blue2-dark" id="sort">Update</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="footer card card-style">
-                    <div class="card-center ml-3" style=" z-index: 9999;">
-                        <a href="http://www.interactivegrp.com/" target="_blank"><img src="images/interactive_logo.png" style="height: 62px;"></a>
-                    </div>
-                    <!--  -->
-                    <div class="card-center mr-3" style="">
-                        <a href="#" class="back-to-top float-right icon icon-xs rounded-sm shadow-l bg-dark1-light"><i class="fa fa-angle-up"></i></a>
-                    </div>
-                    <br>
-                    <br>
-                </div>
-            </div>
-            <div id="menu-sidebar-left-1" class="bg-white menu menu-box-left" data-menu-width="320">
-                <div class="d-flex">
-                    <a href="#" class="flex-fill icon icon-m text-center color-facebook border-bottom"></a>
-                    <a href="#" class="flex-fill icon icon-m text-center color-twitter border-bottom"></a>
-                    <a href="#" class="flex-fill icon icon-m text-center color-instagram border-bottom"></a>
-                    <a href="#" class="flex-fill icon icon-m text-center color-whatsapp border-bottom"></a>
-                    <a href="#" class="flex-fill icon icon-m text-center color-linkedin border-bottom border-right"></a>
-                    <a href="#" class="close-menu flex-fill icon icon-m text-center color-red2-dark border-bottom"><i class="fa font-12 fa-times"></i></a>
-                </div>
-                <div class="pl-3 pr-3 pt-3 mt-4 mb-2">
-                    <div class="d-flex">
-                        <div class="mr-3">
-                            <img src="images/user-dummy.jpg" width="43" />
-                            <i class="fa fa-check-circle color-green2-dark float-right font-13 mt-44 mr-1"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h1 class="font-22 font-700 mb-0">Mr.Ali </h1>
-                                <p class="font-10">
-                                    <strong class="color-theme pl-2 pr-1">Gender</strong>Male <br>
-                                    <strong class="color-theme pl-2 pr-1">Contact</strong>03311-1234567<br>
-                                    <strong class="color-theme pl-2 pr-1">Age</strong>31 Years<br>
-                                    <strong class="color-theme pl-2 pr-1">Blood Group</strong>O+
-                                </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="mr-3 ml-3 mt-4">
-                    <span class="text-uppercase font-900 font-11 opacity-30">ACOUNTS</span>
-                    <div class="list-group list-custom-small list-icon-0">
-                        <a href="#">
-                            <i class="fab font-14 fa fa-user color-yellow1-dark"></i>
-                            <span>Profile</span>
-                        </a>
-                        <a href="#">
-                            <i class="fab font-14 fas fa-sign-out-alt color-blue2-dark"></i>
-                            <span>Logout</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
+<script language="javascript" type="text/javascript" src="testheader.txt"></script>
+<div class="card card-style">
+    <div class="content mb-0">
+        <h3>Edit Demographics</h3>
+        <p>Personal Details</p>
+        <div class="input-style input-style-2 has-icon input-required">
+            <span class="color-highlight input-style-1-inactive">Gender </span>
+            <em>(required)</em>
+            <select class="form-control" required="">
+                <option value="" disabled="" selected="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
         </div>
-        <script type="text/javascript" src="scripts/jquery.js"></script>
-        <script type="text/javascript" src="scripts/bootstrap.min.js"></script>
-        <script type="text/javascript" src="scripts/custom.js"></script>
-        <script type="text/javascript" src="scripts/main1.js"></script>
-    </body>
-</html>
+        <div class="input-style input-style-2 input-required">
+            <span class="color-highlight">First Name</span>
+            <em>(required)</em>
+            <input class="form-control" type="text" placeholder="" required=""/>
+        </div>
+        <div class="input-style input-style-2 input-required">
+            <span class="color-highlight">Middle Name</span>
+            <em>(required)</em>
+            <input class="form-control" type="text" placeholder="" required=""/>
+        </div>
+        <div class="input-style input-style-2 input-required">
+            <span class="color-highlight">Last Name</span>
+            <em>(required)</em>
+            <input class="form-control" type="text" placeholder="" required=""/>
+        </div>
+        <div class="input-style input-style-2 input-required">
+            <span class="color-highlight">Date Of Birth</span>
+            <em>(required)</em>
+            <input class="form-control" type="date" placeholder="" required=""/>
+        </div>
+        <div class="input-style input-style-2 has-icon input-required">
+            <span class="color-highlight input-style-1-inactive">Marital Status </span>
+            <em>(required)</em>
+            <select class="form-control" required="">
+                <option value="" disabled="" selected="">Select Status</option>
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+            </select>
+        </div>
+        <div class="input-style input-style-2 input-required">
+            <span class="color-highlight">Blood Group</span>
+            <em>(required)</em>
+            <input class="form-control" type="text" placeholder="" required=""/>
+        </div>
+        <div class="input-style input-style-2 input-required">
+            <span class="color-highlight">CNIC No</span>
+            <em>(required)</em>
+            <input class="form-control" type="text" placeholder="" required=""/>
+        </div>
+        <div class="input-style input-style-2 input-required">
+            <span class="color-highlight">Email</span>
+            <em>(required)</em>
+            <input class="form-control" type="email" placeholder="" required=""/>
+        </div>
+        <div class="input-style input-style-2 input-required">
+            <span class="color-highlight">Phone Number</span>
+            <em>(required)</em>
+            <input class="form-control" type="tel" placeholder="" />
+        </div>
+        <div class="input-style input-style-2 input-required">
+            <span>Address</span>
+            <em>(required)</em>
+            <textarea class="form-control" placeholder=""></textarea>
+        </div>
+        <p class="font-400 mb-1 mb-n0">Attach Picture :</p>
+        <input type="file" class="form-control rounded-s" >
+        <br>
+        <div class="input-style input-style-2 input-required">
+            <button class="form-control btn btn-m btn-full rounded-xl text-uppercase font-900 shadow-s bg-blue2-dark" id="sort">Update</button>
+        </div>
+    </div>
+</div>
+<script language="javascript" type="text/javascript" src="testfooter.txt"></script>
