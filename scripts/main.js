@@ -136,18 +136,44 @@ const addToHome = function()
 
 function checkAppOpenStat()
 {
+
+
+    // if (navigator.userAgent.indexOf("Win") != -1){ console.log("Windows OS"); }
+    // if (navigator.userAgent.indexOf("Mac") != -1) {console.log("Macintosh"); }
+    // if (navigator.userAgent.indexOf("Linux") != -1) {console.log("Linux OS"); }
+    // if (navigator.userAgent.indexOf("Android") != -1) {console.log("Android OS"); }
+    // if (navigator.userAgent.indexOf("like Mac") != -1) {console.log("iOS"); }
+
+    console.log("user agent => "+navigator.userAgent);
+    console.log("platform => "+navigator.platform);
+    console.log("get OS => "+getOS());
+
+    // for (let i = 0; i < navigator.userAgent.length; i++) 
+    // {
+    //     console.log(navigator.userAgent.indexOf(i));
+        
+    // }
+
+
+
+
+
     let displayMode = 'browser tab';
     console.log("standalone=>"+navigator.standalone);
     if (navigator.standalone) {
         displayMode = 'standalone-ios';
+        // alert("standalone-ios");
         
     }
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-        displayMode = 'standalone';
+    if (window.matchMedia('(display-mode: standalone)').matches) 
+    {
+        displayMode = 'standalone';        
+        // alert("standalone");
     }
     
     // Log launch display mode to analytics
     console.log('DISPLAY_MODE_LAUNCH:', displayMode);
+    // alert("display mode : "+displayMode);
     switch (displayMode) {
         case "browser tab":
         {
@@ -181,6 +207,31 @@ function checkAppOpenStat()
     // console.log();
 }
 //--add to home
+
+//OS Handling//
+function getOS() {
+    var userAgent = window.navigator.userAgent,
+        platform = window.navigator.platform,
+        macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+        windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+        iosPlatforms = ['iPhone', 'iPad', 'iPod'],
+        os = null;
+  
+    if (macosPlatforms.indexOf(platform) !== -1) {
+      os = 'Mac OS';
+    } else if (iosPlatforms.indexOf(platform) !== -1) {
+      os = 'iOS';
+    } else if (windowsPlatforms.indexOf(platform) !== -1) {
+      os = 'Windows';
+    } else if (/Android/.test(userAgent)) {
+      os = 'Android';
+    } else if (!os && /Linux/.test(platform)) {
+      os = 'Linux';
+    }
+  
+    return os;
+  }
+//--OS Handling--//
 
 const validateLogin = function (params) 
 {
@@ -241,8 +292,8 @@ async function login(userName, password)
             //     showLoader(false);
             //     // showMessage("Login successfull");
 
-                // window.sessionStorage.setItem("userName",userName);
-                // window.sessionStorage.setItem("password",password);
+            //     window.sessionStorage.setItem("userName",userName);
+            //     window.sessionStorage.setItem("password",password);
 
             //     window.location.replace("page1.html");
             // } 
@@ -265,8 +316,8 @@ async function login(userName, password)
 
             //conn check
             // await $.get("http://203.99.60.222:1700/IntellCareLite/checkGet", function(data, status){
-                const url=rootUrl+"checkGet";
-                console.log("complete url=> "+url);
+                // const url=rootUrl+"checkGet";
+                // console.log("complete url=> "+url);
                 // await $.get(rootUrl+"checkGet", function(data, status){
                 
                 //     console.log(`${data}`);
@@ -275,23 +326,64 @@ async function login(userName, password)
                 //check for internal connectivity of live ip
                 // 10.190.14.35
 
-                let promise = await fetch(url, 
+                // let promise = await fetch(url, 
+                //     {
+                //         method: "GET", // POST, PUT, DELETE, etc.
+                //         headers: 
+                //         {
+                //         // the content type header value is usually auto-set
+                //         // depending on the request body
+                //         "Content-Type": "text/plain;charset=UTF-8",
+                //         "Host": "203.99.60.222:1700",
+                //         // "Origin": "http://localhost:81"
+                //         "Origin": "https://admin.aldermin.com"
+                //         },
+                //         body: undefined, // string, FormData, Blob, BufferSource, or URLSearchParams
+                //         referrer: "about:client", // or "" to send no Referer header,
+                //         // or an url from the current origin
+                //         referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
+                //         mode: "no-cors", // same-origin, no-cors
+                //         credentials: "same-origin", // omit, include
+                //         cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached
+                //         redirect: "follow", // manual, error
+                //         integrity: "", // a hash, like "sha256-abcdef1234567890"
+                //         keepalive: false, // true
+                //         signal: undefined, // AbortController to abort request
+                //         window: window // null
+                //   })
+                //   .then(data => console.log(data));
+
+                //   console.log("response:: "+promise.json());
+
+
+
+
+                const url=rootUrl+"login";
+                console.log("complete url=> "+url);
+
+                  //post
+                  let promise = await fetch(url, 
                     {
-                        method: "GET", // POST, PUT, DELETE, etc.
+                        method: "POST", // POST, PUT, DELETE, etc.
                         headers: 
                         {
                         // the content type header value is usually auto-set
                         // depending on the request body
-                        "Content-Type": "text/plain;charset=UTF-8",
+                        "Content-Type": "application/json;charset=UTF-8",
                         "Host": "203.99.60.222:1700",
                         // "Origin": "http://localhost:81"
                         "Origin": "https://admin.aldermin.com"
                         },
-                        body: undefined, // string, FormData, Blob, BufferSource, or URLSearchParams
-                        referrer: "about:client", // or "" to send no Referer header,
+                        body: JSON.stringify(
+                                {
+                                    userName:userName,
+                                    password:password
+                                }
+                            ), // string, FormData, Blob, BufferSource, or URLSearchParams
+                        // referrer: "about:client", // or "" to send no Referer header,
                         // or an url from the current origin
-                        referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
-                        mode: "no-cors", // same-origin, no-cors
+                        // referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
+                        mode: "cors", // same-origin, no-cors
                         credentials: "same-origin", // omit, include
                         cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached
                         redirect: "follow", // manual, error
@@ -303,6 +395,15 @@ async function login(userName, password)
                   .then(data => console.log(data));
 
                   console.log("response:: "+promise.json());
+
+
+
+
+
+
+
+
+
 
             // jquery post
         //     await $.post(url, 
