@@ -10,12 +10,16 @@ const container = document.getElementById('container');
 const messageInd = document.getElementById('messageIndicator');
 const notification1 = document.getElementById('notification-1');
 const preLoader = document.getElementById('loader');
-//--objects--//
-
+//--//
 let lastInsertedId=0;
 var db;
 var request;
 let befInstalPrompt;
+// let isStandalone = false;
+// let isIOS = false;
+//--objects--//
+
+
 
 //window before install
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -97,27 +101,15 @@ async function importLibraries()
 //add to home
 const addToHome = function()
 {
-
-
-    // alert("adding to home");
-    console.log("adding to home");
-    // $('#notification-1').toast('show');
-    // $('#notification-1').toast('show');
-
-    // notification1.toast('show');
-    // $('#notification-1').toast('show');
-
-    if (navigator.platform == "iPhone" || navigator.platform == "iPad" || navigator.platform == "iPod")
+    if (checkIfIOS()) 
     {
-        console.log("IOS detected");
-        // showMessage("IOS DETECTED");
-        // alert("IOS detected");
-    }
-     else 
-     {
-        // showMessage("Other Than IOS");
-        console.log("Other than IOS");
+        console.log("showing modal ios");
 
+        document.getElementById('btn_iosModal').click();
+        
+    }
+    else{
+        console.log("showing modal");
         befInstalPrompt.prompt();
         befInstalPrompt.userChoice.then((choiceResult) => {
             if (choiceResult.outcome=='accepted') 
@@ -129,86 +121,70 @@ const addToHome = function()
             }
         });
     }
-
-
     
 }
 
 function checkAppOpenStat()
 {
-
-
-    // if (navigator.userAgent.indexOf("Win") != -1){ console.log("Windows OS"); }
-    // if (navigator.userAgent.indexOf("Mac") != -1) {console.log("Macintosh"); }
-    // if (navigator.userAgent.indexOf("Linux") != -1) {console.log("Linux OS"); }
-    // if (navigator.userAgent.indexOf("Android") != -1) {console.log("Android OS"); }
-    // if (navigator.userAgent.indexOf("like Mac") != -1) {console.log("iOS"); }
-
-    console.log("user agent => "+navigator.userAgent);
-    console.log("platform => "+navigator.platform);
-    console.log("get OS => "+getOS());
-
-    // for (let i = 0; i < navigator.userAgent.length; i++) 
-    // {
-    //     console.log(navigator.userAgent.indexOf(i));
-        
-    // }
-
-
-
-
-
-    let displayMode = 'browser tab';
-    console.log("standalone=>"+navigator.standalone);
-    if (navigator.standalone) {
-        displayMode = 'standalone-ios';
-        // alert("standalone-ios");
-        
-    }
-    if (window.matchMedia('(display-mode: standalone)').matches) 
+    if (checkIsStandAlone()) 
     {
-        displayMode = 'standalone';        
-        // alert("standalone");
+        btn_addToHome.style.visibility = "hidden";
     }
-    
-    // Log launch display mode to analytics
-    console.log('DISPLAY_MODE_LAUNCH:', displayMode);
-    // alert("display mode : "+displayMode);
-    switch (displayMode) {
-        case "browser tab":
-        {
-            btn_addToHome.style.visibility = "visible";
-            // showMessage("Browser Tab");
-            // console.log("Browser Tab");            
-            break;
-        }
-        case "standalone":
-        {            
-            btn_addToHome.style.visibility = "hidden";
-            // showMessage("stand alone");
-            // console.log("stand alone");            
-            break;
-        }        
-        case "standalone-ios":
-        {            
-            btn_addToHome.style.visibility = "hidden";
-            // showMessage("stand alone ios");
-            // console.log("stand alone");            
-            break;
-        }
-    
-        default:
-        {
-            btn_addToHome.style.visibility = "visible";
-            // showMessage("Browser Tab");
-            break;
-        }
+    else{
+        btn_addToHome.style.visibility = "visible";
+
     }
-    // console.log();
 }
+
+function checkIsStandAlone() 
+{
+    let isStandalone = false;
+    if (navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
+        console.log('standalone');      
+        isStandalone = true;
+    }
+    else{
+        console.log('browser tab');
+        isStandalone = false;
+    }
+
+    
+    return isStandalone;
+}
+
+
 //--add to home
 
 //OS Handling//
+function checkIfIOS() 
+{
+    var userAgent = window.navigator.userAgent,
+        platform = window.navigator.platform,
+        macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+        windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+        iosPlatforms = ['iPhone', 'iPad', 'iPod'];
+
+    let ifIOS = false;
+
+    if (macosPlatforms.indexOf(platform) !== -1) {
+        ifIOS = true;
+        console.log('Mac OS');
+    } else if (iosPlatforms.indexOf(platform) !== -1) {
+        ifIOS = true;
+        console.log('iOS');
+    } else if (windowsPlatforms.indexOf(platform) !== -1) {
+        ifIOS = false;
+        console.log('Windows');
+    } else if (/Android/.test(userAgent)) {
+        ifIOS = false;
+        console.log('Android');
+    } else if (!os && /Linux/.test(platform)) {
+        ifIOS = false;
+        console.log('Linux');
+    }
+
+    return ifIOS;
+}
 function getOS() {
     var userAgent = window.navigator.userAgent,
         platform = window.navigator.platform,
