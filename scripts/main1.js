@@ -1,6 +1,7 @@
 // import Dexie from 'dexie';
 
-let rootUrl="https://www.pakfirst.org/intellcarelite_p/api/";
+// let rootUrl="https://www.pakfirst.org/intellcarelite_p/api/";
+let rootUrl="https://203.99.60.222:1701/IntellCareLite/";//{live}
 //objects//
 const container2 = document.getElementById('container2');
 const preLoader = document.getElementById('loader');
@@ -46,9 +47,9 @@ window.addEventListener('load', e=>{
 });
 
 //dom initialize
-const initialize = function(){    
+const initialize = async function(){    
     //
-    importLibraries();
+    await importLibraries();
     //--//
 
 
@@ -57,7 +58,7 @@ const initialize = function(){
     
     // btn_addToHome2.addEventListener('click',addToHome2);
 
-    fetchOfflineActivities();
+    // fetchOfflineActivities();
     // populaateFromSession();
     // btn_login.addEventListener('click',validateLogin);
     // indexDbReadAll();
@@ -66,6 +67,7 @@ const initialize = function(){
 
 async function importLibraries()
 {
+    console.log("importing libraries.....");
     //jquery import
     var jQueryScript = document.createElement('script');  
     jQueryScript.setAttribute('src','https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js');
@@ -135,75 +137,173 @@ const addToHome2 = function()
 ///////////////OFLINE Handling//////////////////////
 function fetchOfflineActivities()
 {
-    const bulkArrAct=[
-        {
-            "id": 5,
-            "name": "MY VITALS",
-            "actions": [
+
+    const bulkArrAct = JSON.parse(`{
+            "activities": [
                 {
                     "id": 5,
-                    "activityId": 5,
-                    "name": "View Vitals",
-                    "contents": null
+                    "name": "My Vitals",
+                    "actions": [
+                        {
+                            "id": 6,
+                            "activityId": 5,
+                            "name": "Previous Vitals",
+                            "contents": null
+                        },
+                        {
+                            "id": 5,
+                            "activityId": 5,
+                            "name": "View Vitals",
+                            "contents": null
+                        }
+                    ]
                 },
                 {
                     "id": 6,
-                    "activityId": 5,
-                    "name": "PREVIOUS VITALS",
-                    "contents": null
-                }
-            ]
-        },
-        {
-            "id": 7,
-            "name": "Demographics",
-            "actions": [
-                {
-                    "id": 8,
-                    "activityId": 7,
-                    "name": "View Demographics",
-                    "contents": null
+                    "name": "Medication",
+                    "actions": [
+                        {
+                            "id": 7,
+                            "activityId": 6,
+                            "name": "Previous Medication",
+                            "contents": null
+                        }
+                    ]
                 },
-                {
-                    "id": 9,
-                    "activityId": 7,
-                    "name": "Update Demographics",
-                    "contents": null
-                }
-            ]
-        },
-        {
-            "id": 6,
-            "name": "MEDICATION",
-            "actions": [
                 {
                     "id": 7,
-                    "activityId": 6,
-                    "name": "PREVIOUS MEDICATION",
-                    "contents": null
-                }
-            ]
-        },
-        {
-            "id": 4,
-            "name": "APPOINTMENT BOOKING",
-            "actions": [
-                {
-                    "id": 4,
-                    "activityId": 4,
-                    "name": "APPOINTMENT_ACKNOWLEDGE",
-                    "contents": null
+                    "name": "Demographics",
+                    "actions": [
+                        {
+                            "id": 8,
+                            "activityId": 7,
+                            "name": "View Demographics",
+                            "contents": null
+                        },
+                        {
+                            "id": 9,
+                            "activityId": 7,
+                            "name": "Update Demographics",
+                            "contents": null
+                        }
+                    ]
                 },
                 {
-                    "id": 10,
-                    "activityId": 4,
-                    "name": "VIEW APPOINTMENT",
-                    "contents": null
+                    "id": 4,
+                    "name": "Appointment Booking",
+                    "actions": [
+                        {
+                            "id": 10,
+                            "activityId": 4,
+                            "name": "View Appointment",
+                            "contents": null
+                        },
+                        {
+                            "id": 4,
+                            "activityId": 4,
+                            "name": "Appointment Acknowledge",
+                            "contents": null
+                        }
+                    ]
+                },
+                {
+                    "id": 8,
+                    "name": "Patient Attachments",
+                    "actions": [
+                        {
+                            "id": 11,
+                            "activityId": 8,
+                            "name": "View Attachments",
+                            "contents": null
+                        }
+                    ]
                 }
             ]
-        }
-    ];
-    container2.innerHTML = bulkArrAct.map(mapAct2).join('\n\n');
+        }`);
+
+
+    // const bulkArrAct=[
+    //     {
+    //         "id": 5,
+    //         "name": "MY VITALS",
+    //         "actions": [
+    //             {
+    //                 "id": 5,
+    //                 "activityId": 5,
+    //                 "name": "View Vitals",
+    //                 "contents": null
+    //             },
+    //             {
+    //                 "id": 6,
+    //                 "activityId": 5,
+    //                 "name": "PREVIOUS VITALS",
+    //                 "contents": null
+    //             }
+    //         ]
+    //     },
+    //     {
+    //         "id": 7,
+    //         "name": "Demographics",
+    //         "actions": [
+    //             {
+    //                 "id": 8,
+    //                 "activityId": 7,
+    //                 "name": "View Demographics",
+    //                 "contents": null
+    //             },
+    //             {
+    //                 "id": 9,
+    //                 "activityId": 7,
+    //                 "name": "Update Demographics",
+    //                 "contents": null
+    //             }
+    //         ]
+    //     },
+    //     {
+    //         "id": 6,
+    //         "name": "MEDICATION",
+    //         "actions": [
+    //             {
+    //                 "id": 7,
+    //                 "activityId": 6,
+    //                 "name": "PREVIOUS MEDICATION",
+    //                 "contents": null
+    //             }
+    //         ]
+    //     },
+    //     {
+    //         "id": 4,
+    //         "name": "APPOINTMENT BOOKING",
+    //         "actions": [
+    //             {
+    //                 "id": 4,
+    //                 "activityId": 4,
+    //                 "name": "APPOINTMENT_ACKNOWLEDGE",
+    //                 "contents": null
+    //             },
+    //             {
+    //                 "id": 10,
+    //                 "activityId": 4,
+    //                 "name": "VIEW APPOINTMENT",
+    //                 "contents": null
+    //             }
+    //         ]
+    //     }
+    // ];
+
+    container2.innerHTML = bulkArrAct.activities.map(mapAct2).join('\n\n');
+
+    //--------------------------------------------------------//
+    // let bulkArrAct = db.activities.toArray();
+
+    // console.log("activities=>"+bulkArrAct);
+
+
+    // container2.innerHTML = bulkArrAct.map(mapAct2).join('\n\n');
+
+    //-------------------------------------------------------//
+
+
     // db.activities.bulkPut(bulkArrAct)
     // .then(function(){
     //     // indexDbReadAll();
@@ -246,19 +346,28 @@ function fetchOfflineActivities()
 }
 function indexDbInitp2()
 {
+    //db open
     let dbname = "icalite_index";
     let dbversion=1;
 
     db = new Dexie(dbname);
-    db.version(dbversion);
-    db.open()
-    .then(function(){
-        fetchOfflineActivities();
-    })
-    .catch(function(err)
-    {
-        console.log("unable to open db");
+    db.version(dbversion).stores(
+        {   person: "personId, name, mrNo, gender, age, number, bloodGroup, firstName, middleName, lastname, dob, maritalStatus, cnic, email, streetAddress, district, province, city, country, base64EncodedPicture",
+            activities: "id, name, actions"
+        }
+        );
+    db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
     });
+
+    let bulkArrAct = db.activities.toArray();
+
+    console.log("activities=>"+bulkArrAct);
+
+    // fetchOfflineActivities();
+
+
+//--//
     // db.version(dbversion).stores({
     //     user: 'id',
     //     activities: 'activityLogId'
@@ -507,7 +616,7 @@ function mapAct2(activities)
 }
 function mapAction2(actions)
 {
-    if (actions.name == "APPOINTMENT_ACKNOWLEDGE") 
+    if (actions.id == "4") 
     {
         return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
@@ -519,7 +628,7 @@ function mapAction2(actions)
                 </div>
             </div>`;
     }
-    else if (actions.name == "VIEW APPOINTMENT") 
+    else if (actions.id == "10") 
     {
         return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
@@ -531,7 +640,7 @@ function mapAction2(actions)
                 </div>
             </div>`;
     }
-    else if (actions.name == "View Vitals") 
+    else if (actions.id == "5") 
     {
         return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
@@ -543,11 +652,11 @@ function mapAction2(actions)
                 </div>
             </div>`;
     }    
-    else if (actions.name == "PREVIOUS VITALS") 
+    else if (actions.id == "6") //previos vital
     {
         return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
-                    <a href="#" >
+                    <a href="#" onclick="goToVitalPrevious()">
                         <i class="fab font-13 fa fa-user color-blue2-dark"></i>
                         <span>${actions.name}</span>
                         <i class="fa fa-angle-right"></i>
@@ -555,7 +664,7 @@ function mapAction2(actions)
                 </div>
             </div>`;
     }
-    else if (actions.name == "View Demographics") 
+    else if (actions.id == "8") 
     {
         return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
@@ -567,7 +676,7 @@ function mapAction2(actions)
                 </div>
             </div>`;
     }
-    else if (actions.name == "Update Demographics") 
+    else if (actions.id == "9") 
     {
         return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
@@ -606,10 +715,17 @@ function goToAppointmentNew()
     console.log("going to next view");
     window.location.href = "new_appointment.html";
 }
+function goToVitalPrevious()
+{
+    console.log("going to next view");
+    // window.location.href = "list_vitals.html";
+}
 function goToVitalView()
 {
     console.log("going to next view");
     window.location.href = "list_vitals.html";
+
+    
 }
 function goToDemographView()
 {
@@ -626,6 +742,131 @@ function goToDemographUpdate()
 //     console.log("going to next view");
 //     window.location.href = "list_vitals.html";
 // }
+
+
+function checkFunction()
+{
+    var sPath = window.location.pathname;
+    //var sPage = sPath.substring(sPath.lastIndexOf('\\') + 1);
+    var sPage = sPath.substring(sPath.lastIndexOf('/') + 1);
+    // alert(sPage);
+
+    if(sPage == "page1.html")
+    {
+        // alert("getting vitals");
+
+        // fetchVitals();
+        fetchOfflineActivities();
+
+    }
+    else if(sPage == "list_vitals.html")
+    {
+        // alert("getting vitals");
+
+        fetchVitals();
+
+
+    }
+    else if(sPage == "view_demographics.html")
+    {
+        alert("getting demograp");
+    }
+
+}
+
+//DATA HANDLING
+async function fetchVitals()
+{
+
+    try {
+
+
+        // showMessage("processing. please wait.");
+        // showLoader(true);
+
+        const url=rootUrl+"viewVitals";
+        console.log("complete url=> "+url);
+
+        let personId="38995";
+        let actionId="5";
+
+        //   //post
+        await fetch(url, 
+        {
+            method: "POST", // POST, PUT, DELETE, etc.
+            headers: 
+            {
+            // the content type header value is usually auto-set
+            // depending on the request body
+            "Content-Type": "application/json;charset=UTF-8",
+            "Host": "203.99.60.222:1701",
+            // "Origin": "http://localhost:81"
+            "Origin": "https://admin.aldermin.com"
+            },
+            body: JSON.stringify(
+                    {
+                        personId:personId,
+                        actionId:actionId
+                    }
+                ), // string, FormData, Blob, BufferSource, or URLSearchParams
+            // referrer: "about:client", // or "" to send no Referer header,
+            // or an url from the current origin
+            // referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
+            mode: "cors", // same-origin, no-cors
+            credentials: "same-origin", // omit, include
+            cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached
+            redirect: "follow", // manual, error
+            integrity: "", // a hash, like "sha256-abcdef1234567890"
+            keepalive: false, // true
+            signal: undefined, // AbortController to abort request
+            window: window // null
+        })
+        .then(response => 
+        {
+            if (!response.ok) {
+                console.log("response=>"+response.json())
+                    .catch(() => {
+                        // Couldn't parse the JSON
+                        console.log("throwing err");
+                        throw new Error(response.status);
+                    })
+                    .then(({message}) => {
+                        // Got valid JSON with error response, use it
+                        console.log("throwing err with msg");
+                        throw new Error(message || response.status);
+                    });
+            }
+            // Successful response, parse the JSON and return the data
+            console.log(response.json());
+            
+            // handleLoginResponse(response);
+        })
+        .catch(function(error) {
+            console.log("erro handlingr");
+            console.log(error);
+        });
+
+            //   console.log(promise.json());
+        
+    } catch (error) 
+    {
+        // showLoader(false);
+        // console.log("error=> "+error);
+        // console.log("error=> "+error.name);
+        // console.log("error=> "+error.message);
+        // console.log("error=> "+error.stack);
+        // showMessage("Error in data fetching => "+error.value);
+        // loginOffline(userName, password);
+        // fetchOfflineActivities();
+        // indexDbReadAll();
+
+        //dummy login
+
+        
+    }
+
+}
+
 
 function showLoader(show)
 {
