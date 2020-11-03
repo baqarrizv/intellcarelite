@@ -11718,7 +11718,7 @@ p {
     text-align: center;
     line-height: 49px;
     font-size: 12px;
-    color: #1f1f1f;
+    color: #ffffff;
     border: none;
     -webkit-appearance: none;
     appearance: none;
@@ -15258,7 +15258,7 @@ code {
 }
 
 .tab-content {
-    display: none;
+    /*display: none;*/
     overflow: hidden;
     position: relative;
     -webkit-transform: translate3d(0,0,0)
@@ -15392,7 +15392,8 @@ code {
 }
 
 .footer {
-    padding: 20px 30px 10px;
+    /*padding: 20px 30px 10px;*/
+    padding: 1px 30px 10px;
     margin-bottom: 0!important;
     z-index: 11
 }
