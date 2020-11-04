@@ -458,7 +458,7 @@ async function fetchVitals()
 
 }
 
-function handleLoginResponse(response)
+async function handleLoginResponse(response)
 {
     console.log("handleLoginResponse---------start-----------");
     // console.log("response=> "+(response));
@@ -481,7 +481,7 @@ function handleLoginResponse(response)
 
 //db put//
 
-    db.person.bulkPut(JSON.parse("["+ JSON.stringify(response.person) +"]"))
+    await db.person.bulkPut(JSON.parse("["+ JSON.stringify(response.person) +"]"))
     .then(function(lastKey){
 
         window.sessionStorage.setItem("personId",response.person.personId);
@@ -499,7 +499,7 @@ function handleLoginResponse(response)
     });
 
 ////////////activities////////////////////////////////
-    db.activities.bulkPut(response.activities)
+    await db.activities.bulkPut(response.activities)
     .then(function(lastKey){
         console.log("activities inserted");
 
@@ -507,7 +507,7 @@ function handleLoginResponse(response)
         // window.sessionStorage.setItem("name",response.person.name);
         // window.sessionStorage.setItem("mrNo",response.person.mrNo);
 
-        window.location.replace("page1.html");
+        window.location.replace("dash_patient.html");
         // window.replace();
     })
     .catch(Dexie.bulkError, function(e) 
@@ -559,6 +559,7 @@ function mapActivities(activities)
     //     </div>
     //     `;
 }
+// console.log("");
 function mapAction(actions)
 {
     if (actions.id == "4") 
@@ -566,18 +567,6 @@ function mapAction(actions)
         return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
                     <a href="#" onclick="goToAppointmentNew()">
-                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
-                        <span>${actions.name}</span>
-                        <i class="fa fa-angle-right"></i>
-                    </a>
-                </div>
-            </div>`;
-    }
-    else if (actions.id == "10") 
-    {
-        return `<div class="collapse" id="collapse-${actions.activityId}">
-                <div class="list-group list-custom-small pl-3">
-                    <a href="#" onclick="goToAppointmentView()">
                         <i class="fab font-13 fa fa-user color-blue2-dark"></i>
                         <span>${actions.name}</span>
                         <i class="fa fa-angle-right"></i>
@@ -601,7 +590,19 @@ function mapAction(actions)
     {
         return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
-                    <a href="#" onclick="goToVitalPrevious()">
+                    <a href="#" onclick="goToVitalNew()">
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${actions.name}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div>`;
+    }
+    else if (actions.id == "7") //medication
+    {
+        return `<div class="collapse" id="collapse-${actions.activityId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#" onclick="goToMedicationView()">
                         <i class="fab font-13 fa fa-user color-blue2-dark"></i>
                         <span>${actions.name}</span>
                         <i class="fa fa-angle-right"></i>
@@ -626,6 +627,30 @@ function mapAction(actions)
         return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
                     <a href="#" onclick="goToDemographUpdate()">
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${actions.name}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div>`;
+    }
+    else if (actions.id == "10") 
+    {
+        return `<div class="collapse" id="collapse-${actions.activityId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#" onclick="goToAppointmentView()">
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${actions.name}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div>`;
+    }
+    else if (actions.id == "11") 
+    {
+        return `<div class="collapse" id="collapse-${actions.activityId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#" onclick="goToReportsView()">
                         <i class="fab font-13 fa fa-user color-blue2-dark"></i>
                         <span>${actions.name}</span>
                         <i class="fa fa-angle-right"></i>
@@ -772,7 +797,7 @@ function fetchOfflineActivities(container2)
                         {
                             "id": 6,
                             "activityId": 5,
-                            "name": "Previous Vitals",
+                            "name": "Add Vitals",
                             "contents": null
                         },
                         {
@@ -785,7 +810,7 @@ function fetchOfflineActivities(container2)
                 },
                 {
                     "id": 6,
-                    "name": "Medication",
+                    "name": "My Medication",
                     "actions": [
                         {
                             "id": 7,
@@ -797,7 +822,7 @@ function fetchOfflineActivities(container2)
                 },
                 {
                     "id": 7,
-                    "name": "Demographics",
+                    "name": "My Demographics",
                     "actions": [
                         {
                             "id": 8,
@@ -815,7 +840,7 @@ function fetchOfflineActivities(container2)
                 },
                 {
                     "id": 4,
-                    "name": "Appointment Booking",
+                    "name": "My Appointments",
                     "actions": [
                         {
                             "id": 10,
@@ -826,14 +851,14 @@ function fetchOfflineActivities(container2)
                         {
                             "id": 4,
                             "activityId": 4,
-                            "name": "Appointment Acknowledge",
+                            "name": "Add Appointment",
                             "contents": null
                         }
                     ]
                 },
                 {
                     "id": 8,
-                    "name": "Patient Attachments",
+                    "name": "My Reports",
                     "actions": [
                         {
                             "id": 11,
@@ -848,101 +873,10 @@ function fetchOfflineActivities(container2)
 
     container2.innerHTML = bulkArrAct.activities.map(mapActivities).join('\n\n');
 
-    //--------------------------------------------------------//
-    // let bulkArrAct = db.activities.toArray();
-
-    // console.log("activities=>"+bulkArrAct);
-
-
-    // container2.innerHTML = bulkArrAct.map(mapAct2).join('\n\n');
-
-    //-------------------------------------------------------//
-
-
-    // db.activities.bulkPut(bulkArrAct)
-    // .then(function(){
-    //     // indexDbReadAll();
-    // })
-    // .catch(Dexie.bulkError, function(error) {
-    // alert ("actvities Ooops: " + error);
-    // });
-
-
-
-    // indexDbInit();
-
-    // console.log("reading all records");
-    //  db.table("activities").toArray()
-    //  .then(function (data)
-    //   {
-    //     container2.innerHTML = data.map(mapAct2).join('\n\n');
-    //      console.log(data);
-    //     }
-    //  );
-    // container.innerHTML = bulkArrAct.map(mapAct).join('\n\n');
-    // container2.innerHTML = bulkArrAct.map(mapAct2).join('\n\n');
-
-    // indexDbReadAll();
-
-    // switch(key)
-    // {
-    //     case "login":
-    //     {
-    //         showMessage("fetch from offline okok");
-    //         break;
-    //     }
-
-    //     default:
-    //         {
-    //             showMessage("incorrect key for offline fetch");
-    //             break;
-    //         }
-    // }
-}
-
-async function fetchPersonDetails()
-{
-    // if (userName == "interactive@ppl.com" && password=="987") 
-    // {
-
-        // db.person.where({name: "Dr. INTERACTIVE Group", personId: "38995"}).first(friend => {
-
     
-        
-    // } else {
-        
-    //     console.log("no user found");
-    //     showMessage("No User Found");
-
-    // }
 }
 
-// function fetchOfflineActivities()
-// {
-//     console.log("reading all records");
-//      db.table("activities").toArray()
-//      .then(function (data)
-//       {
-//         container.innerHTML = data.map(mapAct).join('\n\n');
-//          console.log(data);
-//         }
-//      );
-//     // indexDbReadAll();
-//     // switch(key)
-//     // {
-//     //     case "login":
-//     //     {
-//     //         showMessage("fetch from offline okok");
-//     //         break;
-//     //     }
-
-//     //     default:
-//     //         {
-//     //             showMessage("incorrect key for offline fetch");
-//     //             break;
-//     //         }
-//     // }
-// }
+//dexie initialization
 function indexDbInit()
 {
     let dbname = "icalite_index";
@@ -1165,7 +1099,7 @@ function initializeView()
 
         populateDrawerData();
 
-        if(sPage == "page1.html")
+        if(sPage == "dash_patient.html")
         {
             // alert("getting vitals");
     
@@ -1184,7 +1118,7 @@ function initializeView()
             // btn_back.addEve
     
         }
-        else if(sPage == "list_vitals.html")
+        else if(sPage == "vitals_view.html")
         {
             // alert("getting vitals");
     
@@ -1203,7 +1137,7 @@ function initializeView()
     
     
         }
-        else if(sPage == "view_demographics.html")
+        else if(sPage == "demogrp_view.html")
         {
             alert("getting demograp");
         }
@@ -1227,43 +1161,48 @@ function initializeView()
 
 function goToAppointmentView()
 {
-    console.log("going to next view");
+    // console.log("going to next view");
     // window.location.href = "view_appointment.html";
-    window.location.href = "list_appointment.html";
+    window.location.href = "appnt_view.html";
 }
 
 function goToAppointmentNew()
 {
-    console.log("going to next view");
-    window.location.href = "new_appointment.html";
+    // console.log("going to next view");
+    window.location.href = "appnt_new.html";
 }
-function goToVitalPrevious()
+function goToVitalNew()
 {
-    console.log("going to next view");
-    // window.location.href = "list_vitals.html";
+    // console.log("going to next view");
+    window.location.href = "vitals_add.html";
 }
 function goToVitalView()
 {
     console.log("going to next view");
-    window.location.href = "list_vitals.html";
+    window.location.href = "vitals_view.html";
 
     
 }
 function goToDemographView()
 {
-    console.log("going to next view");
-    window.location.href = "view_demographics.html";
+    // console.log("going to next view");
+    window.location.href = "demogrp_view.html";
 }
 function goToDemographUpdate()
 {
-    console.log("going to next view");
-    window.location.href = "edit_demographics.html";
+    // console.log("going to next view");
+    window.location.href = "demogrp_update.html";
 }
-// function goToVitalList()
-// {
-//     console.log("going to next view");
-//     window.location.href = "list_vitals.html";
-// }
+function goToMedicationView()
+{
+    // console.log("going to next view");
+    window.location.href = "medi_view.html";
+}
+function goToReportsView()
+{
+    // console.log("going to next view");
+    window.location.href = "report_view.html";
+}
 //-------------------------------VIEW HANDLING----------------------------//
 
 
