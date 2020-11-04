@@ -4,7 +4,6 @@ let rootUrl="https://203.99.60.222:1701/IntellCareLite/";//{live}
 //objects//
 const inp_username = document.getElementById('inp_uname');
 const inp_password = document.getElementById('inp_pass');
-const btn_login = document.getElementById('btn_login');
 const btn_addToHome = document.getElementById('btn_addToHome');
 const container = document.getElementById('container');
 const messageInd = document.getElementById('messageIndicator');
@@ -62,7 +61,7 @@ const initialize = async function(){
     //--//
 
     // $('#notification-1').toast('show');
-    btn_login.addEventListener('click',validateLogin);
+    
     // btn_addToHome.addEventListener('click',addToHome);
     // btn_addToHome.addEventListener('click',addToHome);
     // btn_login.addEventListener('click',addToHome());
@@ -367,6 +366,98 @@ async function login(userName, password)
 
 }
 
+async function fetchVitals()
+{
+
+    try {
+
+
+        // showMessage("processing. please wait.");
+        // showLoader(true);
+
+        const url=rootUrl+"viewVitals";
+        console.log("complete url=> "+url);
+
+        let personId="38995";
+        let actionId="5";
+
+        //   //post
+        await fetch(url, 
+        {
+            method: "POST", // POST, PUT, DELETE, etc.
+            headers: 
+            {
+            // the content type header value is usually auto-set
+            // depending on the request body
+            "Content-Type": "application/json;charset=UTF-8",
+            "Host": "203.99.60.222:1701",
+            // "Origin": "http://localhost:81"
+            "Origin": "https://admin.aldermin.com"
+            },
+            body: JSON.stringify(
+                    {
+                        personId:personId,
+                        actionId:actionId
+                    }
+                ), // string, FormData, Blob, BufferSource, or URLSearchParams
+            // referrer: "about:client", // or "" to send no Referer header,
+            // or an url from the current origin
+            // referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
+            mode: "cors", // same-origin, no-cors
+            credentials: "same-origin", // omit, include
+            cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached
+            redirect: "follow", // manual, error
+            integrity: "", // a hash, like "sha256-abcdef1234567890"
+            keepalive: false, // true
+            signal: undefined, // AbortController to abort request
+            window: window // null
+        })
+        .then(response => 
+        {
+            if (!response.ok) {
+                console.log("response=>"+response.json())
+                    .catch(() => {
+                        // Couldn't parse the JSON
+                        console.log("throwing err");
+                        throw new Error(response.status);
+                    })
+                    .then(({message}) => {
+                        // Got valid JSON with error response, use it
+                        console.log("throwing err with msg");
+                        throw new Error(message || response.status);
+                    });
+            }
+            // Successful response, parse the JSON and return the data
+            console.log(response.json());
+            
+            // handleLoginResponse(response);
+        })
+        .catch(function(error) {
+            console.log("erro handlingr");
+            console.log(error);
+        });
+
+            //   console.log(promise.json());
+        
+    } catch (error) 
+    {
+        // showLoader(false);
+        // console.log("error=> "+error);
+        // console.log("error=> "+error.name);
+        // console.log("error=> "+error.message);
+        // console.log("error=> "+error.stack);
+        // showMessage("Error in data fetching => "+error.value);
+        // loginOffline(userName, password);
+        // fetchOfflineActivities();
+        // indexDbReadAll();
+
+        //dummy login
+
+        
+    }
+
+}
+
 function handleLoginResponse(response)
 {
     console.log("handleLoginResponse---------start-----------");
@@ -432,6 +523,197 @@ function handleLoginResponse(response)
     console.log("handleLoginResponse---------end-----------");
 }
 
+//mapping
+function mapActivities(activities)
+{
+
+    // indexDbAdd(user.id, user.email, user.pass);
+
+    console.log("mapping act 2");
+    return `<div class="list-group list-custom-small list-icon-0">
+                <a data-toggle="collapse" href="#collapse-${activities.id}">
+                    <i class="fa font-14 fa fa-user color-blue2-dark"></i>
+                    <span class="font-14">${activities.name}</span>
+                    <i class="fa fa-angle-down"></i>
+                </a>
+            </div>
+            `
+            +
+            activities.actions.map(mapAction).join("\n\n");
+            
+{/* <div class="collapse" id="collapse-${activities.activityLogId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#">
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${activities.contentName}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div> */}
+
+    // return `
+    // <div class="activities">            
+    //         <h4>${activities.activityLogId}</h4>
+    //         <h3>${activities.activityName}</h3>            
+    //         <p>${activities.contentName}</p>            
+    //     </div>
+    //     `;
+}
+function mapAction(actions)
+{
+    if (actions.id == "4") 
+    {
+        return `<div class="collapse" id="collapse-${actions.activityId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#" onclick="goToAppointmentNew()">
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${actions.name}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div>`;
+    }
+    else if (actions.id == "10") 
+    {
+        return `<div class="collapse" id="collapse-${actions.activityId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#" onclick="goToAppointmentView()">
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${actions.name}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div>`;
+    }
+    else if (actions.id == "5") 
+    {
+        return `<div class="collapse" id="collapse-${actions.activityId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#" onclick="goToVitalView()">
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${actions.name}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div>`;
+    }    
+    else if (actions.id == "6") //previos vital
+    {
+        return `<div class="collapse" id="collapse-${actions.activityId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#" onclick="goToVitalPrevious()">
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${actions.name}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div>`;
+    }
+    else if (actions.id == "8") 
+    {
+        return `<div class="collapse" id="collapse-${actions.activityId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#" onclick="goToDemographView()">
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${actions.name}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div>`;
+    }
+    else if (actions.id == "9") 
+    {
+        return `<div class="collapse" id="collapse-${actions.activityId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#" onclick="goToDemographUpdate()">
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${actions.name}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div>`;
+    }
+    else
+    {
+        return `<div class="collapse" id="collapse-${actions.activityId}">
+                <div class="list-group list-custom-small pl-3">
+                    <a href="#">
+                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <span>${actions.name}</span>
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                </div>
+            </div>`;
+    }
+    
+}
+
+//--//
+function populateDrawerData()
+{
+    
+    try {
+        // let person = fetchPersonDetails();
+
+
+        console.log("opening db");
+        let dbname = "icalite_index";
+        let dbversion=1;    
+        db = new Dexie(dbname);
+        db.version(dbversion).stores({person: "personId"});
+        db.open().catch (function (err) {
+            console.error('Failed to open db: ' + (err.stack || err));
+        });
+
+
+
+
+        console.log("fetching data from db");
+        db.person.get(38995, function(firstPerson)
+        {
+            console.log("fetching finished");
+
+            try {
+                let imageSrc = firstPerson.base64EncodedPicture;
+        
+                const imgv_avt = document.getElementById('img_avt');
+                imgv_avt.src = "data:img/png;base64, "+imageSrc;
+                
+            } catch (error)
+            {
+                console.log("No data found");
+            }
+
+
+            // console.log(JSON.stringify(firstPerson));
+            
+        })
+        .catch(error => {
+            console.error(error.stack || error);
+            console.log("fetching finished");
+        });
+        
+
+        
+
+        // let imageSrc = person.base64EncodedPicture;
+        // let imageSrc = person;
+        // console.log("source => "+imageSrc);
+
+        // const imgv_avt = document.getElementById('img_avt');
+        // imgv_avt.src = "data:img/png;base64, "+person.base64EncodedPicture;
+
+    } catch (error) {
+        console.log("image loading error:: "+error);
+        console.log("image loading error:: "+error.message);
+    }
+
+    
+
+
+}
+//-----data handling
+
 
 ///////////////OFLINE Handling//////////////////////
 function loginOffline(userName, password)
@@ -460,6 +742,163 @@ function loginOffline(userName, password)
 
     }
     
+}
+
+function fetchOfflineActivities(container2)
+{
+
+    const bulkArrAct = JSON.parse(`{
+            "activities": [
+                {
+                    "id": 5,
+                    "name": "My Vitals",
+                    "actions": [
+                        {
+                            "id": 6,
+                            "activityId": 5,
+                            "name": "Previous Vitals",
+                            "contents": null
+                        },
+                        {
+                            "id": 5,
+                            "activityId": 5,
+                            "name": "View Vitals",
+                            "contents": null
+                        }
+                    ]
+                },
+                {
+                    "id": 6,
+                    "name": "Medication",
+                    "actions": [
+                        {
+                            "id": 7,
+                            "activityId": 6,
+                            "name": "Previous Medication",
+                            "contents": null
+                        }
+                    ]
+                },
+                {
+                    "id": 7,
+                    "name": "Demographics",
+                    "actions": [
+                        {
+                            "id": 8,
+                            "activityId": 7,
+                            "name": "View Demographics",
+                            "contents": null
+                        },
+                        {
+                            "id": 9,
+                            "activityId": 7,
+                            "name": "Update Demographics",
+                            "contents": null
+                        }
+                    ]
+                },
+                {
+                    "id": 4,
+                    "name": "Appointment Booking",
+                    "actions": [
+                        {
+                            "id": 10,
+                            "activityId": 4,
+                            "name": "View Appointment",
+                            "contents": null
+                        },
+                        {
+                            "id": 4,
+                            "activityId": 4,
+                            "name": "Appointment Acknowledge",
+                            "contents": null
+                        }
+                    ]
+                },
+                {
+                    "id": 8,
+                    "name": "Patient Attachments",
+                    "actions": [
+                        {
+                            "id": 11,
+                            "activityId": 8,
+                            "name": "View Attachments",
+                            "contents": null
+                        }
+                    ]
+                }
+            ]
+        }`);
+
+    container2.innerHTML = bulkArrAct.activities.map(mapActivities).join('\n\n');
+
+    //--------------------------------------------------------//
+    // let bulkArrAct = db.activities.toArray();
+
+    // console.log("activities=>"+bulkArrAct);
+
+
+    // container2.innerHTML = bulkArrAct.map(mapAct2).join('\n\n');
+
+    //-------------------------------------------------------//
+
+
+    // db.activities.bulkPut(bulkArrAct)
+    // .then(function(){
+    //     // indexDbReadAll();
+    // })
+    // .catch(Dexie.bulkError, function(error) {
+    // alert ("actvities Ooops: " + error);
+    // });
+
+
+
+    // indexDbInit();
+
+    // console.log("reading all records");
+    //  db.table("activities").toArray()
+    //  .then(function (data)
+    //   {
+    //     container2.innerHTML = data.map(mapAct2).join('\n\n');
+    //      console.log(data);
+    //     }
+    //  );
+    // container.innerHTML = bulkArrAct.map(mapAct).join('\n\n');
+    // container2.innerHTML = bulkArrAct.map(mapAct2).join('\n\n');
+
+    // indexDbReadAll();
+
+    // switch(key)
+    // {
+    //     case "login":
+    //     {
+    //         showMessage("fetch from offline okok");
+    //         break;
+    //     }
+
+    //     default:
+    //         {
+    //             showMessage("incorrect key for offline fetch");
+    //             break;
+    //         }
+    // }
+}
+
+async function fetchPersonDetails()
+{
+    // if (userName == "interactive@ppl.com" && password=="987") 
+    // {
+
+        // db.person.where({name: "Dr. INTERACTIVE Group", personId: "38995"}).first(friend => {
+
+    
+        
+    // } else {
+        
+    //     console.log("no user found");
+    //     showMessage("No User Found");
+
+    // }
 }
 
 // function fetchOfflineActivities()
@@ -659,20 +1098,6 @@ async function indexDbRead() {
 //-----------------------------------------------//
 
 
-function mapAct(activities)
-{
-
-    // indexDbAdd(user.id, user.email, user.pass);
-
-    return `
-    <div class="activities">            
-            <h4>${activities.activityLogId}</h4>
-            <h3>${activities.activityName}</h3>            
-            <p>${activities.contentName}</p>            
-        </div>
-        `;
-}
-
 function showLoader(show)
 {
     if (show) 
@@ -697,6 +1122,127 @@ function showMessage(message)
         messageInd.innerHTML = message;
     }
 }
+
+/////////////////////////////////VIEW HANDLING//////////////////////////////
+function initializeView()
+{
+    var sPath = window.location.pathname;
+    //var sPage = sPath.substring(sPath.lastIndexOf('\\') + 1);
+    var sPage = sPath.substring(sPath.lastIndexOf('/') + 1);
+    // alert(sPage);
+
+    // console.log("spage => "+sPage);
+    if(sPage == "")
+    {
+        // alert("getting vitals");
+
+        // fetchVitals();
+        console.log("index activity");
+
+        const btn_login = document.getElementById('btn_login');
+        btn_login.addEventListener('click',validateLogin);
+        // const container2 = document.getElementById('container2');
+        // fetchOfflineActivities(container2);
+
+    }
+    else if(sPage == "page1.html")
+    {
+        // alert("getting vitals");
+
+        // fetchVitals();
+        console.log("fetching offline activities");
+
+        const container2 = document.getElementById('container2');
+        const btn_back = document.getElementById('btn_back');
+
+        fetchOfflineActivities(container2);
+
+        //--//
+        btn_back.style.visibility = "hidden";
+
+        populateDrawerData();
+        // btn_back.addEve
+
+    }
+    else if(sPage == "list_vitals.html")
+    {
+        // alert("getting vitals");
+
+        fetchVitals();
+
+        // const btn_back = document.getElementById('btn_back');
+
+        // //--//
+        // btn_back.addEventListener("click", function()
+        // {
+
+        //     console.log("back to list");
+        //     // window.location.href="page1.html";
+        // });
+        
+
+
+    }
+    else if(sPage == "view_demographics.html")
+    {
+        alert("getting demograp");
+    }
+    // else{
+    //     try {
+    //         console.log("index activity");
+
+    //         const btn_login = document.getElementById('btn_login');
+    //         btn_login.addEventListener('click',validateLogin);
+    //     } catch (error) {
+    //         console.log("error in view loading");
+    //     }
+    // }
+
+}
+
+function goToAppointmentView()
+{
+    console.log("going to next view");
+    // window.location.href = "view_appointment.html";
+    window.location.href = "list_appointment.html";
+}
+
+function goToAppointmentNew()
+{
+    console.log("going to next view");
+    window.location.href = "new_appointment.html";
+}
+function goToVitalPrevious()
+{
+    console.log("going to next view");
+    // window.location.href = "list_vitals.html";
+}
+function goToVitalView()
+{
+    console.log("going to next view");
+    window.location.href = "list_vitals.html";
+
+    
+}
+function goToDemographView()
+{
+    console.log("going to next view");
+    window.location.href = "view_demographics.html";
+}
+function goToDemographUpdate()
+{
+    console.log("going to next view");
+    window.location.href = "edit_demographics.html";
+}
+// function goToVitalList()
+// {
+//     console.log("going to next view");
+//     window.location.href = "list_vitals.html";
+// }
+//-------------------------------VIEW HANDLING----------------------------//
+
+
+
 
 
 document.addEventListener('DOMContentLoaded', initialize);

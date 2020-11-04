@@ -2,7 +2,7 @@
     "name": "IntellCare Lite",
     "short_name": "IC Lite",
     "theme_color": "#1565C0",
-    "background_color": "#2196F3",
+    "background_color": "#FFFFFF",
     "display": "standalone",
     "Scope": "/",
     "start_url": ".",
