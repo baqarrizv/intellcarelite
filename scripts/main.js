@@ -665,19 +665,35 @@ function populateDrawerData()
             console.error('Failed to open db: ' + (err.stack || err));
         });
 
-
-
-
         console.log("fetching data from db");
-        db.person.get(38995, function(firstPerson)
+        db.person.get(parseInt(window.sessionStorage.getItem("personId")), function(firstPerson)
         {
             console.log("fetching finished");
 
             try {
                 let imageSrc = firstPerson.base64EncodedPicture;
+                let name = firstPerson.name,
+                 gender = firstPerson.gender,
+                  number = firstPerson.number,
+                   age = firstPerson.age,
+                    bloodgrp = firstPerson.bloodGroup;
         
                 const imgv_avt = document.getElementById('img_avt');
+                const drawer_name = document.getElementById('drawer_name');
+                const drawer_gender = document.getElementById('drawer_gender');
+                const drawer_number = document.getElementById('drawer_number');
+                const drawer_age = document.getElementById('drawer_age');
+                const drawer_bloodgrp = document.getElementById('drawer_bloodgrp');
+
+                //--//
+
                 imgv_avt.src = "data:img/png;base64, "+imageSrc;
+
+                drawer_name.innerHTML = name;
+                drawer_gender.innerHTML = gender;
+                drawer_number.innerHTML = number;
+                drawer_age.innerHTML = age;
+                drawer_bloodgrp.innerHTML = bloodgrp;
                 
             } catch (error)
             {
@@ -1145,48 +1161,57 @@ function initializeView()
         // fetchOfflineActivities(container2);
 
     }
-    else if(sPage == "page1.html")
-    {
-        // alert("getting vitals");
-
-        // fetchVitals();
-        console.log("fetching offline activities");
-
-        const container2 = document.getElementById('container2');
-        const btn_back = document.getElementById('btn_back');
-
-        fetchOfflineActivities(container2);
-
-        //--//
-        btn_back.style.visibility = "hidden";
+    else {
 
         populateDrawerData();
-        // btn_back.addEve
+
+        if(sPage == "page1.html")
+        {
+            // alert("getting vitals");
+    
+            // fetchVitals();
+            console.log("fetching offline activities");
+    
+            const container2 = document.getElementById('container2');
+            const btn_back = document.getElementById('btn_back');
+    
+            fetchOfflineActivities(container2);
+    
+            //--//
+            btn_back.style.visibility = "hidden";
+    
+            // populateDrawerData();
+            // btn_back.addEve
+    
+        }
+        else if(sPage == "list_vitals.html")
+        {
+            // alert("getting vitals");
+    
+            fetchVitals();
+    
+            // const btn_back = document.getElementById('btn_back');
+    
+            // //--//
+            // btn_back.addEventListener("click", function()
+            // {
+    
+            //     console.log("back to list");
+            //     // window.location.href="page1.html";
+            // });
+            
+    
+    
+        }
+        else if(sPage == "view_demographics.html")
+        {
+            alert("getting demograp");
+        }
 
     }
-    else if(sPage == "list_vitals.html")
-    {
-        // alert("getting vitals");
-
-        fetchVitals();
-
-        // const btn_back = document.getElementById('btn_back');
-
-        // //--//
-        // btn_back.addEventListener("click", function()
-        // {
-
-        //     console.log("back to list");
-        //     // window.location.href="page1.html";
-        // });
-        
-
-
-    }
-    else if(sPage == "view_demographics.html")
-    {
-        alert("getting demograp");
-    }
+    
+    
+    
     // else{
     //     try {
     //         console.log("index activity");
