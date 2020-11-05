@@ -475,7 +475,7 @@ async function fetchReports(container2)
         let actionId="11";
 
         //   //post
-        let response = await fetch(url, 
+        var response = await fetch(url, 
         {
             method: "POST", // POST, PUT, DELETE, etc.
             headers: 
@@ -512,7 +512,15 @@ async function fetchReports(container2)
         }
         else{
             console.log("successfull");
-            console.log(response.json());
+            // console.log("--------------response.json()----------------------");
+            // console.log(response.json());
+            response.json()
+            .then(data => {                
+                // console.log("--------------data after response.json()----------------------");
+                // console.log(data);
+                container2.innerHTML = data.data.map(mapReports).join('\n\n');
+            });
+            
         }
         
     } catch (error) 
@@ -743,15 +751,24 @@ function mapReports(reports)
 {
 
     let date = new Date(reports.insertDate);
+    let name = reports.displayName;
+    let type = reports.mimeType;
+    let fileStr = reports.encodedFile;
 
-    return `<tr>
+    
+
+    let dataRow = `<tr>
                 <td class="color-green1-dark">${reports.mimeType}</td>
                 <td class="color-green1-dark">${reports.displayName}</td>
                 <td class="color-green1-dark">${reports.mimeType}</td>
                 <td class="color-green1-dark">`+date.toDateString()+`</td>
-                <td><a title="View" onclick="viewReport()"><i class="fa fa-eye color-green1-dark"></i></a></td>
+                <td><i onclick="viewReport('`+name+`','`+type+`', '`+fileStr+`')" class="fa fa-eye color-green1-dark"></i></td>
             </tr>`;   
     
+    
+    
+
+    return dataRow;
 }
 
 //--//
@@ -1502,9 +1519,104 @@ function goToReportsView()
     window.location.href = "report_view.html";
 }
 
-function viewReport()
+function viewReport(fileName, fileType, fileStr)
 {
-    alert("Viewing report");
+    // alert("Viewing report");
+    console.log("viewing report");
+    console.log("fileName => "+fileName);
+    console.log("file type => "+fileType);
+
+    if(fileType == "pdf")
+    {
+        // var base64 = "base64 content";
+        console.log("opening file");
+
+
+
+
+        // var dataURI = "data:application/pdf;base64, "+fileStr; // shortened
+
+        // var base64Index = dataURI.indexOf(fileStr) + fileStr.length;
+        // var base64 = dataURI.substring(base64Index);
+        // var raw = window.atob(base64);
+        // var rawLength = raw.length;
+        // var array = new Uint8Array(new ArrayBuffer(rawLength));
+
+        // for(var i = 0; i < rawLength; i++) {
+        //     array[i] = raw.charCodeAt(i);
+        // }
+        // // return array;
+
+
+        // // var pdfAsArray = convertDataURIToBinary(pdfAsDataUri);
+        // PDFJS.getDocument(array);
+
+
+
+
+
+
+
+
+
+
+
+        // window.open("data:application/pdf;base64, " + fileStr);
+
+
+
+        // var objbuilder = '';
+        // objbuilder += ('<object width="100%" height="100%"      data="data:application/pdf;base64,');
+        // objbuilder += (fileStr);
+        // objbuilder += ('" type="application/pdf" class="internal">');
+        // objbuilder += ('<embed src="data:application/pdf;base64,');
+        // objbuilder += (fileStr);
+        // objbuilder += ('" type="application/pdf" />');
+        // objbuilder += ('</object>');
+
+
+        // var win = window.open("","_blank","titlebar=yes");
+        // win.document.title = "My Title";
+        // win.document.write('<html><body>');
+        // win.document.write(objbuilder);
+        // win.document.write('</body></html>');
+        // layer = jQuery(win.document);
+
+
+
+
+
+        let pdfWindow = window.open("");
+        pdfWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf; headers=filename%3D"+fileName+"; base64, " + fileStr + "'></iframe>");
+        // pdfWindow.document.write("<iframe width='100%' height='100%' ><object data='Docs/PDFS/PDFs_103170940341.pdf' type='application/pdf;base64, ;base64, " +fileStr+"' width='100%' height='100%'></object></iframe>");
+
+        
+        
+        console.log("file opened");
+        // console.log("incorrect format");
+    }
+    else if(fileType == "jpg")
+    {
+
+        var image = new Image();
+        image.src = "data:image/jpg;base64," + fileStr;
+
+        var w = window.open("");
+        w.document.write(image.outerHTML);
+
+    }
+    else if(fileType == "docx")
+    {
+        let pdfWindow = window.open("");
+        pdfWindow.document.write("<iframe width='100%' height='100%' src='data:application/docx; headers=filename%3D"+fileName+"; base64, " + fileStr + "'></iframe>");
+    }
+    else{
+        console.log("incorrect format");
+    }
+
+    // var base64 = "base64 content";
+    // let pdfWindow = window.open("");
+    // pdfWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + base64 + "'></iframe>");
 }
 //-------------------------------VIEW HANDLING----------------------------//
 
