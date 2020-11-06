@@ -437,7 +437,150 @@ async function fetchVitals(container2)
     }
 
 }
+async function fetchDemographics()
+{
+    try {
 
+
+        // showMessage("processing. please wait.");
+        // showLoader(true);
+
+        const url=rootUrl+"viewDemographics";
+        console.log("complete url=> "+url);
+
+        let personId=window.sessionStorage.getItem("personId");
+        let actionId="8";
+
+        //   //post
+        var response = await fetch(url, 
+        {
+            method: "POST", // POST, PUT, DELETE, etc.
+            headers: 
+            {
+            // the content type header value is usually auto-set
+            // depending on the request body
+            "Content-Type": "application/json;charset=UTF-8",
+            "Host": "203.99.60.222:1701",
+            // "Origin": "http://localhost:81"
+            "Origin": "https://admin.aldermin.com"
+            },
+            body: JSON.stringify(
+                    {
+                        personId:personId,
+                        actionId:actionId
+                    }
+                ), // string, FormData, Blob, BufferSource, or URLSearchParams
+            // referrer: "about:client", // or "" to send no Referer header,
+            // or an url from the current origin
+            // referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
+            mode: "cors", // same-origin, no-cors
+            credentials: "same-origin", // omit, include
+            cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached
+            redirect: "follow", // manual, error
+            integrity: "", // a hash, like "sha256-abcdef1234567890"
+            keepalive: false, // true
+            signal: undefined, // AbortController to abort request
+            window: window // null
+        });
+
+        if (!response.ok) {
+            console.log("unsuccessfull");
+            fetchOfflineDemographics();
+        }
+        else{
+            console.log("successfull");
+            // console.log("--------------response.json()----------------------");
+            // console.log(response.json());
+            response.json()
+            .then(data => {                
+                console.log("--------------data after response.json()----------------------");
+                console.log(data);
+                // container2.innerHTML = data.data.map(mapVitals).join('\n\n');
+                populateDemographicsData(data.object);
+            });
+            
+        }
+        
+    } catch (error) 
+    {
+        console.log("error => "+error.message);  
+        fetchOfflineDemographics();        
+    }
+
+}
+
+async function fetchAppointments(container2)
+{
+    console.log("ftch appointments=> starting");
+
+    try {
+
+
+        // showMessage("processing. please wait.");
+        // showLoader(true);
+
+        const url=rootUrl+"viewAppointments";
+        console.log("complete url=> "+url);
+
+        let personId=window.sessionStorage.getItem("personId");
+        let actionId="10";
+
+        //   //post
+        var response = await fetch(url, 
+        {
+            method: "POST", // POST, PUT, DELETE, etc.
+            headers: 
+            {
+            // the content type header value is usually auto-set
+            // depending on the request body
+            "Content-Type": "application/json;charset=UTF-8",
+            "Host": "203.99.60.222:1701",
+            // "Origin": "http://localhost:81"
+            "Origin": "https://admin.aldermin.com"
+            },
+            body: JSON.stringify(
+                    {
+                        personId:personId,
+                        actionId:actionId
+                    }
+                ), // string, FormData, Blob, BufferSource, or URLSearchParams
+            // referrer: "about:client", // or "" to send no Referer header,
+            // or an url from the current origin
+            // referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
+            mode: "cors", // same-origin, no-cors
+            credentials: "same-origin", // omit, include
+            cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached
+            redirect: "follow", // manual, error
+            integrity: "", // a hash, like "sha256-abcdef1234567890"
+            keepalive: false, // true
+            signal: undefined, // AbortController to abort request
+            window: window // null
+        });
+
+        if (!response.ok) {
+            console.log("unsuccessfull");
+            fetchOfflineAppointments(container2);
+        }
+        else{
+            console.log("successfull");
+            // console.log("--------------response.json()----------------------");
+            // console.log(response.json());
+            response.json()
+            .then(data => {                
+                // console.log("--------------data after response.json()----------------------");
+                // console.log(data);
+                container2.innerHTML = data.data.map(mapAppointments).join('\n\n');
+            });
+            
+        }
+        
+    } catch (error) 
+    {
+        console.log("error => "+error.message);  
+        fetchOfflineAppointments(container2)      
+    }
+
+}
 async function fetchReports(container2)
 {
     console.log("ftch reports=> starting");
@@ -749,6 +892,24 @@ function mapVitals(vitals)
 
     return dataRow;
 }
+function mapAppointments(appointments)
+{
+
+    let date = new Date(appointments.appointmentDate);
+    // let docName = appointments.doctorname;
+
+    
+    let dataRow = `<tr>
+                        <th scope="row">${appointments.doctorname}</th>
+                        <td class="color-green1-dark">`+date.toDateString()+`</td>
+                        <td><i onclick="viewAppointmentDetails()" title="view details" class="fa fa-arrow-right rotate-45 color-green1-dark"></i></td>
+                    </tr>`;   
+    
+    
+    
+
+    return dataRow;
+}
 
 function mapReports(reports)
 {
@@ -772,6 +933,33 @@ function mapReports(reports)
     
 
     return dataRow;
+}
+
+function populateDemographicsData(demograph)
+{
+    console.log("populating demo data");
+    console.log(demograph);
+
+    let demogrp_name = document.getElementById("demogrp_name");
+    let demogrp_gender = document.getElementById("demogrp_gender");
+    let demogrp_dob = document.getElementById("demogrp_dob");
+    let demogrp_maritalstat = document.getElementById("demogrp_maritalstat");
+    let demogrp_bloodgrp = document.getElementById("demogrp_bloodgrp");
+    let demogrp_cnic = document.getElementById("demogrp_cnic");
+    let demogrp_email = document.getElementById("demogrp_email");
+    let demogrp_phone = document.getElementById("demogrp_phone");
+    let demogrp_address = document.getElementById("demogrp_address");
+    
+
+    demogrp_name.innerHTML = demograph.firstName+" "+demograph.lastname;
+    demogrp_gender.innerHTML = demograph.gender;
+    demogrp_dob.innerHTML = demograph.dob;
+    demogrp_maritalstat.innerHTML = demograph.maritalStatus;
+    demogrp_bloodgrp.innerHTML = demograph.bloodGroup;
+    demogrp_cnic.innerHTML = demograph.cnic;
+    demogrp_email.innerHTML = demograph.email;
+    demogrp_phone.innerHTML = demograph.number;
+    demogrp_address.innerHTML = demograph.streetAddress;
 }
 
 //--//
@@ -13952,7 +14140,363 @@ function fetchOfflineVitals(container2)
 
     
 }
+function fetchOfflineDemographics()
+{
 
+    const bulkArrAct = JSON.parse(`{
+        "detail": "Data Returnd",
+        "status": "Ok 200",
+        "object": {
+            "personId": 38995,
+            "name": null,
+            "mrNo": null,
+            "gender": "Male",
+            "age": null,
+            "number": null,
+            "bloodGroup": "A-",
+            "firstName": "Interactive",
+            "middleName": null,
+            "lastname": "Group",
+            "dob": 84513600000,
+            "maritalStatus": "Marride",
+            "cnic": "00000-0010000-0",
+            "email": null,
+            "streetAddress": "HOUSE NO. 278-A, TAPALI STREET",
+            "district": "Karachi West",
+            "province": "Sindh",
+            "city": "Karachi West",
+            "country": "Pakistan",
+            "base64EncodedPicture": null,
+            "designation": null,
+            "speciality": null,
+            "qualification": null,
+            "languages": null,
+            "experiance": null,
+            "hospital": null
+        },
+        "data": null
+    }`);
+    populateDemographicsData(bulkArrAct.object);
+    // container2.innerHTML = bulkArrAct.data.map(mapDemographics).join('\n\n');
+
+    
+}
+
+function fetchOfflineAppointments(container2)
+{
+
+    const bulkArrAct = JSON.parse(`{
+        "detail": "Data Returnd",
+        "status": "Ok 200",
+        "object": null,
+        "data": [
+            {
+                "personId": null,
+                "appointmentDate": 1617024840000,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": 1617024840000,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": 1617024840000,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": 1617024840000,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": 1617024840000,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": 1617057240000,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": 1617057240000,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": 1617057240000,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": 1617057240000,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": 1617057240000,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": 1617057240000,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": 1617057240000,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": 1617057240000,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": 1617057240000,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": 1617057240000,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": null,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": null,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": null,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": null,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            },
+            {
+                "personId": null,
+                "appointmentDate": null,
+                "doctorname": "Interactive Group",
+                "speciality": "Skin",
+                "specialityId": null,
+                "type": "First Visit",
+                "doctorShift": null,
+                "slotDuration": null,
+                "remarks": null,
+                "complaint": "Fever",
+                "doctorId": null,
+                "priorityId": null,
+                "status": "Scheduled"
+            }
+        ]
+    }`);
+
+    container2.innerHTML = bulkArrAct.data.map(mapAppointments).join('\n\n');
+
+    
+}
 function fetchOfflineReports(container2)
 {
 
@@ -14412,7 +14956,7 @@ function initializeView()
     // alert(sPage);
 
     // console.log("spage => "+sPage);
-    if(sPage == "")
+    if(sPage == "" || sPage=="index.html")
     {
         // checkSessionOnLogin();
         // alert("getting vitals");
@@ -14482,16 +15026,34 @@ function initializeView()
         }
         else if(sPage == "demogrp_view.html")
         {
-            alert("getting demograp");
+            console.log("demographics view");
+
+            // const demogrp_name = document.getElementById('demogrp_name');
+
+            fetchDemographics();
+
+            // alert("getting demograp");
         }
         else if(sPage == "report_view.html")
         {
             // alert("getting demograp");
-
+            console.log("reports view");
             const container2 = document.getElementById('container2');
 
             fetchReports(container2);
 
+        }
+        else if(sPage == "appnt_view.html")
+        {
+            console.log("appointments view");
+
+            const container2 = document.getElementById('container2');
+
+            fetchAppointments(container2);
+        }
+        else
+        {
+            alert("incorrect page");
         }
 
     }
@@ -14676,6 +15238,11 @@ function viewVitalDetails(vitals)
     // console.log(vitalsSlct);
     // // console.log(vitalsSlct.vitalDate);
 
+}
+function viewAppointmentDetails() 
+{
+    // console.log("viewing Appointment details");
+    window.href = "appnt_view_det.html";
 }
 
 
