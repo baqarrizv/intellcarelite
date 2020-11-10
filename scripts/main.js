@@ -14,7 +14,7 @@ let lastInsertedId=0;
 var db;
 var request;
 let befInstalPrompt;
-var vitals_selected;
+// var vitals_selected;
 // let isStandalone = false;
 // let isIOS = false;
 //--objects--//
@@ -873,18 +873,57 @@ function mapAction(actions)
 function mapVitals(vitals)
 {
 
-    let date = new Date(vitals.vitalDate);
-    let name = vitals.pulse;
+    let vitalDate = new Date(vitals.vitalDate);
+
+    let
+    // day = vitalDate.getDay(),
+     dd = vitalDate.getDate(),
+     mm = vitalDate.getMonth(), 
+     yy = vitalDate.getFullYear(), 
+     hh = vitalDate.getHours(),
+    min = vitalDate.getMinutes(), 
+    sec = vitalDate.getSeconds(),
+    meridian="AM";
+
+    // var days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    if(hh<12)
+    {
+        meridian = "PM";
+    }
+    else{
+        meridian = "AM";   
+    }
+
+    let date = dd+"-"+months[mm]+"-"+yy,
+    time = hh+":"+min+":"+sec+" "+meridian,
+    dateTime = date+", "+time,
+    pulse = vitals.pulse,
+    bloodP = vitals.bpSystolic+"/"+vitals.bpDistolic,
+    temp = vitals.tmprature,
+    respRate = vitals.respirationRate,
+    height = vitals.height,
+    weight = vitals.weight,
+    spo2 = vitals.spo2,
+    bloodSugarR = vitals.bloodSugarR,
+    bloodSugarF = vitals.blooSugarF,
+    GIR = vitals.gir,
+    painScale = vitals.painScale,
+    fallRisk = "",
+    remarks = vitals.remarks,
+    BMI = vitals.bmi;
 
     
     
     // console.log(vitals);
-    // console.log(vitals.vitalDate);
     
     let dataRow = `<tr>
-                        <td class="color-green1-dark">`+date.toDateString()+`</td>
-                        <td class="color-green1-dark">`+name+`</td>
-                        <td><i onclick="viewVitalDetails('${vitals}')" title="view details" class="fa fa-arrow-right rotate-45 color-green1-dark"></a></td>
+                        <td class="color-green1-dark">`+date+`</td>
+                        <td class="color-green1-dark">`+time+`</td>
+                        <td><i onclick="populateVitalDetails('`+dateTime+`', '`+pulse+`', '`+bloodP+`', '`+temp+`', '`+respRate
+                        +`', '`+height+`', '`+weight+`', '`+spo2+`', '`+bloodSugarR+`', '`+bloodSugarF+`', '`+GIR
+                        +`', '`+painScale+`', '`+fallRisk+`', '`+remarks+`', '`+BMI+`', )" title="view details" class="fa fa-arrow-right rotate-45 color-green1-dark"></a></td>
                     </tr>`;   
     
     
@@ -14904,49 +14943,45 @@ function showMessage(message)
 
 /////////////////////////////////VIEW HANDLING//////////////////////////////
 
-// function checkSessionFromInside() 
-// {
-//     // window.sessionStorage.removeItem(mrNo);
-//     let personId = window.sessionStorage.getItem("personId"),
-//      name = window.sessionStorage.getItem("name"),
-//       mrNo = window.sessionStorage.getItem("mrNo");
+function checkSessionFromInside() 
+{
+    let personId = window.sessionStorage.getItem("personId");
 
+    try {
+        if (personId == null || personId == "") 
+        {
+            console.log("sess from inside => session not present");
+            window.location.replace("index.html");
+        }  
+        else{
+            console.log("sess from inside => session present");
+        }
+    } catch (error) {
+        console.log("sess from inside => eerrr session not present");
+        window.location.replace("index.html");
+    }
       
-//     //   console.log("personId=>"+personId);
-//     //   console.log("mrNo=>"+mrNo);
+}
 
-//     try {
-//         if (personId == null) 
-//         {
-//             console.log("sess from inside => session not present");
-//           window.location.replace("index.html");
-//         }  
-//     } catch (error) {
-//         console.log("sess from inside => eerrr session not present");
-//         window.location.replace("index.html");
-//     }
+function checkSessionOnLogin() 
+{
+    let personId = window.sessionStorage.getItem("personId");
+
+    try {
+
+        if (personId == null || personId == "") 
+        {
+            console.log("sess from login => session not present");
+        }  
+        else{
+            console.log("sess from login => session present");
+            window.location.replace("dash_patient.html");
+        }
+    } catch (error) {
+        console.log("sess from login => error in checking");
+    }
       
-// }
-
-// function checkSessionOnLogin() 
-// {
-//     // window.sessionStorage.removeItem(mrNo);
-//     let personId = window.sessionStorage.getItem("personId"),
-//      name = window.sessionStorage.getItem("name"),
-//       mrNo = window.sessionStorage.getItem("mrNo");
-
-//     try {
-//         if (personId != null) 
-//         {
-//             console.log("sess from login => session present");
-//           window.location.replace("dash_patient.html");
-//         }  
-//     } catch (error) {
-//         console.log("sess from login => error in checking");
-//         // window.location.replace("index.html");
-//     }
-      
-// }
+}
 
 function initializeView()
 {
@@ -14958,7 +14993,7 @@ function initializeView()
     // console.log("spage => "+sPage);
     if(sPage == "" || sPage=="index.html")
     {
-        // checkSessionOnLogin();
+        checkSessionOnLogin();
         // alert("getting vitals");
 
         // fetchVitals();
@@ -14971,7 +15006,7 @@ function initializeView()
 
     }
     else {
-        // checkSessionFromInside();
+        checkSessionFromInside();
         populateDrawerData();
 
         if(sPage == "dash_patient.html")
@@ -15015,11 +15050,17 @@ function initializeView()
         else if(sPage == "vitals_view_det.html")
         {            
             console.log("vital_dttm object");
-            const vital_dttm = document.getElementById('vital_dttm');
 
-            console.log("vital_dttm value set");
-            var vitals = getSelectedVital();
-            vital_dttm.innerHTML = vitals.vitalDate;
+            populateVitalDetails(vital_dateTime, vital_pulse, vital_bloodP, vital_temp, vital_respRate, vital_height, 
+                vital_weight, vital_spo2, vital_bloodSugarR, vital_bloodSugarF, vital_GIR,
+                vital_painScale, vital_fallRisk, vital_remarks, vital_BMI);
+
+
+            // const vital_dttm = document.getElementById('vital_dttm');
+
+            // console.log("vital_dttm value set");
+            // var vitals = getSelectedVital();
+            // vital_dttm.innerHTML = vitals.vitalDate;
 
             console.log("vital deails populating finished");
     
@@ -15053,23 +15094,10 @@ function initializeView()
         }
         else
         {
-            alert("incorrect page");
+            console.log("incorrect page");
         }
 
     }
-    
-    
-    
-    // else{
-    //     try {
-    //         console.log("index activity");
-
-    //         const btn_login = document.getElementById('btn_login');
-    //         btn_login.addEventListener('click',validateLogin);
-    //     } catch (error) {
-    //         console.log("error in view loading");
-    //     }
-    // }
 
 }
 
@@ -15218,9 +15246,81 @@ function viewReport(fileName, fileType, fileStr)
     // pdfWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + base64 + "'></iframe>");
 }
 
-function viewVitalDetails(vitals) 
+let vital_dateTime, vital_pulse, vital_bloodP, vital_temp, vital_respRate, vital_height, vital_weight, 
+vital_spo2, vital_bloodSugarR, vital_bloodSugarF, vital_GIR, vital_painScale, vital_fallRisk, vital_remarks, vital_BMI;
+
+function setSelectedVitalDetails(dateTime, pulse, bloodP, temp, respRate, height, weight, spo2, bloodSugarR, bloodSugarF, GIR,
+    painScale, fallRisk, remarks, BMI)
+{
+    vital_dateTime= dateTime;
+    vital_pulse=pulse ;
+    vital_bloodP= bloodP;
+    vital_temp= temp;
+    vital_respRate= respRate;
+    vital_height= height;
+    vital_weight= weight;
+    vital_spo2= spo2;
+    vital_bloodSugarR= bloodSugarF;
+    vital_bloodSugarF= bloodSugarR;
+    vital_GIR= GIR;
+    vital_painScale= painScale;
+    vital_fallRisk= fallRisk;
+    vital_remarks= remarks;
+    vital_BMI= BMI;
+
+    window.location.assign('vitals_view_det.html');
+    
+}
+
+
+function populateVitalDetails(dateTime, pulse, bloodP, temp, respRate, height, weight, spo2, bloodSugarR, bloodSugarF, GIR,
+    painScale, fallRisk, remarks, BMI) 
 {
     console.log("viewing vital details");
+    console.log("dateTime => "+dateTime);
+
+    window.location.assign('vitals_view_det.html');
+
+    try {
+        
+        const vital_dttm = document.getElementById("vital_dttm");
+
+        vital_dttm.innerHTML = dateTime;
+
+
+
+    } catch (error) {
+        console.log(error);
+        alert("unable to populate data");
+    }
+
+
+    // window.location.assign('vitals_view_det.html');
+    
+    // window.addEventListener("load", function()
+    // {
+    //     console.log("loading compelte");
+
+        // try {
+        
+        //     const vital_dttm = document.getElementById("vital_dttm");
+    
+        //     vital_dttm.innerHTML = vital_dttm;
+    
+    
+    
+        // } catch (error) {
+        //     console.log(error);
+        //     alert("unable to populate data");
+        // }
+    // });
+
+    
+
+
+
+    // console.log("dateTime => "+dateTime);
+    // console.log("pulse => "+pulse);
 
     // alert(JSON.stringify(vitals));
 
@@ -15230,7 +15330,7 @@ function viewVitalDetails(vitals)
     // console.log(vitals.vitalDate);
 
     // setSelectedVital(vitals);
-    // // window.location.href = "vitals_view_det.html";   
+    // window.location.href = "vitals_view_det.html";   
 
     // console.log(getSelectedVital());
     // var vitalsSlct = JSON.stringify(getSelectedVital());
@@ -15246,15 +15346,15 @@ function viewAppointmentDetails()
 }
 
 
-function setSelectedVital(vitals)
-{
-    vitals_selected = vitals;
-}
+// function setSelectedVital(vitals)
+// {
+//     vitals_selected = vitals;
+// }
 
-function getSelectedVital()
-{
-    return vitals_selected;
-}
+// function getSelectedVital()
+// {
+//     return vitals_selected;
+// }
 //-------------------------------VIEW HANDLING----------------------------//
 
 
