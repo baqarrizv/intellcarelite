@@ -753,6 +753,81 @@ async function fetchAppointments(container2)
         let personId=window.sessionStorage.getItem("personId");
         let actionId="10";
 
+        ////dummy data
+        const bulkArrAct = JSON.parse(`{
+            "detail": "Data Returnd",
+            "status": "Ok 200",
+            "object": null,
+            "data": [
+                {
+                    "appointmentId": 182347,
+                    "personId": null,
+                    "appointmentDate": 1617024840000,
+                    "doctorname": "Interactive Group",
+                    "speciality": "Skin",
+                    "specialityId": null,
+                    "type": "First Visit",
+                    "doctorShift": null,
+                    "slotDuration": null,
+                    "remarks": null,
+                    "complaint": "Fever",
+                    "doctorId": null,
+                    "priorityId": null,
+                    "status": "Scheduled"
+                },
+                {
+                    "appointmentId": 182346,
+                    "personId": null,
+                    "appointmentDate": 1617057240000,
+                    "doctorname": "Interactive Group",
+                    "speciality": "Skin",
+                    "specialityId": null,
+                    "type": "First Visit",
+                    "doctorShift": null,
+                    "slotDuration": null,
+                    "remarks": null,
+                    "complaint": "Fever",
+                    "doctorId": null,
+                    "priorityId": null,
+                    "status": "Scheduled"
+                },
+                {
+                    "appointmentId": 182345,
+                    "personId": null,
+                    "appointmentDate": 1617057240000,
+                    "doctorname": "Interactive Group",
+                    "speciality": "Skin",
+                    "specialityId": null,
+                    "type": "First Visit",
+                    "doctorShift": null,
+                    "slotDuration": null,
+                    "remarks": null,
+                    "complaint": "Fever",
+                    "doctorId": null,
+                    "priorityId": null,
+                    "status": "Scheduled"
+                },
+                {
+                    "appointmentId": 182344,
+                    "personId": null,
+                    "appointmentDate": null,
+                    "doctorname": "Interactive Group",
+                    "speciality": "Skin",
+                    "specialityId": null,
+                    "type": "First Visit",
+                    "doctorShift": null,
+                    "slotDuration": null,
+                    "remarks": null,
+                    "complaint": "Fever",
+                    "doctorId": null,
+                    "priorityId": null,
+                    "status": "Scheduled"
+                }
+            ]
+        }`);
+        saveAppointmentsToOffline(bulkArrAct.data);
+        //--dummy data--//
+
         //   //post
         var response = await fetch(url, 
         {
@@ -797,6 +872,7 @@ async function fetchAppointments(container2)
             .then(data => {                
                 // console.log("--------------data after response.json()----------------------");
                 // console.log(data);
+                saveAppointmentsToOffline(data);
                 container2.innerHTML = data.data.map(mapAppointments).join('\n\n');
             });
             
@@ -1146,17 +1222,16 @@ function mapAppointments(appointments)
 {
 
     let date = new Date(appointments.appointmentDate);
+    // console.log("map Appnt=> appointmentId=>");
+    // console.log(appointments.appointmentId);
     // let docName = appointments.doctorname;
 
     
     let dataRow = `<tr>
                         <th scope="row">${appointments.doctorname}</th>
                         <td class="color-green1-dark">`+date.toDateString()+`</td>
-                        <td><i onclick="viewAppointmentDetails()" title="view details" class="fa fa-arrow-right rotate-45 color-green1-dark"></i></td>
+                        <td><i onclick='setSelectedAppointmentDetails(${appointments.appointmentId})' title="view details" class="fa fa-arrow-right rotate-45 color-green1-dark"></i></td>
                     </tr>`;   
-    
-    
-    
 
     return dataRow;
 }
@@ -1459,10 +1534,13 @@ async function fetchOfflineVitals(container2)
     
 }
 
-async function fetchOfflineVitalsWhere(vitalId)
+async function fetchOfflineVitalsWhere()
 {
 
-    // const bulkArrAct = JSON.parse();
+
+    // vitalId = window.sessionStorage.getItem("vitalId");
+    let vitalId = parseInt(window.sessionStorage.getItem("vitalId"));
+    // console.log("fetchOfflineVitalsWhere; vitalId => "+vitalId);
 
     //db open
     let dbname = "icalite_index";
@@ -1479,12 +1557,12 @@ async function fetchOfflineVitalsWhere(vitalId)
     });
 // //--//
 
-    await db.vitals.where('vitalId').equals(vitalId)
-    .then(function(result){
-        console.log("result where => ");
-        console.log(result);
+    await db.vitals.where({vitalId:vitalId})
+    .first(vitals => {
+        // console.log("result where => ");
+        // console.log(vitals);
 
-        populateVitalDetails(result);
+        populateVitalDetails(vitals);
 
     })
     .catch(function (error) {
@@ -1564,321 +1642,89 @@ function fetchOfflineDemographics()
     
 }
 
-function fetchOfflineAppointments(container2)
+
+async function fetchOfflineAppointments(container2)
 {
 
-    const bulkArrAct = JSON.parse(`{
-        "detail": "Data Returnd",
-        "status": "Ok 200",
-        "object": null,
-        "data": [
-            {
-                "personId": null,
-                "appointmentDate": 1617024840000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617024840000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617024840000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617024840000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617024840000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": null,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": null,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": null,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": null,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": null,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            }
-        ]
-    }`);
+    // const bulkArrAct = JSON.parse();
 
-    container2.innerHTML = bulkArrAct.data.map(mapAppointments).join('\n\n');
+    //db open
+    let dbname = "icalite_index";
+    let dbversion=1;
+
+    db = new Dexie(dbname);
+    db.version(dbversion).stores(
+            {
+                appointments: "appointmentId"
+            }
+        );
+    db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
+    });
+// //--//
+
+    await db.appointments.toArray()
+    .then(function (result) {
+        // console.log("result => ");
+        // console.log(result);
+        container2.innerHTML = result.map(mapAppointments).join('\n\n');
+
+        // alert("view result");
+    })
+    .catch(function(error)
+    {
+        console.log("error in offline vital fetch");
+
+        // alert("view result");
+        // alert("user not found");
+    });
+    // console.log("get response =>");
+    // console.log(resp);
+    
+
+    // container2.innerHTML = bulkArrAct.data.map(mapVitals).join('\n\n');
 
     
 }
+
+async function fetchOfflineAppointmentsWhere(appointmentId)
+{
+
+    console.log("fetch offline appointment => ");
+    console.log(appointmentId);
+    // const bulkArrAct = JSON.parse();
+
+    //db open
+    let dbname = "icalite_index";
+    let dbversion=1;
+
+    db = new Dexie(dbname);
+    db.version(dbversion).stores(
+            {
+                appointments: "appointmentId"
+            }
+        );
+    await db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
+    });
+// //--//
+
+    await db.appointments.where('appointmentId').equals(appointmentId)
+    .then(function(result){
+        console.log("result where => ");
+        console.log(result);
+
+        // populateAppointmentDetails(result);
+
+    })
+    .catch(function (error) {
+        console.log("error in offline appointment fetch");
+    });
+
+    
+}
+
+
 function fetchOfflineReports(container2)
 {
 
@@ -2130,6 +1976,46 @@ function saveVitalsToOffline(vitals)
 
 
     console.log("saveVitalsToOffline---------end-----------");
+}
+//appointments
+async function saveAppointmentsToOffline(appointments)
+{
+    console.log("saveAppointmentsToOffline---------start-----------");
+    // console.log("response=> ");
+    // console.log(vitals);
+
+    
+//db open
+    let dbname = "icalite_index";
+    let dbversion=1;
+
+    db = new Dexie(dbname);
+    db.version(dbversion).stores(
+            {
+                appointments: "appointmentId"
+            }
+        );
+    db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
+    });
+// //--//
+
+// //db put//
+
+    
+    await db.appointments.bulkPut(appointments)
+    .then(function(lastKey){
+        console.error("data saved to offline");
+    })
+    .catch(Dexie.bulkError, function(e) 
+    {
+        console.error("unable to add to offline");
+        // showMessage("incorrect username or password");
+        // alert ("person Ooops: " + error);
+    });
+
+
+    console.log("saveAppointmentsToOffline---------end-----------");
 }
 
 //dexie initialization
@@ -2441,7 +2327,7 @@ function initializeView()
         {            
             console.log("vital_dttm object");
 
-            fetchOfflineVitalsWhere(vitalId_slctd);
+            fetchOfflineVitalsWhere();
             // populateVitalDetails();
 
 
@@ -2480,6 +2366,18 @@ function initializeView()
             const container2 = document.getElementById('container2');
 
             fetchAppointments(container2);
+        }
+        else if(sPage == "appnt_view_det.html")
+        {
+
+            console.log("appointments det view");
+            console.log("appointmentId_slctd => ");
+            console.log(appointmentId_slctd);
+
+
+            fetchOfflineAppointmentsWhere(appointmentId_slctd);
+
+            console.log("appointments deails populating finished");
         }
         else
         {
@@ -2635,10 +2533,12 @@ function viewReport(fileName, fileType, fileStr)
     // pdfWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + base64 + "'></iframe>");
 }
 
-let vitalId_slctd;
+
 function setSelectedVitalDetails(vitalId)
 {
-    vitalId_slctd = vitalId;
+    // vitalId_slctd = vitalId;
+
+    window.sessionStorage.setItem("vitalId",vitalId);
 
     window.location.assign('vitals_view_det.html');
     
@@ -2651,8 +2551,8 @@ function populateVitalDetails(vital)
     // console.log("vitalId_slctd => "+vitalId_slctd);
     // var resp = await fetchOfflineVitalsWhere(vitalId_slctd);
 
-    console.log("populate response=>");
-    console.log(vital);
+    // console.log("populate response=>");
+    // console.log(vital);
 
     try {
         
@@ -2759,11 +2659,44 @@ function populateVitalDetails(vital)
     // // console.log(vitalsSlct.vitalDate);
 
 }
-function viewAppointmentDetails() 
+
+//appointments
+
+function setSelectedAppointmentDetails(appointmentId)
 {
-    // console.log("viewing Appointment details");
-    window.href = "appnt_view_det.html";
+    // console.log("setSelectedAppointmentDetails");
+    // console.log("appointment id => "+appointmentId);    
+    appointmentId_slctd = appointmentId;
+    console.log("appointmentId_slctd => "+appointmentId_slctd);
+    alert("check values");
+    window.location.assign('appnt_view_det.html');
+    
 }
+function populateAppointmentDetails(appointment) 
+{
+
+
+    console.log("populate response=>");
+    console.log(appointment);
+
+    try {
+        
+        const appnt_dttm = document.getElementById("appnt_dttm");
+
+        appnt_dttm.innerHTML = appointment.appointmentDate;
+
+
+
+    } catch (error) {
+        console.log(error);
+        alert("unable to populate data");
+    }
+
+}
+//--appointment--//
+
+
+
 
 
 // function setSelectedVital(vitals)
