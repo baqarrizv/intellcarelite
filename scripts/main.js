@@ -710,14 +710,17 @@ async function addVitals()
         const url=rootUrl+"addVital";
         console.log("complete url=> "+url);
 
-        let personId=window.sessionStorage.getItem("personId"),
-            pulse,
-            bpSystolic,
-            bpDistolic,
-            tmprature,
-            respirationRate,
-            height,
-            ;
+        let personId = window.sessionStorage.getItem("personId"),
+            pulse = document.getElementById("").value,
+            bpSystolic = document.getElementById("").value,
+            bpDistolic = document.getElementById("").value,
+            tmprature = document.getElementById("").value,
+            respirationRate = document.getElementById("").value,
+            height = document.getElementById("").value,
+            weight = document.getElementById("").value,
+            spo2 = document.getElementById("").value,
+            gir = document.getElementById("").value,
+            remarks = document.getElementById("").value;
 
             // {
             //     "personId":"38995",
