@@ -685,6 +685,114 @@ async function fetchVitals(container2)
 
 }
 
+
+// async function prepareAddVitals(btn_add)
+// {
+//     btn_add.addEventListener("onClick", function (params)
+//      {
+//         addVitals();
+//     });
+
+//     // prepareAddVitals()
+// }
+
+async function addVitals()
+{
+
+    // console.log("adding vitals");
+
+    try {
+
+
+        // showMessage("processing. please wait.");
+        // showLoader(true);
+
+        const url=rootUrl+"addVital";
+        console.log("complete url=> "+url);
+
+        let personId=window.sessionStorage.getItem("personId");
+        // let actionId="5";
+
+        //dummyy input
+        // const bulkArrAct = JSON.parse(``);
+        // console.log("data=>");
+        // console.log(bulkArrAct.data);
+
+        // saveVitalsToOffline(bulkArrAct.data);
+        // container2.innerHTML = bulkArrAct.data.map(mapVitals).join('\n\n');
+
+        
+        
+        //--dummy input
+
+        //   //post
+        var response = await fetch(url, 
+        {
+            method: "POST", // POST, PUT, DELETE, etc.
+            headers: 
+            {
+            // the content type header value is usually auto-set
+            // depending on the request body
+            "Content-Type": "application/json;charset=UTF-8",
+            "Host": "203.99.60.222:1701",
+            // "Origin": "http://localhost:81"
+            "Origin": "https://admin.aldermin.com"
+            },
+            body: JSON.stringify(
+                {
+                    personId:personId,
+                    pulse:pulse,
+                    bpSystolic:bpSystolic,
+                    bpDistolic:bpDistolic,
+                    tmprature:tmprature,
+                    respirationRate:respirationRate,
+                    height:height,
+                    weight:weight,
+                    spo2:spo2,
+                    gir:gir,
+                    remarks:remarks
+                    
+                }
+                ), // string, FormData, Blob, BufferSource, or URLSearchParams
+            // referrer: "about:client", // or "" to send no Referer header,
+            // or an url from the current origin
+            // referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
+            mode: "cors", // same-origin, no-cors
+            credentials: "same-origin", // omit, include
+            cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached
+            redirect: "follow", // manual, error
+            integrity: "", // a hash, like "sha256-abcdef1234567890"
+            keepalive: false, // true
+            signal: undefined, // AbortController to abort request
+            window: window // null
+        });
+
+        if (!response.ok) {
+            console.log("unsuccessfull");
+            fetchOfflineVitals(container2);
+        }
+        else{
+            console.log("successfull");
+            // console.log("--------------response.json()----------------------");
+            // console.log(response.json());
+            response.json()
+            .then(data => {                
+                console.log("--------------data after response.json()----------------------");
+                // console.log(data);
+                saveVitalsToOffline(data);
+                container2.innerHTML = data.data.map(mapVitals).join('\n\n');
+            });
+            
+        }
+        
+    } catch (error) 
+    {
+        console.log("error => "+error.message);  
+        fetchOfflineVitals(container2);        
+    }
+
+}
+
 async function fetchMedications(container2)
 {
     try {
@@ -908,7 +1016,7 @@ async function fetchDemographicsForUpdate()
 
         if (!response.ok) {
             console.log("unsuccessfull");
-            fetchOfflineDemographics();
+            fetchOfflineDemographicsForUpd();
         }
         else{
             console.log("successfull");
@@ -919,7 +1027,8 @@ async function fetchDemographicsForUpdate()
                 console.log("--------------data after response.json()----------------------");
                 console.log(data);
                 // container2.innerHTML = data.data.map(mapVitals).join('\n\n');
-                populateDemographicsData(data.object);
+                // populateDemographicsData(data.object);
+                populateDemographicsUpdData(data.object);
             });
             
         }
@@ -927,7 +1036,119 @@ async function fetchDemographicsForUpdate()
     } catch (error) 
     {
         console.log("error => "+error.message);  
-        fetchOfflineDemographics();        
+        fetchOfflineDemographicsForUpd();        
+    }
+
+}
+async function updateDemographics(firstName, middleName, lastname, dob, maritalStatus, gender, email, streetAddress, bloodGroup, number)
+{
+    // console.log("personId => "+window.sessionStorage.getItem("personId"));
+    // console.log("firstName => "+firstName);
+    // console.log("middleName => "+middleName);
+    // console.log("lastname => "+lastname);
+    // console.log("dob => "+dob);
+    // console.log("maritalStatus => "+maritalStatus);
+    // console.log("gender => "+gender);
+    // console.log("email => "+email);
+    // console.log("streetAddress => "+streetAddress);
+    // console.log("bloodGroup => "+bloodGroup);
+    // console.log("number => "+number);
+
+    try {
+
+
+        // {
+        //     "personId":"89",
+        //     "firstName":"testFirst",
+        //     "middleName": "testMiddle",
+        //     "lastname":"testLast",
+        //     "dob":"1993-03-29T13:34:00.000",
+        //     "maritalStatus":"Single",
+        //     "gender":"Female",
+        //     "email":"abc@gmail.com",
+        //     "streetAddress":"123@street2",
+        //     "bloodGroup":"A+",
+        //     "number": "111111111"
+             
+        //  }
+
+
+        // showMessage("processing. please wait.");
+        // showLoader(true);
+
+        const url=rootUrl+"updateDemographics";
+        console.log("complete url=> "+url);
+
+        let personId=window.sessionStorage.getItem("personId");
+        // let actionId="8";
+
+        //   //post
+        var response = await fetch(url, 
+        {
+            method: "POST", // POST, PUT, DELETE, etc.
+            headers: 
+            {
+            // the content type header value is usually auto-set
+            // depending on the request body
+            "Content-Type": "application/json;charset=UTF-8",
+            "Host": "203.99.60.222:1701",
+            // "Origin": "http://localhost:81"
+            "Origin": "https://admin.aldermin.com"
+            },
+            body: JSON.stringify(
+                    {
+                        personId:personId,
+                        firstName:firstName,
+                        middleName: middleName,
+                        lastname:lastname,
+                        dob:dob,
+                        maritalStatus:maritalStatus,
+                        gender:gender,
+                        email:email,
+                        streetAddress:streetAddress,
+                        bloodGroup:bloodGroup,
+                        number: number
+                        
+                    }
+                ), // string, FormData, Blob, BufferSource, or URLSearchParams
+            // referrer: "about:client", // or "" to send no Referer header,
+            // or an url from the current origin
+            // referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
+            mode: "cors", // same-origin, no-cors
+            credentials: "same-origin", // omit, include
+            cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached
+            redirect: "follow", // manual, error
+            integrity: "", // a hash, like "sha256-abcdef1234567890"
+            keepalive: false, // true
+            signal: undefined, // AbortController to abort request
+            window: window // null
+        });
+
+        if (!response.ok) {
+            console.log("update unsuccessfull");
+            // fetchOfflineDemographicsForUpd();
+        }
+        else{
+            console.log("successfull");
+            // document.getElementById(btn_back).click();
+            window.location.replace('dash_patient.html');
+            // console.log("--------------response.json()----------------------");
+            // console.log(response.json());
+            // response.json()
+            // .then(data => {                
+            //     console.log("--------------data after response.json()----------------------");
+            //     console.log(data);
+            //     // container2.innerHTML = data.data.map(mapVitals).join('\n\n');
+            //     // populateDemographicsData(data.object);
+            //     populateDemographicsUpdData(data.object);
+            // });
+            
+        }
+        
+    } catch (error) 
+    {
+        console.log("error => "+error.message);  
+        // fetchOfflineDemographicsForUpd();        
     }
 
 }
@@ -1655,6 +1876,53 @@ function populateDemographicsData(demograph)
     demogrp_phone.innerHTML = demograph.number;
     demogrp_address.innerHTML = demograph.streetAddress;
 }
+function populateDemographicsUpdData(demograph)
+{
+    console.log("populating demogrp data");
+    console.log(demograph);
+
+    let inp_fname = document.getElementById("inp_fname");
+    let inp_mname = document.getElementById("inp_mname");
+    let inp_lname = document.getElementById("inp_lname");
+    let inp_bg = document.getElementById("inp_bloodgroup");
+    let inp_cnic = document.getElementById("inp_cnic");
+    let inp_email = document.getElementById("inp_email");
+    let inp_phone = document.getElementById("inp_phone");
+    let inp_address = document.getElementById("inp_address");
+    let btn_upd = document.getElementById("btn_update");
+    
+
+    // console.log("fname => "+demograph.firstName);
+    // inp_fname.innerHTML = demograph.firstName;
+    inp_fname.value = demograph.firstName;
+    inp_mname.value = demograph.middleName;
+    inp_lname.value = demograph.lastname;
+    inp_bg.value = demograph.bloodGroup;
+    inp_cnic.value = demograph.cnic;
+    inp_email.value = demograph.email;
+    inp_phone.value = demograph.number;
+    inp_address.value = demograph.streetAddress;
+
+    btn_upd.addEventListener("click", function (params) 
+    {
+        // console.log("updating");
+
+        let firstName = inp_fname.value, 
+        middleName = inp_mname.value, 
+        lastname = inp_lname.value, 
+        dob = "1993-03-29T13:34:00.000", 
+        maritalStatus = "Married", 
+        gender = "Male", 
+        email = inp_email.value, 
+        streetAddress = inp_address.value, 
+        bloodGroup = inp_bg.value, 
+        number = inp_phone.value;
+
+
+
+        updateDemographics(firstName, middleName, lastname, dob, maritalStatus, gender, email, streetAddress, bloodGroup, number);
+    });
+}
 
 //--//
 function populateDrawerData()
@@ -2050,6 +2318,48 @@ function fetchOfflineDemographics()
         "data": null
     }`);
     populateDemographicsData(bulkArrAct.object);
+    // container2.innerHTML = bulkArrAct.data.map(mapDemographics).join('\n\n');
+
+    
+}
+
+function fetchOfflineDemographicsForUpd()
+{
+
+    const bulkArrAct = JSON.parse(`{
+        "detail": "Data Returnd",
+        "status": "Ok 200",
+        "object": {
+            "personId": 38995,
+            "name": null,
+            "mrNo": null,
+            "gender": "Male",
+            "age": null,
+            "number": null,
+            "bloodGroup": "A-",
+            "firstName": "Interactive",
+            "middleName": null,
+            "lastname": "Group",
+            "dob": 84513600000,
+            "maritalStatus": "Marride",
+            "cnic": "00000-0010000-0",
+            "email": null,
+            "streetAddress": "HOUSE NO. 278-A, TAPALI STREET",
+            "district": "Karachi West",
+            "province": "Sindh",
+            "city": "Karachi West",
+            "country": "Pakistan",
+            "base64EncodedPicture": null,
+            "designation": null,
+            "speciality": null,
+            "qualification": null,
+            "languages": null,
+            "experiance": null,
+            "hospital": null
+        },
+        "data": null
+    }`);
+    populateDemographicsUpdData(bulkArrAct.object);
     // container2.innerHTML = bulkArrAct.data.map(mapDemographics).join('\n\n');
 
     
@@ -2778,6 +3088,36 @@ function initializeView()
     
             // populateDrawerData();
             // btn_back.addEve
+    
+        }
+        else if(sPage == "vitals_add.html")
+        {
+            const btn_add = document.getElementById('btn_add');
+
+            btn_add.onclick = function () 
+            {
+                // console.log("clickedss");
+                addVitals();
+            };
+            // btn_add.addEventListener("onClick", addVitals());
+
+
+
+            // alert("getting vitals");
+            // const container2 = document.getElementById('container2');
+            // prepareAddVitals(btn_add);
+    
+            // const btn_back = document.getElementById('btn_back');
+    
+            // //--//
+            // btn_back.addEventListener("click", function()
+            // {
+    
+            //     console.log("back to list");
+            //     // window.location.href="page1.html";
+            // });
+            
+    
     
         }
         else if(sPage == "vitals_view.html")
