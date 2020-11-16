@@ -502,6 +502,25 @@ async function fetchVitals(container2)
                     "personId": null
                 },
                 {
+                    "vitalId": 40903,
+                    "vitalDate": 1544131493266,
+                    "pulse": null,
+                    "bpSystolic": null,
+                    "bpDistolic": null,
+                    "tmprature": null,
+                    "respirationRate": "60",
+                    "height": null,
+                    "weight": "2",
+                    "spo2": "98",
+                    "bloodSugarR": null,
+                    "blooSugarF": null,
+                    "gir": null,
+                    "painScale": null,
+                    "remarks": null,
+                    "bmi": "0",
+                    "personId": null
+                },
+                {
                     "vitalId": 40902,
                     "vitalDate": 1544131493264,
                     "pulse": "34",
@@ -736,6 +755,77 @@ async function fetchDemographics()
     }
 
 }
+async function fetchDemographicsForUpdate()
+{
+    try {
+
+
+        // showMessage("processing. please wait.");
+        // showLoader(true);
+
+        const url=rootUrl+"viewDemographics";
+        console.log("complete url=> "+url);
+
+        let personId=window.sessionStorage.getItem("personId");
+        let actionId="8";
+
+        //   //post
+        var response = await fetch(url, 
+        {
+            method: "POST", // POST, PUT, DELETE, etc.
+            headers: 
+            {
+            // the content type header value is usually auto-set
+            // depending on the request body
+            "Content-Type": "application/json;charset=UTF-8",
+            "Host": "203.99.60.222:1701",
+            // "Origin": "http://localhost:81"
+            "Origin": "https://admin.aldermin.com"
+            },
+            body: JSON.stringify(
+                    {
+                        personId:personId,
+                        actionId:actionId
+                    }
+                ), // string, FormData, Blob, BufferSource, or URLSearchParams
+            // referrer: "about:client", // or "" to send no Referer header,
+            // or an url from the current origin
+            // referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
+            mode: "cors", // same-origin, no-cors
+            credentials: "same-origin", // omit, include
+            cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached
+            redirect: "follow", // manual, error
+            integrity: "", // a hash, like "sha256-abcdef1234567890"
+            keepalive: false, // true
+            signal: undefined, // AbortController to abort request
+            window: window // null
+        });
+
+        if (!response.ok) {
+            console.log("unsuccessfull");
+            fetchOfflineDemographics();
+        }
+        else{
+            console.log("successfull");
+            // console.log("--------------response.json()----------------------");
+            // console.log(response.json());
+            response.json()
+            .then(data => {                
+                console.log("--------------data after response.json()----------------------");
+                console.log(data);
+                // container2.innerHTML = data.data.map(mapVitals).join('\n\n');
+                populateDemographicsData(data.object);
+            });
+            
+        }
+        
+    } catch (error) 
+    {
+        console.log("error => "+error.message);  
+        fetchOfflineDemographics();        
+    }
+
+}
 
 async function fetchAppointments(container2)
 {
@@ -752,6 +842,81 @@ async function fetchAppointments(container2)
 
         let personId=window.sessionStorage.getItem("personId");
         let actionId="10";
+
+        ////dummy data
+        const bulkArrAct = JSON.parse(`{
+            "detail": "Data Returnd",
+            "status": "Ok 200",
+            "object": null,
+            "data": [
+                {
+                    "appointmentId": 182347,
+                    "personId": null,
+                    "appointmentDate": 1617024840000,
+                    "doctorname": "Interactive Group",
+                    "speciality": "Skin",
+                    "specialityId": null,
+                    "type": "First Visit",
+                    "doctorShift": null,
+                    "slotDuration": null,
+                    "remarks": null,
+                    "complaint": "Fever",
+                    "doctorId": null,
+                    "priorityId": null,
+                    "status": "Scheduled"
+                },
+                {
+                    "appointmentId": 182346,
+                    "personId": null,
+                    "appointmentDate": 1617057240000,
+                    "doctorname": "Interactive Group",
+                    "speciality": "Skin",
+                    "specialityId": null,
+                    "type": "First Visit",
+                    "doctorShift": null,
+                    "slotDuration": null,
+                    "remarks": null,
+                    "complaint": "Fever",
+                    "doctorId": null,
+                    "priorityId": null,
+                    "status": "Scheduled"
+                },
+                {
+                    "appointmentId": 182345,
+                    "personId": null,
+                    "appointmentDate": 1617057240000,
+                    "doctorname": "Interactive Group",
+                    "speciality": "Skin",
+                    "specialityId": null,
+                    "type": "First Visit",
+                    "doctorShift": null,
+                    "slotDuration": null,
+                    "remarks": null,
+                    "complaint": "Fever",
+                    "doctorId": null,
+                    "priorityId": null,
+                    "status": "Scheduled"
+                },
+                {
+                    "appointmentId": 182344,
+                    "personId": null,
+                    "appointmentDate": null,
+                    "doctorname": "Interactive Group",
+                    "speciality": "Skin",
+                    "specialityId": null,
+                    "type": "First Visit",
+                    "doctorShift": null,
+                    "slotDuration": null,
+                    "remarks": null,
+                    "complaint": "Fever",
+                    "doctorId": null,
+                    "priorityId": null,
+                    "status": "Scheduled"
+                }
+            ]
+        }`);
+        saveAppointmentsToOffline(bulkArrAct.data);
+        //--dummy data--//
 
         //   //post
         var response = await fetch(url, 
@@ -797,6 +962,7 @@ async function fetchAppointments(container2)
             .then(data => {                
                 // console.log("--------------data after response.json()----------------------");
                 // console.log(data);
+                saveAppointmentsToOffline(data);
                 container2.innerHTML = data.data.map(mapAppointments).join('\n\n');
             });
             
@@ -1145,20 +1311,57 @@ function mapVitals(vitals)
 function mapAppointments(appointments)
 {
 
-    let date = new Date(appointments.appointmentDate);
-    // let docName = appointments.doctorname;
+    let appointmentDate = new Date(appointments.appointmentDate);
+    let date, time;
 
-    
-    let dataRow = `<tr>
+    if(appointments.appointmentDate == "" || appointments.appointmentDate==null)
+    {
+        // date = "~";
+        return `<tr>
                         <th scope="row">${appointments.doctorname}</th>
-                        <td class="color-green1-dark">`+date.toDateString()+`</td>
-                        <td><i onclick="viewAppointmentDetails()" title="view details" class="fa fa-arrow-right rotate-45 color-green1-dark"></i></td>
+                        <td class="color-green1-dark">~</td>
+                        <td><i onclick='setSelectedAppointmentDetails(${appointments.appointmentId})' title="view details" class="fa fa-arrow-right rotate-45 color-green1-dark"></i></td>
                     </tr>`;   
-    
+    }
+    else{
+
+        let
+    //  day = vitalDate.getDay(),
+        dd = appointmentDate.getDate(),
+        mm = appointmentDate.getMonth(), 
+        yy = appointmentDate.getFullYear(), 
+        hh = appointmentDate.getHours(),
+        min = appointmentDate.getMinutes(), 
+        sec = appointmentDate.getSeconds(),
+        meridian="AM";
+
+        // var days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+        var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+        if(hh<12)
+        {
+            meridian = "PM";
+        }
+        else{
+            meridian = "AM";   
+        }
+
+        date = dd+"-"+months[mm]+"-"+yy;
+        time = hh+":"+min+":"+sec+" "+meridian;
+
+        return `<tr>
+                    <th scope="row">${appointments.doctorname}</th>
+                    <td class="color-green1-dark">`+date+`, `+time+`</td>
+                    <td><i onclick='setSelectedAppointmentDetails(${appointments.appointmentId})' title="view details" class="fa fa-arrow-right rotate-45 color-green1-dark"></i></td>
+                </tr>`;   
+
+        // date = date.toDateString();
+    }
+
     
     
 
-    return dataRow;
+    
 }
 
 function mapReports(reports)
@@ -1459,10 +1662,13 @@ async function fetchOfflineVitals(container2)
     
 }
 
-async function fetchOfflineVitalsWhere(vitalId)
+async function fetchOfflineVitalsWhere()
 {
 
-    // const bulkArrAct = JSON.parse();
+
+    // vitalId = window.sessionStorage.getItem("vitalId");
+    let vitalId = parseInt(window.sessionStorage.getItem("vitalId"));
+    // console.log("fetchOfflineVitalsWhere; vitalId => "+vitalId);
 
     //db open
     let dbname = "icalite_index";
@@ -1479,12 +1685,12 @@ async function fetchOfflineVitalsWhere(vitalId)
     });
 // //--//
 
-    await db.vitals.where('vitalId').equals(vitalId)
-    .then(function(result){
-        console.log("result where => ");
-        console.log(result);
+    await db.vitals.where({vitalId:vitalId})
+    .first(vitals => {
+        // console.log("result where => ");
+        // console.log(vitals);
 
-        populateVitalDetails(result);
+        populateVitalDetails(vitals);
 
     })
     .catch(function (error) {
@@ -1564,321 +1770,107 @@ function fetchOfflineDemographics()
     
 }
 
-function fetchOfflineAppointments(container2)
+
+async function fetchOfflineAppointments(container2)
 {
 
-    const bulkArrAct = JSON.parse(`{
-        "detail": "Data Returnd",
-        "status": "Ok 200",
-        "object": null,
-        "data": [
-            {
-                "personId": null,
-                "appointmentDate": 1617024840000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617024840000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617024840000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617024840000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617024840000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": 1617057240000,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": null,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": null,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": null,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": null,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            },
-            {
-                "personId": null,
-                "appointmentDate": null,
-                "doctorname": "Interactive Group",
-                "speciality": "Skin",
-                "specialityId": null,
-                "type": "First Visit",
-                "doctorShift": null,
-                "slotDuration": null,
-                "remarks": null,
-                "complaint": "Fever",
-                "doctorId": null,
-                "priorityId": null,
-                "status": "Scheduled"
-            }
-        ]
-    }`);
+    // const bulkArrAct = JSON.parse();
 
-    container2.innerHTML = bulkArrAct.data.map(mapAppointments).join('\n\n');
+    //db open
+    let dbname = "icalite_index";
+    let dbversion=1;
+
+    db = new Dexie(dbname);
+    db.version(dbversion).stores(
+            {
+                appointments: "appointmentId"
+            }
+        );
+    db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
+    });
+// //--//
+
+    await db.appointments.toArray()
+    .then(function (result) {
+        // console.log("result => ");
+        // console.log(result);
+        container2.innerHTML = result.map(mapAppointments).join('\n\n');
+
+        // alert("view result");
+    })
+    .catch(function(error)
+    {
+        console.log("error in offline vital fetch");
+
+        // alert("view result");
+        // alert("user not found");
+    });
+    // console.log("get response =>");
+    // console.log(resp);
+    
+
+    // container2.innerHTML = bulkArrAct.data.map(mapVitals).join('\n\n');
 
     
 }
+
+async function fetchOfflineAppointmentsWhere()
+{
+    appointmentId = parseInt(window.sessionStorage.getItem('appointmentId'));
+
+    console.log("fetch offline appointment => ");
+    console.log(appointmentId);
+    // const bulkArrAct = JSON.parse();
+
+    //db open
+    let dbname = "icalite_index";
+    let dbversion=1;
+
+    db = new Dexie(dbname);
+    db.version(dbversion).stores(
+            {
+                appointments: "appointmentId"
+            }
+        );
+    await db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
+    });
+// //--//
+
+
+    await db.appointments.where({appointmentId:appointmentId})
+    .first(appointments => {
+        // console.log("result where => ");
+        // console.log(appointments);
+
+        populateAppointmentDetails(appointments);
+
+    })
+    .catch(function (error) {
+        console.log("error in offline appointments fetch");
+    });
+
+
+
+
+
+    // await db.appointments.where('appointmentId').equals(appointmentId)
+    // .then(function(result){
+    //     console.log("result where => ");
+    //     console.log(result);
+
+    //     populateAppointmentDetails(result);
+
+    // })
+    // .catch(function (error) {
+    //     console.log("error in offline appointment fetch");
+    // });
+
+    
+}
+
+
 function fetchOfflineReports(container2)
 {
 
@@ -2088,7 +2080,7 @@ function fetchOfflineReports(container2)
 }
 
 //vitals
-function saveVitalsToOffline(vitals)
+async function saveVitalsToOffline(vitals)
 {
     console.log("saveVitalsToOffline---------start-----------");
     // console.log("response=> ");
@@ -2117,7 +2109,7 @@ function saveVitalsToOffline(vitals)
     // console.log(vitals);
 
     // db.vitals.bulkPut(JSON.parse("["+ JSON.stringify(vitals) +"]"))
-    db.vitals.bulkPut(vitals)
+    await db.vitals.bulkPut(vitals)
     .then(function(lastKey){
         console.error("data saved to offline");
     })
@@ -2130,6 +2122,46 @@ function saveVitalsToOffline(vitals)
 
 
     console.log("saveVitalsToOffline---------end-----------");
+}
+//appointments
+async function saveAppointmentsToOffline(appointments)
+{
+    console.log("saveAppointmentsToOffline---------start-----------");
+    // console.log("response=> ");
+    // console.log(vitals);
+
+    
+//db open
+    let dbname = "icalite_index";
+    let dbversion=1;
+
+    db = new Dexie(dbname);
+    db.version(dbversion).stores(
+            {
+                appointments: "appointmentId"
+            }
+        );
+    db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
+    });
+// //--//
+
+// //db put//
+
+    
+    await db.appointments.bulkPut(appointments)
+    .then(function(lastKey){
+        console.error("data saved to offline");
+    })
+    .catch(Dexie.bulkError, function(e) 
+    {
+        console.error("unable to add to offline");
+        // showMessage("incorrect username or password");
+        // alert ("person Ooops: " + error);
+    });
+
+
+    console.log("saveAppointmentsToOffline---------end-----------");
 }
 
 //dexie initialization
@@ -2441,7 +2473,7 @@ function initializeView()
         {            
             console.log("vital_dttm object");
 
-            fetchOfflineVitalsWhere(vitalId_slctd);
+            fetchOfflineVitalsWhere();
             // populateVitalDetails();
 
 
@@ -2464,6 +2496,16 @@ function initializeView()
 
             // alert("getting demograp");
         }
+        else if(sPage == "demogrp_update.html")
+        {
+            console.log("demographics update");
+
+            // const demogrp_name = document.getElementById('demogrp_name');
+
+            fetchDemographicsForUpdate();
+
+            // alert("getting demograp");
+        }
         else if(sPage == "report_view.html")
         {
             // alert("getting demograp");
@@ -2480,6 +2522,18 @@ function initializeView()
             const container2 = document.getElementById('container2');
 
             fetchAppointments(container2);
+        }
+        else if(sPage == "appnt_view_det.html")
+        {
+
+            // console.log("appointments det view");
+            // console.log("appointmentId_slctd => ");
+            // console.log(appointmentId_slctd);
+
+
+            fetchOfflineAppointmentsWhere();
+
+            console.log("appointments deails populating finished");
         }
         else
         {
@@ -2635,10 +2689,12 @@ function viewReport(fileName, fileType, fileStr)
     // pdfWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + base64 + "'></iframe>");
 }
 
-let vitalId_slctd;
+
 function setSelectedVitalDetails(vitalId)
 {
-    vitalId_slctd = vitalId;
+    // vitalId_slctd = vitalId;
+
+    window.sessionStorage.setItem("vitalId",vitalId);
 
     window.location.assign('vitals_view_det.html');
     
@@ -2648,14 +2704,17 @@ function setSelectedVitalDetails(vitalId)
 function populateVitalDetails(vital) 
 {
 
-    // console.log("vitalId_slctd => "+vitalId_slctd);
+    // console.log("vitalId_slctd => "+vital.vitalId);
     // var resp = await fetchOfflineVitalsWhere(vitalId_slctd);
 
-    console.log("populate response=>");
-    console.log(vital);
+    // console.log("populate response=>");
+    // console.log(vital);
+
+    
+
 
     try {
-        
+
         const vital_dttm = document.getElementById("vital_dttm");
         const vital_pulse = document.getElementById("vital_pulse");
         const vital_bp = document.getElementById("vital_bp");
@@ -2672,21 +2731,195 @@ function populateVitalDetails(vital)
         const vital_remarks = document.getElementById("vital_remarks");
         const vital_bmi = document.getElementById("vital_bmi");
 
-        vital_dttm.innerHTML = vital.vitalDate;
-        vital_pulse.innerHTML = vital.pulse;
-        vital_bp.innerHTML = vital.bpSystolic+"/"+vital.bpDistolic;
-        vital_temp.innerHTML = vital.tmprature;
-        vital_resprate.innerHTML = vital.respirationRate;
-        vital_height.innerHTML = vital.height;
-        vital_weight.innerHTML = vital.weight;
-        vital_spo2.innerHTML = vital.spo2;
-        vital_sugarr.innerHTML = vital.bloodSugarR;
-        vital_sugarf.innerHTML = vital.blooSugarF;
-        vital_gir.innerHTML = vital.gir;
-        vital_painscale.innerHTML = vital.painScale;
-        vital_fallrisk.innerHTML = vital.fallRisk;
-        vital_remarks.innerHTML = vital.remarks;
-        vital_bmi.innerHTML = vital.bmi;
+
+
+        let vital_datetime = new Date(vital.vitalDate);
+
+        // console.log("vital.vitalDate => "+vital.vitalDate);
+        // console.log("vital_datetime => "+vital_datetime);
+
+        if(vital.vitalDate == "" || vital.vitalDate==null)
+        {
+            vital_dttm.innerHTML = "~";
+            // date = "~";
+            // vital_date.innerHTML = "~";
+            // vital_time.innerHTML = "~";
+        }
+        else{
+
+            let
+        //  day = vitalDate.getDay(),
+            dd = vital_datetime.getDate(),
+            mm = vital_datetime.getMonth(), 
+            yy = vital_datetime.getFullYear(), 
+            hh = vital_datetime.getHours(),
+            min = vital_datetime.getMinutes(), 
+            sec = vital_datetime.getSeconds(),
+            meridian="AM";
+
+            // var days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+            var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+            if(hh<12)
+            {
+                meridian = "PM";
+            }
+            else{
+                meridian = "AM";   
+            }
+
+            let date = dd+"-"+months[mm]+"-"+yy,
+            time = hh+":"+min+":"+sec+" "+meridian;
+
+
+            // console.log("date=>"+date);
+            // console.log("tmie=>"+time);
+            vital_dttm.innerHTML = date+", "+time;
+            // vital_date.innerHTML = date;
+            // vital_time.innerHTML = time;
+        }
+
+
+
+        //pulse
+        if(vital.pulse == "" || vital.pulse==null)
+        {
+            vital_pulse.innerHTML = "~";
+        }
+        else{
+            vital_pulse.innerHTML = vital.pulse;
+        }
+
+
+        //bp
+        if(vital.bpSystolic == "" || vital.bpSystolic==null)
+        {
+            if(vital.bpDistolic == "" || vital.bpDistolic==null)
+            {
+                vital_bp.innerHTML = "~";
+            }
+            else{
+                vital_bp.innerHTML = "~/"+vital.bpDistolic;
+            }
+        }
+        else{
+            // vital_bp.innerHTML = vital.pulse;
+            if(vital.bpDistolic == "" || vital.bpDistolic==null)
+            {
+                vital_bp.innerHTML = vital.bpSystolic+"/~";
+            }
+            else{
+                vital_bp.innerHTML = vital.bpSystolic+"/"+vital.bpDistolic;
+            }
+        }
+
+        //temp
+        if(vital.tmprature == "" || vital.tmprature==null)
+        {
+            vital_temp.innerHTML = "~";
+        }
+        else{
+            vital_temp.innerHTML = vital.tmprature;
+        }
+
+        //resp rate
+        if(vital.respirationRate == "" || vital.respirationRate==null)
+        {
+            vital_resprate.innerHTML = "~";
+        }
+        else{
+            vital_resprate.innerHTML = vital.respirationRate;
+        }
+
+        //height
+        if(vital.height == "" || vital.height==null)
+        {
+            vital_height.innerHTML = "~";
+        }
+        else{
+            vital_height.innerHTML = vital.height;
+        }
+
+        //weight
+        if(vital.weight == "" || vital.weight==null)
+        {
+            vital_weight.innerHTML = "~";
+        }
+        else{
+            vital_weight.innerHTML = vital.weight;
+        }
+
+        //spo2
+        if(vital.spo2 == "" || vital.spo2==null)
+        {
+            vital_spo2.innerHTML = "~";
+        }
+        else{
+            vital_spo2.innerHTML = vital.spo2;
+        }
+
+        //sugarr
+        if(vital.bloodSugarR == "" || vital.bloodSugarR==null)
+        {
+            vital_sugarr.innerHTML = "~";
+        }
+        else{
+            vital_sugarr.innerHTML = vital.bloodSugarR;
+        }
+
+        //sugarf
+        if(vital.blooSugarF == "" || vital.blooSugarF==null)
+        {
+            vital_sugarf.innerHTML = "~";
+        }
+        else{
+            vital_sugarf.innerHTML = vital.blooSugarF;
+        }
+
+        //gir
+        if(vital.gir == "" || vital.gir==null)
+        {
+            vital_gir.innerHTML = "~";
+        }
+        else{
+            vital_gir.innerHTML = vital.gir;
+        }
+
+        //painscale
+        if(vital.painScale == "" || vital.painScale==null)
+        {
+            vital_painscale.innerHTML = "~";
+        }
+        else{
+            vital_painscale.innerHTML = vital.painScale;
+        }
+
+        //fall risk
+        if(vital.fallRisk == "" || vital.fallRisk==null)
+        {
+            vital_fallrisk.innerHTML = "~";
+        }
+        else{
+            vital_fallrisk.innerHTML = vital.fallRisk;
+        }
+
+        //remarks
+        if(vital.remarks == "" || vital.remarks==null)
+        {
+            vital_remarks.innerHTML = "~";
+        }
+        else{
+            vital_remarks.innerHTML = vital.remarks;
+        }
+
+        //bmi
+        if(vital.bmi == "" || vital.bmi==null)
+        {
+            vital_bmi.innerHTML = "~";
+        }
+        else{
+            vital_bmi.innerHTML = vital.bmi;
+        }
 
 
 
@@ -2695,75 +2928,110 @@ function populateVitalDetails(vital)
         alert("unable to populate data");
     }
 
-
-    // console.log("viewing vital details");
-    // console.log("dateTime => "+dateTime);
-
-    // window.location.assign('vitals_view_det.html');
-
-    // try {
-        
-    //     const vital_dttm = document.getElementById("vital_dttm");
-
-    //     vital_dttm.innerHTML = dateTime;
-
-
-
-    // } catch (error) {
-    //     console.log(error);
-    //     alert("unable to populate data");
-    // }
-
-
-    // window.location.assign('vitals_view_det.html');
-    
-    // window.addEventListener("load", function()
-    // {
-    //     console.log("loading compelte");
-
-        // try {
-        
-        //     const vital_dttm = document.getElementById("vital_dttm");
-    
-        //     vital_dttm.innerHTML = vital_dttm;
-    
-    
-    
-        // } catch (error) {
-        //     console.log(error);
-        //     alert("unable to populate data");
-        // }
-    // });
-
-    
-
-
-
-    // console.log("dateTime => "+dateTime);
-    // console.log("pulse => "+pulse);
-
-    // alert(JSON.stringify(vitals));
-
-    // console.log(JSON.stringify(vitals));
-    // console.log(vitals);
-    // console.log(JSON.parse(vitals));
-    // console.log(vitals.vitalDate);
-
-    // setSelectedVital(vitals);
-    // window.location.href = "vitals_view_det.html";   
-
-    // console.log(getSelectedVital());
-    // var vitalsSlct = JSON.stringify(getSelectedVital());
-    // console.log("===========stringify=========");
-    // console.log(vitalsSlct);
-    // // console.log(vitalsSlct.vitalDate);
-
 }
-function viewAppointmentDetails() 
+
+//appointments
+
+function setSelectedAppointmentDetails(appointmentId)
 {
-    // console.log("viewing Appointment details");
-    window.href = "appnt_view_det.html";
+    window.sessionStorage.setItem("appointmentId", appointmentId);
+
+    // console.log("setSelectedAppointmentDetails");
+    // console.log("appointment id => "+appointmentId);    
+    // appointmentId_slctd = appointmentId;
+    // console.log("appointmentId_slctd => "+appointmentId_slctd);
+    // alert("check values");
+    window.location.assign('appnt_view_det.html');
+    
 }
+function populateAppointmentDetails(appointments) 
+{
+
+
+    // console.log("populate response=>");
+    // console.log(appointment);
+
+    try {
+        
+        const appnt_date = document.getElementById("appnt_date");
+        const appnt_name = document.getElementById("appnt_name");
+        const appnt_specialty = document.getElementById("appnt_specialty");
+        const appnt_type = document.getElementById("appnt_type");
+        const appnt_shift = document.getElementById("appnt_shift");
+        const appnt_time = document.getElementById("appnt_time");
+        const appnt_slottime = document.getElementById("appnt_slottime");
+        const appnt_remarks = document.getElementById("appnt_remarks");
+
+
+
+        let appointmentDate = new Date(appointments.appointmentDate);
+
+        if(appointments.appointmentDate == "" || appointments.appointmentDate==null)
+        {
+            // date = "~";
+            appnt_date.innerHTML = "~";
+            appnt_time.innerHTML = "~";
+        }
+        else{
+
+            let
+        //  day = vitalDate.getDay(),
+            dd = appointmentDate.getDate(),
+            mm = appointmentDate.getMonth(), 
+            yy = appointmentDate.getFullYear(), 
+            hh = appointmentDate.getHours(),
+            min = appointmentDate.getMinutes(), 
+            sec = appointmentDate.getSeconds(),
+            meridian="AM";
+
+            // var days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+            var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+            if(hh<12)
+            {
+                meridian = "PM";
+            }
+            else{
+                meridian = "AM";   
+            }
+
+            let date = dd+"-"+months[mm]+"-"+yy,
+            time = hh+":"+min+":"+sec+" "+meridian;
+
+
+            appnt_date.innerHTML = date;
+            appnt_time.innerHTML = time;
+        }
+
+        
+        appnt_name.innerHTML = appointments.doctorname;
+        appnt_specialty.innerHTML = appointments.speciality;
+        appnt_type.innerHTML = appointments.type;
+        appnt_shift.innerHTML = appointments.doctorShift;
+        appnt_slottime.innerHTML = appointments.slotDuration;
+        appnt_remarks.innerHTML = appointments.remarks;
+
+
+
+    } catch (error) {
+        console.log(error);
+        alert("unable to populate data");
+
+        appnt_date.innerHTML = "~";
+        appnt_time.innerHTML = "~";
+        appnt_name.innerHTML = "~";
+        appnt_specialty.innerHTML =  "~";
+        appnt_type.innerHTML =  "~";
+        appnt_shift.innerHTML =  "~";
+        appnt_slottime.innerHTML =  "~";
+        appnt_remarks.innerHTML =  "~";
+    }
+
+}
+//--appointment--//
+
+
+
 
 
 // function setSelectedVital(vitals)
