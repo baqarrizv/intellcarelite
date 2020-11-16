@@ -684,6 +684,111 @@ async function fetchVitals(container2)
     }
 
 }
+
+async function fetchMedications(container2)
+{
+    try {
+
+
+        // showMessage("processing. please wait.");
+        // showLoader(true);
+
+        const url=rootUrl+"viewMedications";
+        console.log("complete url=> "+url);
+
+        let personId=window.sessionStorage.getItem("personId");
+        let actionId="7";
+
+        //dummyy input
+        const bulkArrAct = JSON.parse(`{
+            "detail": "Data Returnd",
+            "status": "Ok 200",
+            "object": null,
+            "data": [
+                {
+                    "medicationId": "1001",
+                    "medicine": "Panadol Cf (Beecham) Tablets",
+                    "treatmentDate": 1543849938966,
+                    "doctor": "Interactive Group",
+                    "diagnosis": "Cholera due to Vibrio cholerae 01, biovar eltor",
+                    "dosage": "1",
+                    "frequency": null,
+                    "route": null,
+                    "startDate": 1543813200000,
+                    "endDate": 1543813200000,
+                    "remarks": null
+                }
+            ]
+        }`);
+        // console.log("data=>");
+        // console.log(bulkArrAct.data);
+        saveMedicationsToOffline(bulkArrAct.data);
+        // container2.innerHTML = bulkArrAct.data.map(mapVitals).join('\n\n');
+
+        
+        
+        //--dummy input
+
+        //   //post
+        var response = await fetch(url, 
+        {
+            method: "POST", // POST, PUT, DELETE, etc.
+            headers: 
+            {
+            // the content type header value is usually auto-set
+            // depending on the request body
+            "Content-Type": "application/json;charset=UTF-8",
+            "Host": "203.99.60.222:1701",
+            // "Origin": "http://localhost:81"
+            "Origin": "https://admin.aldermin.com"
+            },
+            body: JSON.stringify(
+                    {
+                        personId:personId,
+                        actionId:actionId
+                    }
+                ), // string, FormData, Blob, BufferSource, or URLSearchParams
+            // referrer: "about:client", // or "" to send no Referer header,
+            // or an url from the current origin
+            // referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
+            mode: "cors", // same-origin, no-cors
+            credentials: "same-origin", // omit, include
+            cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached
+            redirect: "follow", // manual, error
+            integrity: "", // a hash, like "sha256-abcdef1234567890"
+            keepalive: false, // true
+            signal: undefined, // AbortController to abort request
+            window: window // null
+        });
+
+        if (!response.ok) {
+            console.log("unsuccessfull");
+            fetchOfflineMedications(container2);
+        }
+        else{
+            console.log("successfull");
+            // console.log("--------------response.json()----------------------");
+            // console.log(response.json());
+            response.json()
+            .then(data => {                
+                console.log("--------------data after response.json()----------------------");
+                // console.log(data);
+                saveMedicationsToOffline(data);
+                mapMedications(result, container2);
+                // container2.innerHTML = data.data.map(mapMedications).join('\n\n');
+            });
+            
+        }
+        
+    } catch (error) 
+    {
+        console.log("error => "+error.message);  
+        fetchOfflineMedications(container2);        
+    }
+
+}
+
+
 async function fetchDemographics()
 {
     try {
@@ -1308,6 +1413,142 @@ function mapVitals(vitals)
 
     return dataRow;
 }
+
+
+
+
+
+
+
+// (function() {
+//     'use strict';
+//     var tabs = [
+        // {paneId: 'tab1', title_medi: '1', content_medi: '<div class="row mb-3 mt-4"> <h5 class="col-4 text-left font-15">Medicene : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Panadol CF Tablets</h5> <h5 class="col-4 text-left font-15">Treatment Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">13-Oct-2020</h5> <h5 class="col-4 text-left font-15">Doctor : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Dr. Farhan</h5> <h5 class="col-4 text-left font-15">Diagnosis : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Paratyphoid fever C</h5> <h5 class="col-4 text-left font-15">Dosage : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">2+2+2+2 - Tablet</h5> <h5 class="col-4 text-left font-15">Frequency : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">^ Hourly</h5> <h5 class="col-4 text-left font-15">Route : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Oral</h5> <h5 class="col-4 text-left font-15">Start Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">05-May-2020</h5> <h5 class="col-4 text-left font-15">End Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">08-May-2020</h5> <h5 class="col-4 text-left font-15">Doctor Remarks : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Recommended Bed Rest 8 Days Take Leave From Office Work From Home </h5> </div>', active_tab: true, disabled: false},
+//         {paneId: 'tab2', title_medi: '2', content_medi: 'Index 2 Content', active_tab: false, disabled: false}
+    
+//   ],
+//   lastTabId = 11;
+//   $(activate);
+//   function activate() {
+//     $('.tabs-inside-here').scrollingTabs({
+//       tabs: tabs, // required,
+//       propPaneId: 'paneId', // optional - pass in default value for demo purposes
+//       propTitle: 'title_medi', // optional - pass in default value for demo purposes
+//       propActive: 'active_tab', // optional - pass in default value for demo purposes
+//       propDisabled: 'disabled', // optional - pass in default value for demo purposes
+//       propContent: 'content_medi', // optional - pass in default value for demo purposes
+//       scrollToTabEdge: false, // optional - pass in default value for demo purposes
+//       disableScrollArrowsOnFullyScrolled: false // optional- pass in default value for demo purposes
+//     });
+//   }
+// }());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function mapMedications(medication, container2)
+{
+    // console.log("mapping medications");
+    // console.log(medication);
+    // console.log("00=> ");
+    // console.log("lenght=> "+medication.length);
+
+    var tabs=[];
+    for (let i = 0; i < medication.length; i++) 
+    {
+        // const element = array[i];
+        // console.log(i+"=> ");
+        // console.log(medication[i]);
+
+        var obj = medication[i];
+
+        let treatmentDate = new Date(obj.treatmentDate);
+        let sDate = new Date(obj.startDate);
+        let eDate = new Date(obj.endDate);
+
+        tabs.push({paneId: (i+1), title_medi: '1', content_medi: '<div class="row mb-3 mt-4"> <h5 class="col-4 text-left font-15">Medicene : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.medicine+'</h5> <h5 class="col-4 text-left font-15">Treatment Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+treatmentDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">Doctor : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.doctor+'</h5> <h5 class="col-4 text-left font-15">Diagnosis : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.diagnosis+'</h5> <h5 class="col-4 text-left font-15">Dosage : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.dosage+'</h5> <h5 class="col-4 text-left font-15">Frequency : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.frequency+'</h5> <h5 class="col-4 text-left font-15">Route : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.route+'</h5> <h5 class="col-4 text-left font-15">Start Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+sDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">End Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+eDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">Doctor Remarks : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.remarks+' </h5> </div>', active_tab: true, disabled: false});
+
+
+        
+    }
+
+    // console.log(tabs);
+    // console.log(tabs[0]);
+    // console.log(tabs[0].content_medi);
+
+
+
+    container2.innerHTML = tabs[0].content_medi;
+    
+    
+    
+    // scrollingTabs({
+    //     tabs: tabs, // required,
+    //     propPaneId: 'paneId', // optional - pass in default value for demo purposes
+    //     propTitle: 'title_medi', // optional - pass in default value for demo purposes
+    //     propActive: 'active_tab', // optional - pass in default value for demo purposes
+    //     propDisabled: 'disabled', // optional - pass in default value for demo purposes
+    //     propContent: 'content_medi', // optional - pass in default value for demo purposes
+    //     scrollToTabEdge: false, // optional - pass in default value for demo purposes
+    //     disableScrollArrowsOnFullyScrolled: false // optional- pass in default value for demo purposes
+    // });
+
+
+
+
+
+
+    // let vitalDate = new Date(vitals.vitalDate);
+
+    // let
+    // // day = vitalDate.getDay(),
+    //  dd = vitalDate.getDate(),
+    //  mm = vitalDate.getMonth(), 
+    //  yy = vitalDate.getFullYear(), 
+    //  hh = vitalDate.getHours(),
+    // min = vitalDate.getMinutes(), 
+    // sec = vitalDate.getSeconds(),
+    // meridian="AM";
+
+    // // var days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+    // var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    // if(hh<12)
+    // {
+    //     meridian = "PM";
+    // }
+    // else{
+    //     meridian = "AM";   
+    // }
+
+    // let date = dd+"-"+months[mm]+"-"+yy,
+    // time = hh+":"+min+":"+sec+" "+meridian;
+
+    
+    
+    // // console.log(vitals);
+    
+    // let dataRow = `<tr>
+    //                     <td class="color-green1-dark">`+date+`</td>
+    //                     <td class="color-green1-dark">`+time+`</td>
+    //                     <td><i onclick='setSelectedVitalDetails(${vitals.vitalId})' title="view details" class="fa fa-arrow-right rotate-45 color-green1-dark"></a></td>
+    //                 </tr>`;   
+    
+    
+    
+
+    // return dataRow;
+}
 function mapAppointments(appointments)
 {
 
@@ -1649,6 +1890,50 @@ async function fetchOfflineVitals(container2)
     .catch(function(error)
     {
         console.log("error in offline vital fetch");
+
+        // alert("view result");
+        // alert("user not found");
+    });
+    // console.log("get response =>");
+    // console.log(resp);
+    
+
+    // container2.innerHTML = bulkArrAct.data.map(mapVitals).join('\n\n');
+
+    
+}
+async function fetchOfflineMedications(container2)
+{
+
+    // const bulkArrAct = JSON.parse();
+
+    //db open
+    let dbname = "icalite_index";
+    let dbversion=1;
+
+    db = new Dexie(dbname);
+    db.version(dbversion).stores(
+            {
+                medications: "medicationId"
+            }
+        );
+    db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
+    });
+// //--//
+
+    await db.medications.toArray()
+    .then(function (result) {
+        // console.log("result => ");
+        // console.log(result);
+        mapMedications(result, container2);
+        // container2.innerHTML = result.map(mapMedications).join('\n\n');
+
+        // alert("view result");
+    })
+    .catch(function(error)
+    {
+        console.log("error in offline medication fetch");
 
         // alert("view result");
         // alert("user not found");
@@ -2123,6 +2408,50 @@ async function saveVitalsToOffline(vitals)
 
     console.log("saveVitalsToOffline---------end-----------");
 }
+//medications
+async function saveMedicationsToOffline(medications)
+{
+    console.log("saveMedicationToOffline---------start-----------");
+    // console.log("response=> ");
+    // console.log(medications);
+
+    
+//db open
+    let dbname = "icalite_index";
+    let dbversion=1;
+
+    db = new Dexie(dbname);
+    db.version(dbversion).stores(
+            {
+                medications: "medicationId"
+            }
+        );
+    db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
+    });
+// //--//
+
+// //db put//
+
+    // console.log("final data => ");
+    // console.log(JSON.parse("["+ JSON.stringify(vitals) +"]"));
+    // console.log(vitals);
+
+    // db.vitals.bulkPut(JSON.parse("["+ JSON.stringify(vitals) +"]"))
+    await db.medications.bulkPut(medications)
+    .then(function(lastKey){
+        console.error("data saved to offline");
+    })
+    .catch(Dexie.bulkError, function(e) 
+    {
+        console.error("unable to add to offline");
+        // showMessage("incorrect username or password");
+        // alert ("person Ooops: " + error);
+    });
+
+
+    console.log("saveMedicationToOffline---------end-----------");
+}
 //appointments
 async function saveAppointmentsToOffline(appointments)
 {
@@ -2178,6 +2507,7 @@ function indexDbInit()
         actions: 'id',
         vitals: 'vitalId',
         appointments:'appointmentId',
+        medications:'medicationId'
     });
 
     //dummy
@@ -2484,6 +2814,23 @@ function initializeView()
             // vital_dttm.innerHTML = vitals.vitalDate;
 
             console.log("vital deails populating finished");
+    
+        }
+        else if(sPage == "medi_view.html")
+        {            
+            console.log("medi view object");
+
+            const container2 = document.getElementById('container2');
+            fetchMedications(container2);
+
+
+            // const vital_dttm = document.getElementById('vital_dttm');
+
+            // console.log("vital_dttm value set");
+            // var vitals = getSelectedVital();
+            // vital_dttm.innerHTML = vitals.vitalDate;
+
+            console.log("medication populating finished");
     
         }
         else if(sPage == "demogrp_view.html")

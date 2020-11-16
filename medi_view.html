@@ -1,74 +1,18 @@
 <script language="javascript" type="text/javascript" src="testheader.txt"></script>
 
-<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<!-- <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"> -->
 
-<link rel="stylesheet" href="styles/scrolling-tabs.css">
+<!-- <link rel="stylesheet" href="styles/scrolling-tabs.css"> -->
    
                 <div class="card card-style">
                     <div class="content">
                         <h3>My Medications</h3>
-                        <div class="tabs-inside-here"></div>
+                        <div id="container2" class="tabs-inside-here"></div>
                     </div>
                 </div>
 <script language="javascript" type="text/javascript" src="testfooter.txt"></script>
             
-    <script src="scripts/scrolling-tabs.js"></script>
+    <!-- <script src="scripts/scrolling-tabs.js"></script>
     <script type="text/javascript">
-        (function() {
-            'use strict';
-            var tabs = [
-                {paneId: 'tab1', title_medi: '1', content_medi: '<div class="row mb-3 mt-4"> <h5 class="col-4 text-left font-15">Medicene : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Panadol CF Tablets</h5> <h5 class="col-4 text-left font-15">Treatment Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">13-Oct-2020</h5> <h5 class="col-4 text-left font-15">Doctor : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Dr. Farhan</h5> <h5 class="col-4 text-left font-15">Diagnosis : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Paratyphoid fever C</h5> <h5 class="col-4 text-left font-15">Dosage : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">2+2+2+2 - Tablet</h5> <h5 class="col-4 text-left font-15">Frequency : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">^ Hourly</h5> <h5 class="col-4 text-left font-15">Route : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Oral</h5> <h5 class="col-4 text-left font-15">Start Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">05-May-2020</h5> <h5 class="col-4 text-left font-15">End Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">08-May-2020</h5> <h5 class="col-4 text-left font-15">Doctor Remarks : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Recommended Bed Rest 8 Days Take Leave From Office Work From Home </h5> </div>', active_tab: true, disabled: false},
-                {paneId: 'tab2', title_medi: '2', content_medi: 'Index 2 Content', active_tab: false, disabled: false},
-                {paneId: 'tab3', title_medi: '3', content_medi: 'Index 3 Content', active_tab: false, disabled: false},
-                {paneId: 'tab4', title_medi: '4', content_medi: 'Index 4 Content', active_tab: false, disabled: false},
-                {paneId: 'tab5', title_medi: '5', content_medi: 'Index 5 Content', active_tab: false, disabled: false},
-                {paneId: 'tab6', title_medi: '6', content_medi: 'Index 6 Content', active_tab: false, disabled: false},
-                {paneId: 'tab7', title_medi: '7', content_medi: 'Index 7 Content', active_tab: false, disabled: false},
-                {paneId: 'tab8', title_medi: '8', content_medi: 'Index 8 Content', active_tab: false, disabled: false},
-                {paneId: 'tab9', title_medi: '9', content_medi: 'Index 9 Content', active_tab: false, disabled: false},
-                {paneId: 'tab10', title_medi: '10', content_medi: 'Index 10 Content', active_tab: false, disabled: false},
-                {paneId: 'tab11', title_medi: '11', content_medi: 'Index 11 Content', active_tab: false, disabled: false},
-                {paneId: 'tab12', title_medi: '12', content_medi: 'Index 12 Content', active_tab: false, disabled: false},
-                {paneId: 'tab13', title_medi: '13', content_medi: 'Index 13 Content', active_tab: false, disabled: false},
-                {paneId: 'tab14', title_medi: '14', content_medi: 'Index 14 Content', active_tab: false, disabled: false},
-                {paneId: 'tab15', title_medi: '15', content_medi: 'Index 15 Content', active_tab: false, disabled: false},
-                {paneId: 'tab16', title_medi: '16', content_medi: 'Index 16 Content', active_tab: false, disabled: false},
-                {paneId: 'tab17', title_medi: '17', content_medi: 'Index 17 Content', active_tab: false, disabled: false},
-                {paneId: 'tab18', title_medi: '18', content_medi: 'Index 18 Content', active_tab: false, disabled: false},
-                {paneId: 'tab19', title_medi: '19', content_medi: 'Index 19 Content', active_tab: false, disabled: false},
-                {paneId: 'tab20', title_medi: '20', content_medi: 'Index 20 Content', active_tab: false, disabled: false},
-                {paneId: 'tab21', title_medi: '21', content_medi: 'Index 21 Content', active_tab: false, disabled: false},
-                {paneId: 'tab22', title_medi: '22', content_medi: 'Index 22 Content', active_tab: false, disabled: false},
-                {paneId: 'tab23', title_medi: '23', content_medi: 'Index 23 Content', active_tab: false, disabled: false},
-                {paneId: 'tab24', title_medi: '24', content_medi: 'Index 24 Content', active_tab: false, disabled: false},
-                {paneId: 'tab25', title_medi: '25', content_medi: 'Index 25 Content', active_tab: false, disabled: false},
-                {paneId: 'tab26', title_medi: '26', content_medi: 'Index 26 Content', active_tab: false, disabled: false},
-                {paneId: 'tab26', title_medi: '26', content_medi: 'Index 26 Content', active_tab: false, disabled: false},
-                {paneId: 'tab27', title_medi: '27', content_medi: 'Index 27 Content', active_tab: false, disabled: false},
-                {paneId: 'tab28', title_medi: '28', content_medi: 'Index 28 Content', active_tab: false, disabled: false},
-                {paneId: 'tab29', title_medi: '29', content_medi: 'Index 29 Content', active_tab: false, disabled: false},
-                {paneId: 'tab30', title_medi: '30', content_medi: 'Index 30 Content', active_tab: false, disabled: false},
-                {paneId: 'tab30', title_medi: '30', content_medi: 'Index 30 Content', active_tab: false, disabled: false},
-                {paneId: 'tab30', title_medi: '30', content_medi: 'Index 30 Content', active_tab: false, disabled: false},
-                {paneId: 'tab30', title_medi: '30', content_medi: 'Index 30 Content', active_tab: false, disabled: false},
-                {paneId: 'tab30', title_medi: '30', content_medi: 'Index 30 Content', active_tab: false, disabled: false},
-                {paneId: 'tab30', title_medi: '30', content_medi: 'Index 30 Content', active_tab: false, disabled: false},
-            
-          ],
-          lastTabId = 11;
-          $(activate);
-          function activate() {
-            $('.tabs-inside-here').scrollingTabs({
-              tabs: tabs, // required,
-              propPaneId: 'paneId', // optional - pass in default value for demo purposes
-              propTitle: 'title_medi', // optional - pass in default value for demo purposes
-              propActive: 'active_tab', // optional - pass in default value for demo purposes
-              propDisabled: 'disabled', // optional - pass in default value for demo purposes
-              propContent: 'content_medi', // optional - pass in default value for demo purposes
-              scrollToTabEdge: false, // optional - pass in default value for demo purposes
-              disableScrollArrowsOnFullyScrolled: false // optional- pass in default value for demo purposes
-            });
-          }
-        }());
-    </script>
+        </script> -->
   
