@@ -710,7 +710,29 @@ async function addVitals()
         const url=rootUrl+"addVital";
         console.log("complete url=> "+url);
 
-        let personId=window.sessionStorage.getItem("personId");
+        let personId=window.sessionStorage.getItem("personId"),
+            pulse,
+            bpSystolic,
+            bpDistolic,
+            tmprature,
+            respirationRate,
+            height,
+            ;
+
+            // {
+            //     "personId":"38995",
+            //     "pulse":"77",
+            //     "bpSystolic":"55",
+            //     "bpDistolic":"45",
+            //     "tmprature":"75",
+            //     "respirationRate":"52",
+            //     "height":"65",
+            //     "weight":"75",
+            //     "spo2":"20",
+            //     "gir":"10.0",
+            //     "remarks":"Testing remarks"
+                
+            // }
         // let actionId="5";
 
         //dummyy input
