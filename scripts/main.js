@@ -711,40 +711,16 @@ async function addVitals()
         console.log("complete url=> "+url);
 
         let personId = window.sessionStorage.getItem("personId"),
-            pulse = document.getElementById("").value,
-            bpSystolic = document.getElementById("").value,
-            bpDistolic = document.getElementById("").value,
-            tmprature = document.getElementById("").value,
-            respirationRate = document.getElementById("").value,
-            height = document.getElementById("").value,
-            weight = document.getElementById("").value,
-            spo2 = document.getElementById("").value,
-            gir = document.getElementById("").value,
-            remarks = document.getElementById("").value;
-
-            // {
-            //     "personId":"38995",
-            //     "pulse":"77",
-            //     "bpSystolic":"55",
-            //     "bpDistolic":"45",
-            //     "tmprature":"75",
-            //     "respirationRate":"52",
-            //     "height":"65",
-            //     "weight":"75",
-            //     "spo2":"20",
-            //     "gir":"10.0",
-            //     "remarks":"Testing remarks"
-                
-            // }
-        // let actionId="5";
-
-        //dummyy input
-        // const bulkArrAct = JSON.parse(``);
-        // console.log("data=>");
-        // console.log(bulkArrAct.data);
-
-        // saveVitalsToOffline(bulkArrAct.data);
-        // container2.innerHTML = bulkArrAct.data.map(mapVitals).join('\n\n');
+            pulse = document.getElementById("inp_pulse").value,
+            bpSystolic = document.getElementById("inp_bps").value,
+            bpDistolic = document.getElementById("inp_bpd").value,
+            tmprature = document.getElementById("inp_temp").value,
+            respirationRate = document.getElementById("inp_resp").value,
+            height = document.getElementById("inp_height").value,
+            weight = document.getElementById("inp_weight").value,
+            spo2 = document.getElementById("inp_spo2").value,
+            gir = document.getElementById("inp_gir").value,
+            remarks = document.getElementById("inp_remarks").value;
 
         
         
@@ -794,26 +770,27 @@ async function addVitals()
 
         if (!response.ok) {
             console.log("unsuccessfull");
-            fetchOfflineVitals(container2);
+            // fetchOfflineVitals(container2);
         }
         else{
             console.log("successfull");
+            window.location.replace('dash_patient.html');
             // console.log("--------------response.json()----------------------");
             // console.log(response.json());
-            response.json()
-            .then(data => {                
-                console.log("--------------data after response.json()----------------------");
-                // console.log(data);
-                saveVitalsToOffline(data);
-                container2.innerHTML = data.data.map(mapVitals).join('\n\n');
-            });
+            // response.json()
+            // .then(data => {                
+            //     console.log("--------------data after response.json()----------------------");
+            //     // console.log(data);
+            //     saveVitalsToOffline(data);
+            //     container2.innerHTML = data.data.map(mapVitals).join('\n\n');
+            // });
             
         }
         
     } catch (error) 
     {
         console.log("error => "+error.message);  
-        fetchOfflineVitals(container2);        
+        // fetchOfflineVitals(container2);        
     }
 
 }
@@ -1927,6 +1904,8 @@ function populateDemographicsUpdData(demograph)
     inp_email.value = demograph.email;
     inp_phone.value = demograph.number;
     inp_address.value = demograph.streetAddress;
+
+    $('.color-highlight').addClass('input-style-1-active')
 
     btn_upd.addEventListener("click", function (params) 
     {
