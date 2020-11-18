@@ -707,113 +707,233 @@ async function addVitals()
         // showMessage("processing. please wait.");
         // showLoader(true);
 
-        const url=rootUrl+"addVital";
-        console.log("complete url=> "+url);
+        
 
         let personId = window.sessionStorage.getItem("personId"),
-            pulse = document.getElementById("").value,
-            bpSystolic = document.getElementById("").value,
-            bpDistolic = document.getElementById("").value,
-            tmprature = document.getElementById("").value,
-            respirationRate = document.getElementById("").value,
-            height = document.getElementById("").value,
-            weight = document.getElementById("").value,
-            spo2 = document.getElementById("").value,
-            gir = document.getElementById("").value,
-            remarks = document.getElementById("").value;
+            pulse = document.getElementById("inp_pulse").value,
+            bpSystolic = document.getElementById("inp_bps").value,
+            bpDistolic = document.getElementById("inp_bpd").value,
+            tmprature = document.getElementById("inp_temp").value,
+            respirationRate = document.getElementById("inp_resp").value,
+            height = document.getElementById("inp_height").value,
+            weight = document.getElementById("inp_weight").value,
+            spo2 = document.getElementById("inp_spo2").value,
+            gir = document.getElementById("inp_gir").value,
+            remarks = document.getElementById("inp_remarks").value;
 
-            // {
-            //     "personId":"38995",
-            //     "pulse":"77",
-            //     "bpSystolic":"55",
-            //     "bpDistolic":"45",
-            //     "tmprature":"75",
-            //     "respirationRate":"52",
-            //     "height":"65",
-            //     "weight":"75",
-            //     "spo2":"20",
-            //     "gir":"10.0",
-            //     "remarks":"Testing remarks"
+            if (navigator.onLine) 
+            {
+                // console.log("Online");   
+
+
+                let errCOunt=0;
+
+                if (pulse == "") 
+                {
+                    errCOunt++;
+                    // document.getElementById("inp_pulse").classList.add("color-red1-dark");
+                }
+
+                if (bpSystolic == "") 
+                {
+                    errCOunt++;
+                    // document.getElementById("inp_pulse").classList.add("color-red1-dark");
+                }
+
+                if (bpDistolic == "") 
+                {
+                    errCOunt++;
+                    // document.getElementById("inp_pulse").classList.add("color-red1-dark");
+                }
+
+                if (tmprature == "") 
+                {
+                    errCOunt++;
+                    // document.getElementById("inp_pulse").classList.add("color-red1-dark");
+                }
+
+                if (respirationRate == "") 
+                {
+                    errCOunt++;
+                    // document.getElementById("inp_pulse").classList.add("color-red1-dark");
+                }
+
+                if (height == "") 
+                {
+                    errCOunt++;
+                    // document.getElementById("inp_pulse").classList.add("color-red1-dark");
+                }
+
+                if (weight == "") 
+                {
+                    errCOunt++;
+                    // document.getElementById("inp_pulse").classList.add("color-red1-dark");
+                }
+
+                if (spo2 == "") 
+                {
+                    errCOunt++;
+                    // document.getElementById("inp_pulse").classList.add("color-red1-dark");
+                }
+                if (gir == "") 
+                {
+                    errCOunt++;
+                    // document.getElementById("inp_pulse").classList.add("color-red1-dark");
+                }
+
+                if (remarks == "") 
+                {
+                    errCOunt++;
+                    // document.getElementById("inp_pulse").classList.add("color-red1-dark");
+                }
+
+
+                if (errCount == 0) 
+                {
+                    const url=rootUrl+"addVital";
+                    console.log("complete url=> "+url);
+                    //post
+                    var response = await fetch(url, 
+                    {
+                        method: "POST", // POST, PUT, DELETE, etc.
+                        headers: 
+                        {
+                        // the content type header value is usually auto-set
+                        // depending on the request body
+                        "Content-Type": "application/json;charset=UTF-8",
+                        "Host": "203.99.60.222:1701",
+                        // "Origin": "http://localhost:81"
+                        "Origin": "https://admin.aldermin.com"
+                        },
+                        body: JSON.stringify(
+                            {
+                                personId:personId,
+                                pulse:pulse,
+                                bpSystolic:bpSystolic,
+                                bpDistolic:bpDistolic,
+                                tmprature:tmprature,
+                                respirationRate:respirationRate,
+                                height:height,
+                                weight:weight,
+                                spo2:spo2,
+                                gir:gir,
+                                remarks:remarks
+                                
+                            }
+                            ), // string, FormData, Blob, BufferSource, or URLSearchParams
+                        // referrer: "about:client", // or "" to send no Referer header,
+                        // or an url from the current origin
+                        // referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
+                        mode: "cors", // same-origin, no-cors
+                        credentials: "same-origin", // omit, include
+                        cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached
+                        redirect: "follow", // manual, error
+                        integrity: "", // a hash, like "sha256-abcdef1234567890"
+                        keepalive: false, // true
+                        signal: undefined, // AbortController to abort request
+                        window: window // null
+                    });
+            
+                    if (!response.ok) {
+                        alert("unable to add vital, try later.");
+                        // console.log("unsuccessfull");
+                        // fetchOfflineVitals(container2);
+                    }
+                    else{
+                        alert("vitals added successfully!");
+                        // console.log("successfull");
+                        window.location.replace('dash_patient.html');
+                        // console.log("--------------response.json()----------------------");
+                        // console.log(response.json());
+                        // response.json()
+                        // .then(data => {                
+                        //     console.log("--------------data after response.json()----------------------");
+                        //     // console.log(data);
+                        //     saveVitalsToOffline(data);
+                        //     container2.innerHTML = data.data.map(mapVitals).join('\n\n');
+                        // });
+                        
+                    }
+                }
                 
-            // }
-        // let actionId="5";
 
-        //dummyy input
-        // const bulkArrAct = JSON.parse(``);
-        // console.log("data=>");
-        // console.log(bulkArrAct.data);
 
-        // saveVitalsToOffline(bulkArrAct.data);
-        // container2.innerHTML = bulkArrAct.data.map(mapVitals).join('\n\n');
+            }
+            else{
+                // console.log("Offline");
+
+                alert("No Internet Connection Available!");
+            }
 
         
         
         //--dummy input
 
         //   //post
-        var response = await fetch(url, 
-        {
-            method: "POST", // POST, PUT, DELETE, etc.
-            headers: 
-            {
-            // the content type header value is usually auto-set
-            // depending on the request body
-            "Content-Type": "application/json;charset=UTF-8",
-            "Host": "203.99.60.222:1701",
-            // "Origin": "http://localhost:81"
-            "Origin": "https://admin.aldermin.com"
-            },
-            body: JSON.stringify(
-                {
-                    personId:personId,
-                    pulse:pulse,
-                    bpSystolic:bpSystolic,
-                    bpDistolic:bpDistolic,
-                    tmprature:tmprature,
-                    respirationRate:respirationRate,
-                    height:height,
-                    weight:weight,
-                    spo2:spo2,
-                    gir:gir,
-                    remarks:remarks
+        // var response = await fetch(url, 
+        // {
+        //     method: "POST", // POST, PUT, DELETE, etc.
+        //     headers: 
+        //     {
+        //     // the content type header value is usually auto-set
+        //     // depending on the request body
+        //     "Content-Type": "application/json;charset=UTF-8",
+        //     "Host": "203.99.60.222:1701",
+        //     // "Origin": "http://localhost:81"
+        //     "Origin": "https://admin.aldermin.com"
+        //     },
+        //     body: JSON.stringify(
+        //         {
+        //             personId:personId,
+        //             pulse:pulse,
+        //             bpSystolic:bpSystolic,
+        //             bpDistolic:bpDistolic,
+        //             tmprature:tmprature,
+        //             respirationRate:respirationRate,
+        //             height:height,
+        //             weight:weight,
+        //             spo2:spo2,
+        //             gir:gir,
+        //             remarks:remarks
                     
-                }
-                ), // string, FormData, Blob, BufferSource, or URLSearchParams
-            // referrer: "about:client", // or "" to send no Referer header,
-            // or an url from the current origin
-            // referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
-            mode: "cors", // same-origin, no-cors
-            credentials: "same-origin", // omit, include
-            cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached
-            redirect: "follow", // manual, error
-            integrity: "", // a hash, like "sha256-abcdef1234567890"
-            keepalive: false, // true
-            signal: undefined, // AbortController to abort request
-            window: window // null
-        });
+        //         }
+        //         ), // string, FormData, Blob, BufferSource, or URLSearchParams
+        //     // referrer: "about:client", // or "" to send no Referer header,
+        //     // or an url from the current origin
+        //     // referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
+        //     mode: "cors", // same-origin, no-cors
+        //     credentials: "same-origin", // omit, include
+        //     cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached
+        //     redirect: "follow", // manual, error
+        //     integrity: "", // a hash, like "sha256-abcdef1234567890"
+        //     keepalive: false, // true
+        //     signal: undefined, // AbortController to abort request
+        //     window: window // null
+        // });
 
-        if (!response.ok) {
-            console.log("unsuccessfull");
-            fetchOfflineVitals(container2);
-        }
-        else{
-            console.log("successfull");
-            // console.log("--------------response.json()----------------------");
-            // console.log(response.json());
-            response.json()
-            .then(data => {                
-                console.log("--------------data after response.json()----------------------");
-                // console.log(data);
-                saveVitalsToOffline(data);
-                container2.innerHTML = data.data.map(mapVitals).join('\n\n');
-            });
+        // if (!response.ok) {
+        //     console.log("unsuccessfull");
+        //     // fetchOfflineVitals(container2);
+        // }
+        // else{
+        //     console.log("successfull");
+        //     window.location.replace('dash_patient.html');
+        //     // console.log("--------------response.json()----------------------");
+        //     // console.log(response.json());
+        //     // response.json()
+        //     // .then(data => {                
+        //     //     console.log("--------------data after response.json()----------------------");
+        //     //     // console.log(data);
+        //     //     saveVitalsToOffline(data);
+        //     //     container2.innerHTML = data.data.map(mapVitals).join('\n\n');
+        //     // });
             
-        }
+        // }
         
     } catch (error) 
     {
         console.log("error => "+error.message);  
-        fetchOfflineVitals(container2);        
+        // fetchOfflineVitals(container2);        
     }
 
 }
@@ -1472,9 +1592,12 @@ function mapActivities(activities)
     // indexDbAdd(user.id, user.email, user.pass);
 
     console.log("mapping act 2");
-    return `<div class="list-group list-custom-small list-icon-0">
+
+    if (activities.id == "4") 
+    {
+        return `<div class="list-group list-custom-small list-icon-0">
                 <a data-toggle="collapse" href="#collapse-${activities.id}">
-                    <i class="fa font-14 fa fa-user color-blue2-dark"></i>
+                    <img src="images/ic_appntmnt.png" height=30 width=30 style="margin-right:5px"/>
                     <span class="font-14">${activities.name}</span>
                     <i class="fa fa-angle-down"></i>
                 </a>
@@ -1482,24 +1605,73 @@ function mapActivities(activities)
             `
             +
             activities.actions.map(mapAction).join("\n\n");
-            
-{/* <div class="collapse" id="collapse-${activities.activityLogId}">
-                <div class="list-group list-custom-small pl-3">
-                    <a href="#">
-                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
-                        <span>${activities.contentName}</span>
-                        <i class="fa fa-angle-right"></i>
-                    </a>
-                </div>
-            </div> */}
+    }
+    else if (activities.id == "5") 
+    {
+        return `<div class="list-group list-custom-small list-icon-0">
+                <a data-toggle="collapse" href="#collapse-${activities.id}">
+                    <img src="images/ic_vitals.png" height=30 width=30 style="margin-right:5px"/>
+                    <span class="font-14">${activities.name}</span>
+                    <i class="fa fa-angle-down"></i>
+                </a>
+            </div>
+            `
+            +
+            activities.actions.map(mapAction).join("\n\n");
+    }
+    else if (activities.id == "6") 
+    {
+        return `<div class="list-group list-custom-small list-icon-0">
+                <a data-toggle="collapse" href="#collapse-${activities.id}">
+                    <img src="images/ic_medication.png" height=30 width=30 style="margin-right:5px"/>
+                    <span class="font-14">${activities.name}</span>
+                    <i class="fa fa-angle-down"></i>
+                </a>
+            </div>
+            `
+            +
+            activities.actions.map(mapAction).join("\n\n");
+    }
+    else if (activities.id == "7") 
+    {
+        return `<div class="list-group list-custom-small list-icon-0">
+                <a data-toggle="collapse" href="#collapse-${activities.id}">
+                    <img src="images/ic_demogrp.png" height=30 width=30 style="margin-right:5px"/>
+                    <span class="font-14">${activities.name}</span>
+                    <i class="fa fa-angle-down"></i>
+                </a>
+            </div>
+            `
+            +
+            activities.actions.map(mapAction).join("\n\n");
+    }
+    else if (activities.id == "8") 
+    {
+        return `<div class="list-group list-custom-small list-icon-0">
+                <a data-toggle="collapse" href="#collapse-${activities.id}">
+                    <img src="images/ic_reports.png" height=30 width=30 style="margin-right:5px"/>
+                    <span class="font-14">${activities.name}</span>
+                    <i class="fa fa-angle-down"></i>
+                </a>
+            </div>
+            `
+            +
+            activities.actions.map(mapAction).join("\n\n");
+    }
+    else{
+        return `<div class="list-group list-custom-small list-icon-0">
+                <a data-toggle="collapse" href="#collapse-${activities.id}">
+                <i class="fa font-14 fa fa-user color-blue2-dark"></i>
+                    <span class="font-14">${activities.name}</span>
+                    <i class="fa fa-angle-down"></i>
+                </a>
+            </div>
+            `
+            +
+            activities.actions.map(mapAction).join("\n\n");
+    }
+           
 
-    // return `
-    // <div class="activities">            
-    //         <h4>${activities.activityLogId}</h4>
-    //         <h3>${activities.activityName}</h3>            
-    //         <p>${activities.contentName}</p>            
-    //     </div>
-    //     `;
 }
 // console.log("");
 function mapAction(actions)
@@ -1509,7 +1681,7 @@ function mapAction(actions)
         return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
                     <a href="#" onclick="goToAppointmentNew()">
-                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <i class="fab font-13 fa fa-plus color-blue2-dark"></i>
                         <span>${actions.name}</span>
                         <i class="fa fa-angle-right"></i>
                     </a>
@@ -1521,7 +1693,7 @@ function mapAction(actions)
         return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
                     <a href="#" onclick="goToVitalView()">
-                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <i class="fab font-13 fa fa-bars color-blue2-dark"></i>
                         <span>${actions.name}</span>
                         <i class="fa fa-angle-right"></i>
                     </a>
@@ -1533,7 +1705,7 @@ function mapAction(actions)
         return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
                     <a href="#" onclick="goToVitalNew()">
-                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <i class="fab font-13 fa fa-plus color-blue2-dark"></i>
                         <span>${actions.name}</span>
                         <i class="fa fa-angle-right"></i>
                     </a>
@@ -1545,7 +1717,7 @@ function mapAction(actions)
         return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
                     <a href="#" onclick="goToMedicationView()">
-                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <i class="fab font-13 fa fa-bars color-blue2-dark"></i>
                         <span>${actions.name}</span>
                         <i class="fa fa-angle-right"></i>
                     </a>
@@ -1557,7 +1729,7 @@ function mapAction(actions)
         return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
                     <a href="#" onclick="goToDemographView()">
-                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <i class="fab font-13 fa fa-bars color-blue2-dark"></i>
                         <span>${actions.name}</span>
                         <i class="fa fa-angle-right"></i>
                     </a>
@@ -1569,7 +1741,7 @@ function mapAction(actions)
         return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
                     <a href="#" onclick="goToDemographUpdate()">
-                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <i class="fab font-13 fa fa-pencil-alt color-blue2-dark"></i>
                         <span>${actions.name}</span>
                         <i class="fa fa-angle-right"></i>
                     </a>
@@ -1581,7 +1753,7 @@ function mapAction(actions)
         return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
                     <a href="#" onclick="goToAppointmentView()">
-                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <i class="fab font-13 fa fa-bars color-blue2-dark"></i>
                         <span>${actions.name}</span>
                         <i class="fa fa-angle-right"></i>
                     </a>
@@ -1593,7 +1765,7 @@ function mapAction(actions)
         return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
                     <a href="#" onclick="goToReportsView()">
-                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <i class="fab font-13 fa fa-bars color-blue2-dark"></i>
                         <span>${actions.name}</span>
                         <i class="fa fa-angle-right"></i>
                     </a>
@@ -1605,7 +1777,7 @@ function mapAction(actions)
         return `<div class="collapse" id="collapse-${actions.activityId}">
                 <div class="list-group list-custom-small pl-3">
                     <a href="#">
-                        <i class="fab font-13 fa fa-user color-blue2-dark"></i>
+                        <i class="fab font-13 fa fa-exclamation-triangle color-blue2-dark"></i>
                         <span>${actions.name}</span>
                         <i class="fa fa-angle-right"></i>
                     </a>
@@ -1862,9 +2034,7 @@ function mapReports(reports)
     
 
     let dataRow = `<tr>
-                <td class="color-green1-dark">${reports.mimeType}</td>
-                <td class="color-green1-dark">${reports.displayName}</td>
-                <td class="color-green1-dark">${reports.mimeType}</td>
+                <td class="color-green1-dark">`+name+`.`+type+`</td>
                 <td class="color-green1-dark">`+date.toDateString()+`</td>
                 <td><i onclick="viewReport('`+name+`','`+type+`', '`+fileStr+`')" class="fa fa-eye color-green1-dark"></i></td>
             </tr>`;   
@@ -1927,6 +2097,8 @@ function populateDemographicsUpdData(demograph)
     inp_email.value = demograph.email;
     inp_phone.value = demograph.number;
     inp_address.value = demograph.streetAddress;
+
+    $('.color-highlight').addClass('input-style-1-active')
 
     btn_upd.addEventListener("click", function (params) 
     {
