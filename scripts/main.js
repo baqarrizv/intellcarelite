@@ -4411,6 +4411,8 @@ function populateAppointmentDetails(appointments)
 //--appointment--//
 //-------------------------------VIEW HANDLING----------------------------//
 
+            toaster.classList.remove("online-message", "bg-green1-dark");
+            toaster.classList.add("offline-message", "bg-red2-dark", "offline-message-active");
 
 ///////////////////UTILS
 function composeDateYMD(dateInMs)
