@@ -41,7 +41,8 @@
                             <i class="input-icon fa fa-lock color-theme"></i>
                             <span>Password</span>
                             <em>(required)</em>
-                            <input id="inp_pass" type="Password" placeholder="Password" required maxlength="20" pattern="[a-zA-Z0-9]+" />
+                            <!-- <input id="inp_pass" type="Password" placeholder="Password" required maxlength="20" pattern="[a-zA-Z0-9]+" /> -->
+                            <input id="inp_pass" type="Password" placeholder="Password" required maxlength="20"/>
                         </div>
                         <a id="btn_login" href="#" class="btn btn-m mt-2 mb-4 btn-full bg-blue2-dark text-uppercase font-900">Login</a>
                         <p id="messageIndicator" style="visibility: hidden;">show message here</p>
@@ -79,7 +80,14 @@
                 </div>
             </div>
             <!-- <div class="div_add_on_page"></div> -->
+            <p id="toast_msg" class="online-message bg-green1-dark color-white center-text uppercase ultrabold ">Text</p>
+            
         </div>
+        <div id="loader_process" class="toast toast-tiny toast-top bg-blue2-dark fade" data-delay="3000" data-autohide="true">
+            <i class="fa fa-sync fa-spin mr-3"></i>
+            <span id="loader_process_text">Text</span>
+        </div>
+
         <div id="notification-1" data-dismiss="notification-1" data-delay="3000" data-autohide="true" class="notification notification-ios bg-dark1-dark">
             <span class="notification-icon">
                 <i class="fa fa-bell"></i>

@@ -2,6 +2,8 @@
   'use strict';
   /* jshint unused:false */
 
+  // alert("scrolling tabs js");
+
   /* exported CONSTANTS */
   var CONSTANTS = {
     CONTINUOUS_SCROLLING_TIMEOUT_INTERVAL: 50, // timeout interval for repeatedly moving the tabs container

@@ -3,76 +3,77 @@
     <div class="content mb-0">
         <h3>Edit Demographics</h3>
         <p>Personal Details</p>
-        <div class="input-style input-style-2 has-icon input-required">
-            <span class="color-highlight input-style-1-inactive">Gender </span>
-            <em>(required)</em>
-            <select class="form-control" required="">
-                <option value="" disabled="" selected="">Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-            </select>
-        </div>
-        <div class="input-style input-style-2 input-required">
-            <span class="color-highlight">First Name</span>
-            <em>(required)</em>
-            <input id="inp_fname" class="form-control" type="text" placeholder="" required=""/>
-        </div>
-        <div class="input-style input-style-2 input-required">
-            <span class="color-highlight">Middle Name</span>
-            <em>(required)</em>
-            <input id="inp_mname" class="form-control" type="text" placeholder="" required=""/>
-        </div>
-        <div class="input-style input-style-2 input-required">
-            <span class="color-highlight">Last Name</span>
-            <em>(required)</em>
-            <input id="inp_lname" class="form-control" type="text" placeholder="" required=""/>
-        </div>
-        <div class="input-style input-style-2 input-required">
-            <span class="color-highlight">Date Of Birth</span>
-            <em>(required)</em>
-            <input id="inp_dob" class="form-control" type="date" placeholder="" required=""/>
-        </div>
-        <div class="input-style input-style-2 has-icon input-required">
-            <span class="color-highlight input-style-1-inactive">Marital Status </span>
-            <em>(required)</em>
-            <select class="form-control" required="">
-                <option value="" disabled="" selected="">Select Status</option>
-                <option value="Single">Single</option>
-                <option value="Married">Married</option>
-            </select>
-        </div>
-        <div class="input-style input-style-2 input-required">
-            <span class="color-highlight">Blood Group</span>
-            <em>(required)</em>
-            <input id="inp_bloodgroup" class="form-control" type="text" placeholder="" required=""/>
-        </div>
-        <div class="input-style input-style-2 input-required">
-            <span class="color-highlight">CNIC No</span>
-            <em>(required)</em>
-            <input id="inp_cnic" class="form-control" type="text" placeholder="" required=""/>
-        </div>
-        <div class="input-style input-style-2 input-required">
-            <span class="color-highlight">Email</span>
-            <em>(required)</em>
-            <input id="inp_email" class="form-control" type="email" placeholder="" required=""/>
-        </div>
-        <div class="input-style input-style-2 input-required">
-            <span class="color-highlight">Phone Number</span>
-            <em>(required)</em>
-            <input id="inp_phone" class="form-control" type="tel" placeholder="" />
-        </div>
-        <div class="input-style input-style-2 input-required">
-            <span>Address</span>
-            <em>(required)</em>
-            <textarea id="inp_address" class="form-control" placeholder=""></textarea>
-        </div>
-        <p class="font-400 mb-1 mb-n0">Attach Picture :</p>
-        <input type="file" class="form-control rounded-s" >
-        <br>
-        <div class="input-style input-style-2 input-required">
-            <button id="btn_update" class="form-control btn btn-m btn-full rounded-xl text-uppercase font-900 shadow-s bg-blue2-dark" id="sort">Update</button>
-        </div>
+        <form>
+            <div class="input-style input-style-2 has-icon input-required">
+                <span class="color-highlight input-style-1-inactive">Gender </span>
+                <em>(required)</em>
+                <select id="inp_select_gender" class="form-control" required="">
+                    <option value="" disabled="" selected="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="input-style input-style-2 input-required">
+                <span class="color-highlight">First Name</span>
+                <em>(required)</em>
+                <input id="inp_fname" class="form-control" type="text" placeholder="" required=""/>
+            </div>
+            <div class="input-style input-style-2">
+                <span class="color-highlight">Middle Name</span>
+                <input id="inp_mname" class="form-control" type="text" placeholder=""/>
+            </div>
+            <div class="input-style input-style-2 input-required">
+                <span class="color-highlight">Last Name</span>
+                <em>(required)</em>
+                <input id="inp_lname" class="form-control" type="text" placeholder="" required=""/>
+            </div>
+            <div class="input-style input-style-2 ">
+                <span class="color-highlight">Date Of Birth</span>
+                <input id="inp_dob" class="form-control" type="date" placeholder=""/>
+            </div>
+            <div class="input-style input-style-2 has-icon">
+                <span class="color-highlight input-style-1-inactive">Marital Status </span>
+                <select id="inp_select_maritalstat" class="form-control">
+                    <option value="" disabled="" selected="">Select Status</option>
+                    <option value="Single">Single</option>
+                    <option value="Married">Married</option>
+                    <option value="Widowed">Widowed</option>
+                    <option value="Divorced">Divorced</option>
+                    <option value="Unknown">Unknown</option>
+                </select>
+            </div>
+            <div class="input-style input-style-2 input-required">
+                <span class="color-highlight">Blood Group</span>
+                <em>(required)</em>
+                <input id="inp_bloodgroup" class="form-control" type="text" placeholder="" required=""/>
+            </div>
+            <div class="input-style input-style-2 input-required">
+                <span class="color-highlight">CNIC No</span>
+                <em>(required)</em>
+                <input id="inp_cnic" class="form-control" type="text" placeholder="" required=""/>
+            </div>
+            <div class="input-style input-style-2">
+                <span class="color-highlight">Email</span>
+                <input id="inp_email" class="form-control" type="email" placeholder=""/>
+            </div>
+            <div class="input-style input-style-2">
+                <span class="color-highlight">Phone Number</span>
+                <input id="inp_phone" class="form-control" type="tel" placeholder="" />
+            </div>
+            <div class="input-style input-style-2 input-required">
+                <span>Address</span>
+                <em>(required)</em>
+                <textarea id="inp_address" class="form-control" placeholder=""></textarea>
+            </div>
+            <p class="font-400 mb-1 mb-n0">Attach Picture :</p>
+            <input type="file" class="form-control rounded-s" >
+            <br>
+            <div class="input-style input-style-2 input-required">
+                <button id="btn_update" class="form-control btn btn-m btn-full rounded-xl text-uppercase font-900 shadow-s bg-blue2-dark" id="sort">Update</button>
+            </div>
+
+        </form>
     </div>
 </div>
 <script language="javascript" type="text/javascript" src="testfooter.txt"></script>
