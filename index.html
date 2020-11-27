@@ -15,7 +15,6 @@
         <link rel="apple-touch-icon" sizes="180x180" href="app/icons/icon-192x192.png" /> 
         <link rel='icon' type='image/png' href='images/favicon.png'> 
         <script type="text/javascript" src="scripts/jquery.js"></script>
-        <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
         <!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
     </head>
     <body onload="initializeView()" class="theme-light" data-background="none" data-highlight="red2">
@@ -42,9 +41,22 @@
                             <i class="input-icon fa fa-lock color-theme"></i>
                             <span>Password</span>
                             <em>(required)</em>
-                            <!-- <input id="inp_pass" type="Password" placeholder="Password" required maxlength="20" pattern="[a-zA-Z0-9]+" /> -->
-                            <input id="inp_pass" type="Password" placeholder="Password" required maxlength="20"/>
+                            <input id="inp_pass" type="Password" placeholder="Password" required maxlength="20" pattern="[a-zA-Z0-9]+" />
                         </div>
+
+                        <div class="input-style input-style-2 input-required">
+                            <span class="input-style-1-active input-style-1-inactive">User Type</span>
+                            <em><i class="fa fa-check color-green1-dark"></i></em>
+                            <select class="form-control">
+
+                                <option value="doctor">Doctor</option>
+                                <option value="patient">Patient</option>
+                  
+                            </select>
+                        </div>
+                        
+                                             
+
                         <a id="btn_login" href="#" class="btn btn-m mt-2 mb-4 btn-full bg-blue2-dark text-uppercase font-900">Login</a>
                         <p id="messageIndicator" style="visibility: hidden;">show message here</p>
                         <!-- <div id="loader" style="visibility: hidden;" class="spinner-border color-highlight" role="status"></div> -->

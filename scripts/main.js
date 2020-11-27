@@ -1292,7 +1292,6 @@ async function addVitals()
 
 
 
-
 async function fetchDemographics()
 {
     try {
@@ -1842,6 +1841,105 @@ async function fetchSpecialtyList(inp_specialty)
         // let personId=window.sessionStorage.getItem("personId");
         // let actionId="11";
 
+        ////dummy data
+        const bulkArrAct = JSON.parse(`{
+            "detail": "Data Returnd",
+            "status": "Ok 200",
+            "object": {
+                "priorities": [
+                    {
+                        "hmsAudit": {
+                            "insertDate": null,
+                            "updateDate": null,
+                            "isDelete": false
+                        },
+                        "lastUpdatedDateTime": null,
+                        "id": 1,
+                        "name": "Normal"
+                    },
+                    {
+                        "hmsAudit": {
+                            "insertDate": null,
+                            "updateDate": null,
+                            "isDelete": false
+                        },
+                        "lastUpdatedDateTime": null,
+                        "id": 2,
+                        "name": "Urgent"
+                    },
+                    {
+                        "hmsAudit": {
+                            "insertDate": null,
+                            "updateDate": null,
+                            "isDelete": false
+                        },
+                        "lastUpdatedDateTime": null,
+                        "id": 3,
+                        "name": "VIP"
+                    }
+                ],
+                "specialities": [
+                    {
+                        "hmsAudit": {
+                            "insertDate": null,
+                            "updateDate": null,
+                            "isDelete": false
+                        },
+                        "lastUpdatedDateTime": null,
+                        "id": 885,
+                        "name": "Skin",
+                        "lookUPType": {
+                            "hmsAudit": {
+                                "insertDate": null,
+                                "updateDate": null,
+                                "isDelete": false
+                            },
+                            "lastUpdatedDateTime": null,
+                            "id": null,
+                            "name": null
+                        },
+                        "answer": false,
+                        "duration": null,
+                        "compulsory": false,
+                        "defaultSelected": false,
+                        "label": null,
+                        "sortBy": null,
+                        "translatedName": null
+                    },
+                    {
+                        "hmsAudit": {
+                            "insertDate": null,
+                            "updateDate": null,
+                            "isDelete": false
+                        },
+                        "lastUpdatedDateTime": null,
+                        "id": 886,
+                        "name": "Gynaecologist",
+                        "lookUPType": {
+                            "hmsAudit": {
+                                "insertDate": null,
+                                "updateDate": null,
+                                "isDelete": false
+                            },
+                            "lastUpdatedDateTime": null,
+                            "id": null,
+                            "name": null
+                        },
+                        "answer": false,
+                        "duration": null,
+                        "compulsory": false,
+                        "defaultSelected": false,
+                        "label": null,
+                        "sortBy": null,
+                        "translatedName": null
+                    }
+                ]
+            },
+            "data": null
+        }`);
+        saveSpecialtiesToOffline(bulkArrAct.object.specialities);
+        //--dummy data--//
+
         //   //post
         var response = await fetch(url, 
         {
@@ -1884,8 +1982,9 @@ async function fetchSpecialtyList(inp_specialty)
             // console.log(response.json());
             response.json()
             .then(data => {                
-                console.log("--------------data after response.json()----------------------");
-                console.log(data.object.specialities);
+                // console.log("--------------data after response.json()----------------------");
+                // console.log(data.object.specialities);
+                saveSpecialtiesToOffline(data.object.specialities);
                 inp_specialty.innerHTML = data.object.specialities.map(mapSpecialties).join('\n\n');
                 // return data;
             });
@@ -1902,7 +2001,7 @@ async function fetchSpecialtyList(inp_specialty)
     }
 
 }
-async function fetchDoctors(container2)
+async function fetchDoctors(specialityId, container2)
 {
     console.log("ftch doctor list => starting");
 
@@ -1911,13 +2010,52 @@ async function fetchDoctors(container2)
 
 
         // showMessage("processing. please wait.");
-        showLoader(1, "fetching doctors. please wait.");
+        showLoader(1);
 
-        const url=rootUrl+"doctors";
+        const url=rootUrl+"doctors?specialityId="+specialityId;
         console.log("complete url=> "+url);
 
         // let personId=window.sessionStorage.getItem("personId");
         // let actionId="11";
+
+        ////dummy data
+        const bulkArrAct = JSON.parse(`{
+            "detail": "Data Returnd",
+            "status": "Ok 200",
+            "object": null,
+            "data": [
+                {
+                    "personId": 38995,
+                    "name": "Doctor INTERACTIVE Group",
+                    "mrNo": null,
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": "3 years",
+                    "hospital": null
+                }
+            ]
+        }`);
+        saveDoctorsToOffline(bulkArrAct.data);
+        //--dummy data--//
 
         //   //post
         var response = await fetch(url, 
@@ -1961,21 +2099,22 @@ async function fetchDoctors(container2)
             // console.log(response.json());
             response.json()
             .then(data => {                
-                console.log("--------------data after response.json()----------------------");
-                console.log(data.object.specialities);
-                container2.innerHTML = data.doctors.map(mapDoctors).join('\n\n');
+                // console.log("--------------data after response.json()----------------------");
+                // console.log(data.object.specialities);
+                saveDoctorsToOffline(doctors)
+                container2.innerHTML = data.data.map(mapDoctors).join('\n\n');
                 // return data;
             });
             
         }
-        // showLoader(0);
+        showLoader(0);
         
     } catch (error) 
     {
         console.log("error => "+error.message);  
         fetchOfflineDoctors(container2);
         // fetchOfflineSpecialties(inp_specialty);
-        // showLoader(0);
+        showLoader(0);
     }
 
 
@@ -2783,48 +2922,46 @@ async function getMedicationTabsArray()
 
             // alert("view result");
 
-            
-        }
 
             //populating tabs
-            // try {
-            //     var medication = result;
-            //     var tabs=[];
-            //     for (let i = 0; i < medication.length; i++) 
-            //     {
-            //         // const element = array[i];
-            //         // console.log(i+"=> ");
-            //         // console.log(medication[i]);
+            try {
+                var medication = result;
+                var tabs=[];
+                for (let i = 0; i < medication.length; i++) 
+                {
+                    // const element = array[i];
+                    // console.log(i+"=> ");
+                    // console.log(medication[i]);
         
-            //         var obj = medication[i];
+                    var obj = medication[i];
         
-            //         let treatmentDate = new Date(obj.treatmentDate);
-            //         let sDate = new Date(obj.startDate);
-            //         let eDate = new Date(obj.endDate);
+                    let treatmentDate = new Date(obj.treatmentDate);
+                    let sDate = new Date(obj.startDate);
+                    let eDate = new Date(obj.endDate);
         
-            //         tabs.push({paneId: (i+1), title_medi: '1', content_medi: '<div class="row mb-3 mt-4"> <h5 class="col-4 text-left font-15">Medicene : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.medicine+'</h5> <h5 class="col-4 text-left font-15">Treatment Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+treatmentDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">Doctor : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.doctor+'</h5> <h5 class="col-4 text-left font-15">Diagnosis : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.diagnosis+'</h5> <h5 class="col-4 text-left font-15">Dosage : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.dosage+'</h5> <h5 class="col-4 text-left font-15">Frequency : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.frequency+'</h5> <h5 class="col-4 text-left font-15">Route : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.route+'</h5> <h5 class="col-4 text-left font-15">Start Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+sDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">End Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+eDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">Doctor Remarks : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.remarks+' </h5> </div>', active_tab: true, disabled: false});
+                    tabs.push({paneId: (i+1), title_medi: '1', content_medi: '<div class="row mb-3 mt-4"> <h5 class="col-4 text-left font-15">Medicene : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.medicine+'</h5> <h5 class="col-4 text-left font-15">Treatment Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+treatmentDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">Doctor : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.doctor+'</h5> <h5 class="col-4 text-left font-15">Diagnosis : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.diagnosis+'</h5> <h5 class="col-4 text-left font-15">Dosage : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.dosage+'</h5> <h5 class="col-4 text-left font-15">Frequency : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.frequency+'</h5> <h5 class="col-4 text-left font-15">Route : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.route+'</h5> <h5 class="col-4 text-left font-15">Start Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+sDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">End Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+eDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">Doctor Remarks : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.remarks+' </h5> </div>', active_tab: true, disabled: false});
         
         
                     
-            //     }
-            //     console.log("returning tab 6 => ");
-            //     console.log(tabs);
-            //     return tabs;
+                }
+                console.log("returning tab 6 => ");
+                console.log(tabs);
+                return tabs;
         
-            //     // activate(tabs, container2);
-            //     // container2.innerHTML = tabs[0].content_medi;
+                // activate(tabs, container2);
+                // container2.innerHTML = tabs[0].content_medi;
                 
-            // } catch (error) {
-            //     console.error(error);
-            //     console.log("returning tab 7 => null");
-            //     return null;
-            // }
+            } catch (error) {
+                console.error(error);
+                console.log("returning tab 7 => null");
+                return null;
+            }
 
 
 
 
 
-        )
+        })
         .catch(function(error)
         {
             console.log("error in offline medication fetch");
@@ -3078,33 +3215,6 @@ function mapAppointments(appointments)
 {
 
 
-    try {
-
-        // (document.getElementsByClassName('tabs-inside-here'))
-        container2
-        .scrollingTabs({
-        tabs: tabs, // required,
-        propPaneId: 'paneId', // optional - pass in default value for demo purposes
-        propTitle: 'title_medi', // optional - pass in default value for demo purposes
-        propActive: 'active_tab', // optional - pass in default value for demo purposes
-        propDisabled: 'disabled', // optional - pass in default value for demo purposes
-        propContent: 'content_medi', // optional - pass in default value for demo purposes
-        scrollToTabEdge: false, // optional - pass in default value for demo purposes
-        disableScrollArrowsOnFullyScrolled: false // optional- pass in default value for demo purposes
-        });
-    } catch (error) {
-        // console.error(error);
-    }
-
-    
-  }
-
-
-
-function mapAppointments(appointments)
-{
-
-
     if(appointments.appointmentDate == "" || appointments.appointmentDate==null)
     {
         // date = "~";
@@ -3159,16 +3269,17 @@ function mapSpecialties(specialties)
     // console.log("mapSpecialties => ");
     // console.log(specialties);
     // let date = new Date(reports.insertDate);
-    let name = specialties.name;   
+    let id = specialties.id;  
+    let name = specialties.name;  
 
-    let dataRow = `<option value="`+name+`">`+name+`</option>`;   
+    let dataRow = `<option value="`+id+`">`+name+`</option>`;   
 
     return dataRow;
 }
 function mapDoctors(doctors)
 {
     console.log("mapDoctors => ");
-    // console.log(specialties);
+    console.log(doctors);
     // let date = new Date(reports.insertDate);
     let name = doctors.name;   
 
@@ -3204,7 +3315,7 @@ function mapDoctors(doctors)
                 <a href="#" data-menu="doctor-profile-modal"  class="btn btn-full btn-s rounded-s text-uppercase font-500 color-theme border-blue2-dark">View Profile</a><div class="mt-2"></div>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-12">
-                <a href="appnt_new_book.html" class="btn btn-full btn-s rounded-s text-uppercase font-500 bg-blue2-dark">Book Appointment</a>
+                <a href="#" onclick="setSelectedDoctorDetails(${doctors.personId})" class="btn btn-full btn-s rounded-s text-uppercase font-500 bg-blue2-dark">Book Appointment</a>
             </div>
         </div>
         <div class="divider mt-3 mb-3"></div>
@@ -3229,6 +3340,7 @@ async function prepareNewAppointment(inp_specialty, container2)
         {
             console.log("value => "+inp_specialty.value);
 
+            window.sessionStorage.setItem("specialtyId", inp_specialty.value);
             fetchDoctors(inp_specialty.value, container2);
         });
 
@@ -3244,10 +3356,15 @@ async function prepareNewAppointment(inp_specialty, container2)
 
 }
 
-async function prepareNewAppointment()
+function prepareBookAppointment(doctors)
 {
-    // console.log("preparing new appointment form");
-    await fetchSpecialityList();
+    console.log("preparing book appointment => ");
+    // console.log(doctors);
+    // window.sessionStorage.setItem("doctorId", doctorId);
+
+    let inp_specialty = document.getElementById("inp_specialty");
+
+    inp_specialty.innerHTML = window.sessionStorage.getItem("specialtyId");
 
 }
 
@@ -3902,7 +4019,7 @@ async function fetchOfflineAppointments(container2)
 
 async function fetchOfflineAppointmentsWhere()
 {
-    appointmentId = parseInt(window.sessionStorage.getItem('appointmentId'));
+    var appointmentId = parseInt(window.sessionStorage.getItem('appointmentId'));
 
     // console.log("fetch offline appointment => ");
     // console.log(appointmentId);
@@ -4163,108 +4280,146 @@ function fetchOfflineReports(container2)
 
     
 }
-function fetchOfflineSpecialties(inp_specialty)
+async function fetchOfflineSpecialties(inp_specialty)
 {
 
-    var bulkArrAct = JSON.parse(`{
-        "detail": "Data Returnd",
-        "status": "Ok 200",
-        "object": {
-            "priorities": [
-                {
-                    "hmsAudit": {
-                        "insertDate": null,
-                        "updateDate": null,
-                        "isDelete": false
-                    },
-                    "lastUpdatedDateTime": null,
-                    "id": 1,
-                    "name": "Normal"
-                },
-                {
-                    "hmsAudit": {
-                        "insertDate": null,
-                        "updateDate": null,
-                        "isDelete": false
-                    },
-                    "lastUpdatedDateTime": null,
-                    "id": 2,
-                    "name": "Urgent"
-                },
-                {
-                    "hmsAudit": {
-                        "insertDate": null,
-                        "updateDate": null,
-                        "isDelete": false
-                    },
-                    "lastUpdatedDateTime": null,
-                    "id": 3,
-                    "name": "VIP"
-                }
-            ],
-            "specialities": [
-                {
-                    "hmsAudit": {
-                        "insertDate": null,
-                        "updateDate": null,
-                        "isDelete": false
-                    },
-                    "lastUpdatedDateTime": null,
-                    "id": 885,
-                    "name": "Skin",
-                    "lookUPType": {
-                        "hmsAudit": {
-                            "insertDate": null,
-                            "updateDate": null,
-                            "isDelete": false
-                        },
-                        "lastUpdatedDateTime": null,
-                        "id": null,
-                        "name": null
-                    },
-                    "answer": false,
-                    "duration": null,
-                    "compulsory": false,
-                    "defaultSelected": false,
-                    "label": null,
-                    "sortBy": null,
-                    "translatedName": null
-                },
-                {
-                    "hmsAudit": {
-                        "insertDate": null,
-                        "updateDate": null,
-                        "isDelete": false
-                    },
-                    "lastUpdatedDateTime": null,
-                    "id": 886,
-                    "name": "Gynaecologist",
-                    "lookUPType": {
-                        "hmsAudit": {
-                            "insertDate": null,
-                            "updateDate": null,
-                            "isDelete": false
-                        },
-                        "lastUpdatedDateTime": null,
-                        "id": null,
-                        "name": null
-                    },
-                    "answer": false,
-                    "duration": null,
-                    "compulsory": false,
-                    "defaultSelected": false,
-                    "label": null,
-                    "sortBy": null,
-                    "translatedName": null
-                }
-            ]
-        },
-        "data": null
-    }`);
+     //db open
+     let dbname = "icalite_index";
+     let dbversion=1;
+ 
+     db = new Dexie(dbname);
+     db.version(dbversion).stores(
+             {
+                 specialties: "id"
+             }
+         );
+     db.open().catch (function (err) {
+         console.error('Failed to open db: ' + (err.stack || err));
+     });
+ // //--//
+ 
+     await db.specialties.toArray()
+     .then(function (result) {
+         // console.log("result => ");
+         // console.log(result);
+        //  container2.innerHTML = result.map(mapAppointments).join('\n\n');
+         inp_specialty.innerHTML = result.map(mapSpecialties).join('\n\n');
+         // alert("view result");
+     })
+     .catch(function(error)
+     {
+         console.log("error in offline specialties fetch");
+ 
+         // alert("view result");
+         // alert("user not found");
+     });
+     // console.log("get response =>");
+     // console.log(resp);
+
+
+
+
+
+
+    // var bulkArrAct = JSON.parse(`{
+    //     "detail": "Data Returnd",
+    //     "status": "Ok 200",
+    //     "object": {
+    //         "priorities": [
+    //             {
+    //                 "hmsAudit": {
+    //                     "insertDate": null,
+    //                     "updateDate": null,
+    //                     "isDelete": false
+    //                 },
+    //                 "lastUpdatedDateTime": null,
+    //                 "id": 1,
+    //                 "name": "Normal"
+    //             },
+    //             {
+    //                 "hmsAudit": {
+    //                     "insertDate": null,
+    //                     "updateDate": null,
+    //                     "isDelete": false
+    //                 },
+    //                 "lastUpdatedDateTime": null,
+    //                 "id": 2,
+    //                 "name": "Urgent"
+    //             },
+    //             {
+    //                 "hmsAudit": {
+    //                     "insertDate": null,
+    //                     "updateDate": null,
+    //                     "isDelete": false
+    //                 },
+    //                 "lastUpdatedDateTime": null,
+    //                 "id": 3,
+    //                 "name": "VIP"
+    //             }
+    //         ],
+    //         "specialities": [
+    //             {
+    //                 "hmsAudit": {
+    //                     "insertDate": null,
+    //                     "updateDate": null,
+    //                     "isDelete": false
+    //                 },
+    //                 "lastUpdatedDateTime": null,
+    //                 "id": 885,
+    //                 "name": "Skin",
+    //                 "lookUPType": {
+    //                     "hmsAudit": {
+    //                         "insertDate": null,
+    //                         "updateDate": null,
+    //                         "isDelete": false
+    //                     },
+    //                     "lastUpdatedDateTime": null,
+    //                     "id": null,
+    //                     "name": null
+    //                 },
+    //                 "answer": false,
+    //                 "duration": null,
+    //                 "compulsory": false,
+    //                 "defaultSelected": false,
+    //                 "label": null,
+    //                 "sortBy": null,
+    //                 "translatedName": null
+    //             },
+    //             {
+    //                 "hmsAudit": {
+    //                     "insertDate": null,
+    //                     "updateDate": null,
+    //                     "isDelete": false
+    //                 },
+    //                 "lastUpdatedDateTime": null,
+    //                 "id": 886,
+    //                 "name": "Gynaecologist",
+    //                 "lookUPType": {
+    //                     "hmsAudit": {
+    //                         "insertDate": null,
+    //                         "updateDate": null,
+    //                         "isDelete": false
+    //                     },
+    //                     "lastUpdatedDateTime": null,
+    //                     "id": null,
+    //                     "name": null
+    //                 },
+    //                 "answer": false,
+    //                 "duration": null,
+    //                 "compulsory": false,
+    //                 "defaultSelected": false,
+    //                 "label": null,
+    //                 "sortBy": null,
+    //                 "translatedName": null
+    //             }
+    //         ]
+    //     },
+    //     "data": null
+    // }`);
 
     // console.log("fetchOfflineSpecialties => ");
     // console.log(bulkArrAct.object.specialities);
-    inp_specialty.innerHTML = bulkArrAct.object.specialities.map(mapSpecialties).join('\n\n');
+    // inp_specialty.innerHTML = bulkArrAct.object.specialities.map(mapSpecialties).join('\n\n');
 
     
 }
@@ -4272,35 +4427,99 @@ function fetchOfflineDoctors(container2)
 {
 
     var bulkArrAct = JSON.parse(`{
-        "detail": "Data Returnd",
-        "status": "Ok 200",
-        "object": {
-            "doctors": [
+            "detail": "Data Returnd",
+            "status": "Ok 200",
+            "object": null,
+            "data": [
                 {
-                    "lastUpdatedDateTime": null,
-                    "id": 1,
-                    "name": "Dr.Ahsan Iqbal"
-                },
-                {
-                    
-                    "lastUpdatedDateTime": null,
-                    "id": 2,
-                    "name": "Dr.Momina Munir"
-                },
-                {
-                    
-                    "lastUpdatedDateTime": null,
-                    "id": 3,
-                    "name": "Dr.Tabish Siddiqui"
+                    "personId": 38995,
+                    "name": "Doctor INTERACTIVE Group",
+                    "mrNo": null,
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": "3 years",
+                    "hospital": null
                 }
-            ]            
-        },
-        "data": null
-    }`);
+            ]
+        }`);
 
     // console.log("fetchOfflineSpecialties => ");
     // console.log(bulkArrAct.object.specialities);
-    container2.innerHTML = bulkArrAct.object.doctor.map(mapDoctors).join('\n\n');
+    container2.innerHTML = bulkArrAct.data.map(mapDoctors).join('\n\n');
+
+    
+}
+async function fetchOfflineDoctorsWhere()
+{
+    var doctorId = parseInt(window.sessionStorage.getItem('doctorId'));
+
+    // console.log("fetch offline appointment => ");
+    // console.log(appointmentId);
+    // const bulkArrAct = JSON.parse();
+
+    //db open
+    let dbname = "icalite_index";
+    let dbversion=1;
+
+    db = new Dexie(dbname);
+    db.version(dbversion).stores(
+            {
+                doctors: "personId"
+            }
+        );
+    await db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
+    });
+// //--//
+
+
+    await db.doctors.where({personId:doctorId})
+    .first(doctors => {
+        // console.log("result where => ");
+        // console.log(appointments);
+
+        prepareBookAppointment(doctors);
+        // populateAppointmentDetails(appointments);
+
+    })
+    .catch(function (error) {
+        console.log("error in offline appointments fetch");
+    });
+
+
+
+
+
+    // await db.appointments.where('appointmentId').equals(appointmentId)
+    // .then(function(result){
+    //     console.log("result where => ");
+    //     console.log(result);
+
+    //     populateAppointmentDetails(result);
+
+    // })
+    // .catch(function (error) {
+    //     console.log("error in offline appointment fetch");
+    // });
 
     
 }
@@ -4488,6 +4707,88 @@ async function saveAppointmentsToOffline(appointments)
     console.log("saveAppointmentsToOffline---------end-----------");
 }
 
+//specialties
+async function saveSpecialtiesToOffline(specialties)
+{
+    console.log("saveSpecialtiesToOffline---------start-----------");
+    // console.log("response=> ");
+    // console.log(vitals);
+
+    
+//db open
+    let dbname = "icalite_index";
+    let dbversion=1;
+
+    db = new Dexie(dbname);
+    db.version(dbversion).stores(
+            {
+                specialties: "id"
+            }
+        );
+    db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
+    });
+// //--//
+
+// //db put//
+
+    
+    await db.specialties.bulkPut(specialties)
+    .then(function(lastKey){
+        console.error("data saved to offline");
+    })
+    .catch(Dexie.bulkError, function(e) 
+    {
+        console.error("unable to add to offline");
+        // showMessage("incorrect username or password");
+        // alert ("person Ooops: " + error);
+    });
+
+
+    console.log("saveSpecialtiesToOffline---------end-----------");
+}
+
+//doctors
+async function saveDoctorsToOffline(doctors)
+{
+    console.log("saveDoctorsToOffline---------start-----------");
+    // console.log("response=> ");
+    // console.log(vitals);
+
+    
+//db open
+    let dbname = "icalite_index";
+    let dbversion=1;
+
+    db = new Dexie(dbname);
+    db.version(dbversion).stores(
+            {
+                doctors: "personId"
+            }
+        );
+    db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
+    });
+// //--//
+
+// //db put//
+
+    
+    await db.doctors.bulkPut(doctors)
+    .then(function(lastKey){
+        console.error("data saved to offline");
+    })
+    .catch(Dexie.bulkError, function(e) 
+    {
+        console.error("unable to add to offline");
+        // showMessage("incorrect username or password");
+        // alert ("person Ooops: " + error);
+    });
+
+
+    console.log("saveDoctorsToOffline---------end-----------");
+}
+
 //dexie initialization
 function indexDbInit()
 {
@@ -4502,7 +4803,9 @@ function indexDbInit()
         vitals: 'vitalId',
         appointments:'appointmentId',
         medications:'medicationId',
-        demographics:'demographicsId'
+        demographics:'demographicsId',
+        doctors:'personId',
+        specialties:'id'
     });
 
     //dummy
@@ -4938,6 +5241,22 @@ function initializeView()
             // fetchSpecialtyList(inp_specialty);
             prepareNewAppointment(inp_specialty, container2);
             // fetchOfflineAppointmentsWhere();
+
+            
+        }
+        else if(sPage == appnt_new_book)
+        {
+
+            // console.log("appointments det view");
+            // console.log("appointmentId_slctd => ");
+            // console.log(appointmentId_slctd);
+
+            console.log("appointments new book");
+            // const inp_specialty = document.getElementById('inp_specialty');
+            // const container2 = document.getElementById('container2');
+            // fetchSpecialtyList(inp_specialty);
+            // prepareNewAppointment(inp_specialty, container2);
+            fetchOfflineDoctorsWhere();
 
             
         }
@@ -5459,10 +5778,23 @@ function populateAppointmentDetails(appointments)
 
 }
 //--appointment--//
+
+//selected doctor
+function setSelectedDoctorDetails(doctorId)
+{
+    window.sessionStorage.setItem("doctorId", doctorId);
+
+    // console.log("setSelectedAppointmentDetails");
+    // console.log("appointment id => "+appointmentId);    
+    // appointmentId_slctd = appointmentId;
+    // console.log("appointmentId_slctd => "+appointmentId_slctd);
+    // alert("check values");
+    // window.location.assign('appnt_view_det.html');
+    window.location.assign(appnt_new_book);
+    
+}
 //-------------------------------VIEW HANDLING----------------------------//
 
-            toaster.classList.remove("online-message", "bg-green1-dark");
-            toaster.classList.add("offline-message", "bg-red2-dark", "offline-message-active");
 
 ///////////////////UTILS
 function composeDateYMD(dateInMs)
@@ -5633,37 +5965,6 @@ async function showtoastMsg(success, message)
 
     
 
-            await window.setTimeout(function (params) {
-                // console.log("toast hidden");
-                toaster.classList.remove("offline-message-active");
-            }, 3000);
-            
-        // }
-        // else{
-
-        //     if (message == "" || message == null) 
-        //     {
-        //         toaster.innerHTML = "SUCCESS!";    
-        //     }
-        //     else{
-        //         toaster.innerHTML = message;
-        //     }
-            
-
-
-        //     toaster.classList.remove("offline-message", "bg-red2-dark");
-        //     toaster.classList.add("online-message", "bg-green1-dark", "online-message-active");
-
-        //     await window.setTimeout(function (params) {
-        //         // console.log("toast hidden");
-        //         toaster.classList.remove("online-message-active");
-        //     }, 3000);
-
-        // }
-        
-    // } catch (error) {
-        
-    // }
 
     
 }
