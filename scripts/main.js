@@ -1292,6 +1292,7 @@ async function addVitals()
 
 
 
+
 async function fetchDemographics()
 {
     try {
@@ -2782,46 +2783,48 @@ async function getMedicationTabsArray()
 
             // alert("view result");
 
+            
+        }
 
             //populating tabs
-            try {
-                var medication = result;
-                var tabs=[];
-                for (let i = 0; i < medication.length; i++) 
-                {
-                    // const element = array[i];
-                    // console.log(i+"=> ");
-                    // console.log(medication[i]);
+            // try {
+            //     var medication = result;
+            //     var tabs=[];
+            //     for (let i = 0; i < medication.length; i++) 
+            //     {
+            //         // const element = array[i];
+            //         // console.log(i+"=> ");
+            //         // console.log(medication[i]);
         
-                    var obj = medication[i];
+            //         var obj = medication[i];
         
-                    let treatmentDate = new Date(obj.treatmentDate);
-                    let sDate = new Date(obj.startDate);
-                    let eDate = new Date(obj.endDate);
+            //         let treatmentDate = new Date(obj.treatmentDate);
+            //         let sDate = new Date(obj.startDate);
+            //         let eDate = new Date(obj.endDate);
         
-                    tabs.push({paneId: (i+1), title_medi: '1', content_medi: '<div class="row mb-3 mt-4"> <h5 class="col-4 text-left font-15">Medicene : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.medicine+'</h5> <h5 class="col-4 text-left font-15">Treatment Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+treatmentDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">Doctor : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.doctor+'</h5> <h5 class="col-4 text-left font-15">Diagnosis : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.diagnosis+'</h5> <h5 class="col-4 text-left font-15">Dosage : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.dosage+'</h5> <h5 class="col-4 text-left font-15">Frequency : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.frequency+'</h5> <h5 class="col-4 text-left font-15">Route : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.route+'</h5> <h5 class="col-4 text-left font-15">Start Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+sDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">End Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+eDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">Doctor Remarks : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.remarks+' </h5> </div>', active_tab: true, disabled: false});
+            //         tabs.push({paneId: (i+1), title_medi: '1', content_medi: '<div class="row mb-3 mt-4"> <h5 class="col-4 text-left font-15">Medicene : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.medicine+'</h5> <h5 class="col-4 text-left font-15">Treatment Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+treatmentDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">Doctor : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.doctor+'</h5> <h5 class="col-4 text-left font-15">Diagnosis : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.diagnosis+'</h5> <h5 class="col-4 text-left font-15">Dosage : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.dosage+'</h5> <h5 class="col-4 text-left font-15">Frequency : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.frequency+'</h5> <h5 class="col-4 text-left font-15">Route : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.route+'</h5> <h5 class="col-4 text-left font-15">Start Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+sDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">End Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+eDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">Doctor Remarks : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.remarks+' </h5> </div>', active_tab: true, disabled: false});
         
         
                     
-                }
-                console.log("returning tab 6 => ");
-                console.log(tabs);
-                return tabs;
+            //     }
+            //     console.log("returning tab 6 => ");
+            //     console.log(tabs);
+            //     return tabs;
         
-                // activate(tabs, container2);
-                // container2.innerHTML = tabs[0].content_medi;
+            //     // activate(tabs, container2);
+            //     // container2.innerHTML = tabs[0].content_medi;
                 
-            } catch (error) {
-                console.error(error);
-                console.log("returning tab 7 => null");
-                return null;
-            }
+            // } catch (error) {
+            //     console.error(error);
+            //     console.log("returning tab 7 => null");
+            //     return null;
+            // }
 
 
 
 
 
-        })
+        )
         .catch(function(error)
         {
             console.log("error in offline medication fetch");
@@ -3075,6 +3078,33 @@ function mapAppointments(appointments)
 {
 
 
+    try {
+
+        // (document.getElementsByClassName('tabs-inside-here'))
+        container2
+        .scrollingTabs({
+        tabs: tabs, // required,
+        propPaneId: 'paneId', // optional - pass in default value for demo purposes
+        propTitle: 'title_medi', // optional - pass in default value for demo purposes
+        propActive: 'active_tab', // optional - pass in default value for demo purposes
+        propDisabled: 'disabled', // optional - pass in default value for demo purposes
+        propContent: 'content_medi', // optional - pass in default value for demo purposes
+        scrollToTabEdge: false, // optional - pass in default value for demo purposes
+        disableScrollArrowsOnFullyScrolled: false // optional- pass in default value for demo purposes
+        });
+    } catch (error) {
+        // console.error(error);
+    }
+
+    
+  }
+
+
+
+function mapAppointments(appointments)
+{
+
+
     if(appointments.appointmentDate == "" || appointments.appointmentDate==null)
     {
         // date = "~";
@@ -3211,6 +3241,13 @@ async function prepareNewAppointment(inp_specialty, container2)
 
 
 
+
+}
+
+async function prepareNewAppointment()
+{
+    // console.log("preparing new appointment form");
+    await fetchSpecialityList();
 
 }
 
@@ -5424,6 +5461,8 @@ function populateAppointmentDetails(appointments)
 //--appointment--//
 //-------------------------------VIEW HANDLING----------------------------//
 
+            toaster.classList.remove("online-message", "bg-green1-dark");
+            toaster.classList.add("offline-message", "bg-red2-dark", "offline-message-active");
 
 ///////////////////UTILS
 function composeDateYMD(dateInMs)
@@ -5594,6 +5633,37 @@ async function showtoastMsg(success, message)
 
     
 
+            await window.setTimeout(function (params) {
+                // console.log("toast hidden");
+                toaster.classList.remove("offline-message-active");
+            }, 3000);
+            
+        // }
+        // else{
+
+        //     if (message == "" || message == null) 
+        //     {
+        //         toaster.innerHTML = "SUCCESS!";    
+        //     }
+        //     else{
+        //         toaster.innerHTML = message;
+        //     }
+            
+
+
+        //     toaster.classList.remove("offline-message", "bg-red2-dark");
+        //     toaster.classList.add("online-message", "bg-green1-dark", "online-message-active");
+
+        //     await window.setTimeout(function (params) {
+        //         // console.log("toast hidden");
+        //         toaster.classList.remove("online-message-active");
+        //     }, 3000);
+
+        // }
+        
+    // } catch (error) {
+        
+    // }
 
     
 }
