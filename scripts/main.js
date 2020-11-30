@@ -18,6 +18,7 @@ const vitals_view="vitals_view.html";
 //objects//
 const inp_username = document.getElementById('inp_uname');
 const inp_password = document.getElementById('inp_pass');
+const inp_select_usertype = document.getElementById('inp_slct_usertype');
 const btn_addToHome = document.getElementById('btn_addToHome');
 const container = document.getElementById('container');
 const messageInd = document.getElementById('messageIndicator');
@@ -242,6 +243,7 @@ const validateLogin = function (params)
         // showtoastMsg(false);
         let username = inp_username.value;
         let pass = inp_password.value;
+        let userType = inp_select_usertype.value;
         let errcount=0;
         let errmsg = "";
 
@@ -258,7 +260,7 @@ const validateLogin = function (params)
 
         if (errcount==0) 
         {
-            login(username, pass);
+            login(username, pass, userType);
         }
         else{
             showtoastMsg(0, errmsg);
@@ -266,16 +268,16 @@ const validateLogin = function (params)
 
     }
     else{
-        // showMessage("No Internet Connection!");
-        fetchOfflineActivities();
+        showtoastMsg(0, "No Internet Connection!");
+        // fetchOfflineActivities(userType);
     }
 };
 
 //data handling
-async function login(userName, password)
+async function login(userName, password, userType)
 
 {
-    console.log("login username=>"+userName+", pass=>"+password);   
+    console.log("login username=>"+userName+", pass=>"+password+", userType=>"+userType);   
 
     // showtoastMsg(0, "hello error");
     // showLoader(true, "han bhai thek hai");
@@ -325,7 +327,8 @@ async function login(userName, password)
                 body: JSON.stringify(
                         {
                             userName:userName,
-                            password:password
+                            password:password,
+                            userType:userType
                         }
                     ), // string, FormData, Blob, BufferSource, or URLSearchParams
                 // referrer: "about:client", // or "" to send no Referer header,
@@ -375,7 +378,7 @@ async function login(userName, password)
 
             //dummy login
 
-            if (userName == "interactive@ppl.com") 
+            if (userType == "patient") 
             {
                 //patient
                 let response = {
@@ -491,7 +494,7 @@ async function login(userName, password)
 
                 handleLoginResponse(response);
             }
-            else if (userName == "doctor@ppl.com") {
+            else if (userType == "doctor") {
 
                 //doctor
                 let response = {
