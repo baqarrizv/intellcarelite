@@ -11,6 +11,9 @@ const demogrp_update="demogrp_update.html";
 const demogrp_view="demogrp_view.html";
 const medi_view="medi_view.html";
 const patient_list="patient_list.html";
+const patient_encounter_form="patient_encounter_form.html";
+const telemedicine_list="telemed_list.html";
+const telemed_encounter_form="telemed_encounter_form.html";
 const report_view="report_view.html";
 const vitals_add="vitals_add.html";
 const vitals_view_det="vitals_view_det.html";
@@ -87,14 +90,14 @@ async function importLibraries()
 {
     console.log("importing libraries.....");
     //jquery import
-    var jQueryScript = document.createElement('script');  
-    jQueryScript.setAttribute('src','https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js');
-    document.head.appendChild(jQueryScript);
+    // var jQueryScript = document.createElement('script');  
+    // jQueryScript.setAttribute('src','https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js');
+    // document.head.appendChild(jQueryScript);
 
     //Bootstrap import
-    var bsScript = document.createElement('script');  
-    bsScript.setAttribute('src','https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js');
-    document.head.appendChild(bsScript);
+    // var bsScript = document.createElement('script');  
+    // bsScript.setAttribute('src','https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js');
+    // document.head.appendChild(bsScript);
     //--//
 
     //DEXIE import
@@ -1301,7 +1304,7 @@ async function fetchDemographics()
 
 
         // showMessage("processing. please wait.");
-        showLoader(true, "fetching demographics. please wait.");
+        showLoader(true, "fetching data. please wait.");
 
         const url=rootUrl+"viewDemographics";
         console.log("complete url=> "+url);
@@ -1406,6 +1409,7 @@ async function fetchDemographics()
         
     } catch (error) 
     {
+        showLoader(false);
         console.log("error => "+error.message);  
         fetchOfflineDemographics();        
     }
@@ -1483,6 +1487,8 @@ async function fetchDemographicsForUpdate()
         
     } catch (error) 
     {
+        
+        showLoader(false);
         console.log("error => "+error.message);  
         fetchOfflineDemographicsForUpd();        
     }
@@ -1763,7 +1769,7 @@ async function fetchReports(container2)
 
 
         // showMessage("processing. please wait.");
-        // showLoader(true);
+        showLoader(true);
 
         const url=rootUrl+"viewAttachments";
         console.log("complete url=> "+url);
@@ -1804,11 +1810,13 @@ async function fetchReports(container2)
         });
 
         if (!response.ok) {
+            showLoader(false);
             console.log("unsuccessfull");
             fetchOfflineReports(container2);
         }
         else{
             console.log("successfull");
+            showLoader(false);
             // console.log("--------------response.json()----------------------");
             // console.log(response.json());
             response.json()
@@ -1822,6 +1830,7 @@ async function fetchReports(container2)
         
     } catch (error) 
     {
+        showLoader(false);
         console.log("error => "+error.message);  
         fetchOfflineReports(container2)      
     }
@@ -1908,34 +1917,8 @@ async function fetchSpecialtyList(inp_specialty)
                         "label": null,
                         "sortBy": null,
                         "translatedName": null
-                    },
-                    {
-                        "hmsAudit": {
-                            "insertDate": null,
-                            "updateDate": null,
-                            "isDelete": false
-                        },
-                        "lastUpdatedDateTime": null,
-                        "id": 886,
-                        "name": "Gynaecologist",
-                        "lookUPType": {
-                            "hmsAudit": {
-                                "insertDate": null,
-                                "updateDate": null,
-                                "isDelete": false
-                            },
-                            "lastUpdatedDateTime": null,
-                            "id": null,
-                            "name": null
-                        },
-                        "answer": false,
-                        "duration": null,
-                        "compulsory": false,
-                        "defaultSelected": false,
-                        "label": null,
-                        "sortBy": null,
-                        "translatedName": null
                     }
+                    
                 ]
             },
             "data": null
@@ -2104,7 +2087,7 @@ async function fetchDoctors(specialityId, container2)
             .then(data => {                
                 // console.log("--------------data after response.json()----------------------");
                 // console.log(data.object.specialities);
-                saveDoctorsToOffline(doctors)
+                saveDoctorsToOffline(data.data)
                 container2.innerHTML = data.data.map(mapDoctors).join('\n\n');
                 // return data;
             });
@@ -2199,6 +2182,8873 @@ async function fetchDoctors(specialityId, container2)
     // }
 
 }
+//DOCTORS PORTAL
+async function fetchPatientList(container2)
+{
+    console.log("ftch Patient list => starting");
+
+
+    try {
+
+
+        // showMessage("processing. please wait.");
+        showLoader(true);
+
+        const url=rootUrl+"patientList";
+        console.log("complete url=> "+url);
+
+        let personId=window.sessionStorage.getItem("personId");
+        let actionId="12";
+
+        ////dummy data
+        const bulkArrAct = JSON.parse(`{
+            "detail": "Data Returnd",
+            "status": "Ok 200",
+            "object": null,
+            "data": [
+                {
+                    "personId": 42941,
+                    "name": "123.. .",
+                    "mrNo": "01-18-0037602",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 10283,
+                    "name": "AABISH  FARRUKH D/O FARRUKH DAUD   ",
+                    "mrNo": "01-16-0007929",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 23120,
+                    "name": "MUHAMMAD  RIAZ S/O PEERAK BUGTI   ",
+                    "mrNo": "01-16-0020766",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 9627,
+                    "name": "AYESHA FARAZ AHMED D/O Faraz Ahmed",
+                    "mrNo": "01-16-0007273",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 36625,
+                    "name": "AHMED ALI S/O KAMAL Khan",
+                    "mrNo": "01-17-0031339",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 14267,
+                    "name": "AISHA   D/O SHAH JEHAN BUGTI  ",
+                    "mrNo": "01-16-0011913",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 7254,
+                    "name": "MRS. ASIA M. ALI KHAN W/O MOHAMMAD ALI KHAN  ",
+                    "mrNo": "01-16-0004900",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 7254,
+                    "name": "MRS. ASIA M. ALI KHAN W/O MOHAMMAD ALI KHAN  ",
+                    "mrNo": "01-16-0004900",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 41087,
+                    "name": "MOHAMMAD DANISH . S/O GHULAM Shabbir Bugti",
+                    "mrNo": "01-17-0035749",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 22873,
+                    "name": "MEHBOOB  ALI S/O RAJ MOHAMMAD BUGTI  ",
+                    "mrNo": "01-16-0020519",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 42826,
+                    "name": "MRS. KHALIDA PARVEEN . W/O KHALID MOHAMMAD   ",
+                    "mrNo": "01-18-0037488",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 42826,
+                    "name": "MRS. KHALIDA PARVEEN . W/O KHALID MOHAMMAD   ",
+                    "mrNo": "01-18-0037488",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 25798,
+                    "name": "FARHAT  BANO W/O MANDO ALI BUGTI  ",
+                    "mrNo": "01-16-0023444",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 30552,
+                    "name": "SALMA  JAVED W/O JAVED Ali",
+                    "mrNo": "01-17-0025283",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 30552,
+                    "name": "SALMA  JAVED W/O JAVED Ali",
+                    "mrNo": "01-17-0025283",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 43575,
+                    "name": "FARAZ AHMED",
+                    "mrNo": "01-18-0038234",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 15798,
+                    "name": "TAMIZUDDIN   H/O ZAIB-UN-NISA   ",
+                    "mrNo": "01-16-0013444",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 36702,
+                    "name": "SADAR Din",
+                    "mrNo": "01-17-0031416",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 5767,
+                    "name": "Faraz Ahmed",
+                    "mrNo": "01-16-0003413",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 43735,
+                    "name": "MOHAMMAD RAEES . S/O WAZIR MOHAMMAD BUGTI  ",
+                    "mrNo": "01-18-0038394",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 5767,
+                    "name": "Faraz Ahmed",
+                    "mrNo": "01-16-0003413",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 4437,
+                    "name": "RAZA MOHAMMAD BUGTI  ",
+                    "mrNo": "01-16-0002083",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 5767,
+                    "name": "Faraz Ahmed",
+                    "mrNo": "01-16-0003413",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 23874,
+                    "name": "SARA . W/O GAZI BUGTI",
+                    "mrNo": "01-16-0021520",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 45393,
+                    "name": "AMIR SAEED",
+                    "mrNo": "01-18-0040050",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 31182,
+                    "name": "ABDUL  MUREED S/O ABDUL AZEEM BUGTI  ",
+                    "mrNo": "01-17-0025913",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 36702,
+                    "name": "SADAR Din",
+                    "mrNo": "01-17-0031416",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 36880,
+                    "name": "HAKEEM KHATOON W/O SADAR Din",
+                    "mrNo": "01-17-0031591",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 5767,
+                    "name": "Faraz Ahmed",
+                    "mrNo": "01-16-0003413",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 9628,
+                    "name": "ASMA FARAZ AHMED D/O Faraz Ahmed",
+                    "mrNo": "01-16-0007274",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 4745,
+                    "name": "SHER Mohammed Bugti",
+                    "mrNo": "01-16-0002391",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 4596,
+                    "name": "NABI BAKHSH   ",
+                    "mrNo": "01-16-0002242",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 4903,
+                    "name": "ZAHRI KHAN BUGTI  ",
+                    "mrNo": "01-16-0002549",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 23294,
+                    "name": "ANEETA   W/O MUHAMMAD IDREES BUGTI  ",
+                    "mrNo": "01-16-0020940",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 18814,
+                    "name": "JATOO   S/O JAMIL BUGTI   ",
+                    "mrNo": "01-16-0016460",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 13283,
+                    "name": "KALSOOM   D/O MOHAMMAD ZAFAR   ",
+                    "mrNo": "01-16-0010929",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 4710,
+                    "name": "S ISHAQ HUSAIN SHAH ",
+                    "mrNo": "01-16-0002356",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 7154,
+                    "name": "KOMAL . D/O ILYAS MASIH",
+                    "mrNo": "01-16-0004800",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 6468,
+                    "name": "MUHAMMAD ZAHID BUGTI  ",
+                    "mrNo": "01-16-0004114",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 36702,
+                    "name": "SADAR Din",
+                    "mrNo": "01-17-0031416",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 46082,
+                    "name": "EJAZ . S/O SADAR Din",
+                    "mrNo": "01-18-0040738",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 36880,
+                    "name": "HAKEEM KHATOON W/O SADAR Din",
+                    "mrNo": "01-17-0031591",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 16995,
+                    "name": "MRS. KHATOON W/O BALACH BUGTI   ",
+                    "mrNo": "01-16-0014641",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 36347,
+                    "name": "SAJAN BIBI M/O MOHAMMAD JAN",
+                    "mrNo": "01-17-0031061",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 14350,
+                    "name": "MARRIUM  BIBI D/O HOURAN Bugti",
+                    "mrNo": "01-16-0011996",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 35006,
+                    "name": "MRS.  GOLO W/O SHARF DIN BUGTI  ",
+                    "mrNo": "01-17-0029737",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 5198,
+                    "name": "ABDUL Hameed Bugti",
+                    "mrNo": "01-16-0002844",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 25016,
+                    "name": "SHAR  KHATOON W/O DUR MUHAMMAD BUGTI  ",
+                    "mrNo": "01-16-0022662",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 25857,
+                    "name": "JAMILA  BIBI W/O RIASAT Bugti",
+                    "mrNo": "01-16-0023503",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 44757,
+                    "name": "MUHAMMAD ASIF S/O ALLAH BUX",
+                    "mrNo": "01-18-0039415",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 36707,
+                    "name": "SAMANY BIBI M/O JAMAL Khan",
+                    "mrNo": "01-17-0031421",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 19429,
+                    "name": "FAROOQ   S/O NASEEBAN BUGTI   ",
+                    "mrNo": "01-16-0017075",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 24539,
+                    "name": "FAROOQ   S/O ABDUL KARIM BUGTI  ",
+                    "mrNo": "01-16-0022185",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 30792,
+                    "name": "FATIMA   D/O ABDUL KARIM BUGTI  ",
+                    "mrNo": "01-17-0025523",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 37884,
+                    "name": "AABIS FAREED Khan S/O ABDUL Fareed",
+                    "mrNo": "01-17-0032558",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 29723,
+                    "name": "A HALEEM KHAN  ",
+                    "mrNo": "01-17-0024454",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 29723,
+                    "name": "A HALEEM KHAN  ",
+                    "mrNo": "01-17-0024454",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48093,
+                    "name": "PATIENT G Test5",
+                    "mrNo": "01-18-0042741",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 38148,
+                    "name": "A MEER",
+                    "mrNo": "01-17-0032822",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 46892,
+                    "name": "A DINA",
+                    "mrNo": "01-18-0041547",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48097,
+                    "name": "PATIENT H Test S/O Doctor INTERACTIVE Group",
+                    "mrNo": "01-18-0042743",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48100,
+                    "name": "26TH OCTOBER 26TH OCTOBER",
+                    "mrNo": "01-18-0042746",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 23333,
+                    "name": "NAAZ  GUL W/O LAL KHAN BUGTI  ",
+                    "mrNo": "01-16-0020979",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 32290,
+                    "name": "'WAZIR  Mohd W/O Wazir Mohd",
+                    "mrNo": "01-17-0027021",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48128,
+                    "name": "HAROON TEST ADIL",
+                    "mrNo": "01-18-0042769",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48140,
+                    "name": "ABDUL REHMAN",
+                    "mrNo": "01-18-0042781",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48136,
+                    "name": "MUHAMMAD Saeed S/O 2 2 3673",
+                    "mrNo": "01-18-0042777",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48154,
+                    "name": "ABDUL RAHMAN",
+                    "mrNo": "01-18-0042795",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 38051,
+                    "name": "A QADER",
+                    "mrNo": "01-17-0032725",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 46892,
+                    "name": "A DINA",
+                    "mrNo": "01-18-0041547",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 30792,
+                    "name": "FATIMA   D/O ABDUL KARIM BUGTI  ",
+                    "mrNo": "01-17-0025523",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 41220,
+                    "name": "AADIL ALI . S/O SONA Khan Bugti",
+                    "mrNo": "01-17-0035882",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48161,
+                    "name": "AMIR SHAHZAD",
+                    "mrNo": "01-18-0042802",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48163,
+                    "name": "ALI KHAN",
+                    "mrNo": "01-18-0042804",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48165,
+                    "name": "BILL GATES",
+                    "mrNo": "01-18-0042806",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48138,
+                    "name": "HAYAT Farooq M/O 2 2 3673",
+                    "mrNo": "01-18-0042779",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48137,
+                    "name": "HAYAT Farooq F/O FYHG TR",
+                    "mrNo": "01-18-0042778",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48101,
+                    "name": "26TH OCTOBER 2 H OCTOBER",
+                    "mrNo": "01-18-0042747",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48119,
+                    "name": "PATIENT L TEST5",
+                    "mrNo": "01-18-0042766",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 5352,
+                    "name": "Doctor MOHAMMAD ALI KHAN",
+                    "mrNo": "01-16-0002998",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48115,
+                    "name": "6TH NOVEMBER 6TH NOVEMBER",
+                    "mrNo": "01-18-0042762",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48251,
+                    "name": "SAN PATIENT",
+                    "mrNo": "01-18-0042892",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48086,
+                    "name": "PATIENT D TEST4",
+                    "mrNo": "01-18-0042734",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 25296,
+                    "name": "KHADIJA   D/O ABDUL SATTAR BUGTI  ",
+                    "mrNo": "01-16-0022942",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48139,
+                    "name": "HAYAT FAROOQ",
+                    "mrNo": "01-18-0042780",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48110,
+                    "name": "FATHER INTERACTIVE F/O Doctor INTERACTIVE Group",
+                    "mrNo": "01-18-0042757",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48275,
+                    "name": "SOBIA KHALID",
+                    "mrNo": "01-18-0042921",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 46247,
+                    "name": "123 DFS  DF SDFS  DF SDFS  DF SDFS  DF SDFS  DF SDFS 45",
+                    "mrNo": "01-18-0040903",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 42700,
+                    "name": "123456 .",
+                    "mrNo": "01-18-0037362",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48276,
+                    "name": "3 DECEMBER1 3 DECEMBER1",
+                    "mrNo": "01-18-0042922",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48265,
+                    "name": "EXPENSE REPORT",
+                    "mrNo": "01-18-0042911",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48283,
+                    "name": "TRY 1",
+                    "mrNo": "01-18-0042929",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48401,
+                    "name": "ANONYMOUS Anonymous",
+                    "mrNo": "01-18-0043043",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48400,
+                    "name": "ANONYMOUS Anonymous",
+                    "mrNo": "01-18-0043042",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48347,
+                    "name": "DR . ABC Xyz",
+                    "mrNo": "01-18-0042990",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48439,
+                    "name": "ANONYMOUS Anonymous",
+                    "mrNo": "01-18-0043081",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48448,
+                    "name": "18TH DECEMBER 18TH DECEMBER",
+                    "mrNo": "01-18-0043090",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 9620,
+                    "name": "ZAIN-UL-ABIDIN  ",
+                    "mrNo": "01-16-0007266",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 9619,
+                    "name": "ATTA-UR-REHMAN  ",
+                    "mrNo": "01-16-0007265",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48465,
+                    "name": "DRSTHGF ERTSDHG",
+                    "mrNo": "01-18-0043107",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 4482,
+                    "name": "SHAD MOHAMMAD BUGTI  ",
+                    "mrNo": "01-16-0002128",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48469,
+                    "name": "DB Gdbx",
+                    "mrNo": "01-18-0043111",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48204,
+                    "name": "MY LAST SMOKE",
+                    "mrNo": "01-18-0042845",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48481,
+                    "name": "SANITY CHECKING 1.40.5",
+                    "mrNo": "01-18-0043123",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48136,
+                    "name": "MUHAMMAD Saeed S/O 2 2 3673",
+                    "mrNo": "01-18-0042777",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48352,
+                    "name": "11 December 4 11 December 4",
+                    "mrNo": "01-18-0042994",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48487,
+                    "name": "GROW Buddy",
+                    "mrNo": "01-18-0043129",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48488,
+                    "name": "GO BROTHA",
+                    "mrNo": "01-18-0043130",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48486,
+                    "name": "WEDNESDAY CHECKING",
+                    "mrNo": "01-18-0043128",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48273,
+                    "name": "ALPHA TEST",
+                    "mrNo": "01-18-0042919",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48497,
+                    "name": "AAJ DUSRA NEYA DUSRA NEYA",
+                    "mrNo": "01-18-0043139",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48504,
+                    "name": "ABDUL REHMAN",
+                    "mrNo": "01-18-0043146",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 46247,
+                    "name": "123 DFS  DF SDFS  DF SDFS  DF SDFS  DF SDFS  DF SDFS 45",
+                    "mrNo": "01-18-0040903",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 88797,
+                    "name": "Anonymous Anonymous",
+                    "mrNo": "01-19-0040279",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 88783,
+                    "name": "DZFXZDV DXFDV",
+                    "mrNo": "01-19-0040265",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89239,
+                    "name": "Anonymous Anonymous",
+                    "mrNo": "01-19-0040852",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 88406,
+                    "name": "12TH FEB 12TH FEB",
+                    "mrNo": "01-19-0039853",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89242,
+                    "name": "23R 4R",
+                    "mrNo": "01-19-0040855",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89243,
+                    "name": "Anonymous Anonymous",
+                    "mrNo": "01-19-0040856",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89304,
+                    "name": "Anonymous Anonymous",
+                    "mrNo": "01-19-0040938",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89349,
+                    "name": "Anonymous Anonymous",
+                    "mrNo": "01-19-0040992",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89373,
+                    "name": "Anonymous Anonymous",
+                    "mrNo": "01-19-0041043",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89378,
+                    "name": "RAZA KHAN",
+                    "mrNo": "01-19-0041055",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89390,
+                    "name": "VISIT CONFIRMATION",
+                    "mrNo": "01-19-0041079",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89398,
+                    "name": "Anonymous Anonymous",
+                    "mrNo": "01-19-0041087",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48588,
+                    "name": "11 12222 J",
+                    "mrNo": "01-19-0000144",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89679,
+                    "name": "MUTTI UR REHMAN",
+                    "mrNo": "01-19-0041496",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 42483,
+                    "name": "A WAHID",
+                    "mrNo": "01-18-0037145",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 18534,
+                    "name": "A.  WAHID S/O ZAHEERUDDIN BUGTI   ",
+                    "mrNo": "01-16-0016180",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48000,
+                    "name": "BABY OF AABDUL RASHID   D/O AABDUL RASHID  ",
+                    "mrNo": "01-18-0042648",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 29825,
+                    "name": "AABDUL RASHID  ",
+                    "mrNo": "01-17-0024556",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48001,
+                    "name": "BABY OF AABDUL RASHID   S/O AABDUL RASHID  ",
+                    "mrNo": "01-18-0042649",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 32125,
+                    "name": "HASAN  Bano W/O AABDUL RASHID  ",
+                    "mrNo": "01-17-0026856",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 90005,
+                    "name": "TEST 30 NEW",
+                    "mrNo": "01-19-0042076",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 88412,
+                    "name": "T34E46Y 345Y 345Y D/O .Maryam Usman",
+                    "mrNo": "01-19-0039859",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 92104,
+                    "name": "ABU TALHA",
+                    "mrNo": "01-20-0043819",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 4633,
+                    "name": "Dr. MOHAMMAD JAMIL BUGTI",
+                    "mrNo": "01-16-0002279",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 39052,
+                    "name": "000 .",
+                    "mrNo": "01-17-0033716",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48809,
+                    "name": "236 23 26 F/O 000 .",
+                    "mrNo": "01-19-0000425",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48818,
+                    "name": "ERH WETH D/O 000 .",
+                    "mrNo": "01-19-0000434",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48786,
+                    "name": "SD ST ST D/O 000 .",
+                    "mrNo": "01-19-0000402",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 92114,
+                    "name": "Test Test 1",
+                    "mrNo": "01-20-0043880",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 92117,
+                    "name": "TEST GYNAE TEST GYNAE S/O TEST GYNAE",
+                    "mrNo": "01-20-0043900",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 12460,
+                    "name": "MUHAMMAD  SHOAIB S/O MOHAMMAD JAMIL BUGTI  ",
+                    "mrNo": "01-16-0010106",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 4633,
+                    "name": "Dr. MOHAMMAD JAMIL BUGTI",
+                    "mrNo": "01-16-0002279",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48229,
+                    "name": "HAJI ULLAH",
+                    "mrNo": "01-18-0042870",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48231,
+                    "name": "HASSAN FARAZ",
+                    "mrNo": "01-18-0042872",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48238,
+                    "name": "IMRAN ALI",
+                    "mrNo": "01-18-0042879",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48239,
+                    "name": "ALI MUMTAZ",
+                    "mrNo": "01-18-0042880",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48164,
+                    "name": "OMER ALI",
+                    "mrNo": "01-18-0042805",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48164,
+                    "name": "OMER ALI",
+                    "mrNo": "01-18-0042805",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89092,
+                    "name": "Miss NEW EMPLOYEE ONE",
+                    "mrNo": "01-19-0040658",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89687,
+                    "name": "FARAHANA SAEED",
+                    "mrNo": "01-19-0041504",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 322,
+                    "name": "Captain TEST EMPLOYEE",
+                    "mrNo": "12-13-0000272",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48560,
+                    "name": "10TH JA2 10TH JA2",
+                    "mrNo": "01-19-0000108",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                }
+            ]
+        }`);
+        savePatientsToOffline(bulkArrAct.data);
+        //--dummy data--//
+
+        //   //post
+        var response = await fetch(url, 
+        {
+            method: "POST", // POST, PUT, DELETE, etc.
+            headers: 
+            {
+            // the content type header value is usually auto-set
+            // depending on the request body
+            "Content-Type": "application/json;charset=UTF-8",
+            "Host": "203.99.60.222:1701",
+            // "Origin": "http://localhost:81"
+            "Origin": "https://admin.aldermin.com"
+            },
+            body: JSON.stringify(
+                    {
+                        personId:personId,
+                        actionId:actionId
+                    }
+                ), 
+            // string, FormData, Blob, BufferSource, or URLSearchParams
+            // referrer: "about:client", // or "" to send no Referer header,
+            // or an url from the current origin
+            // referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
+            mode: "cors", // same-origin, no-cors
+            credentials: "same-origin", // omit, include
+            cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached
+            redirect: "follow", // manual, error
+            integrity: "", // a hash, like "sha256-abcdef1234567890"
+            keepalive: false, // true
+            signal: undefined, // AbortController to abort request
+            window: window // null
+        });
+
+        if (!response.ok) {
+            console.log("unsuccessfull");
+            showLoader(false);
+            fetchOfflinePatients(container2);
+        }
+        else{
+            console.log("successfull");
+            // console.log("--------------response.json()----------------------");
+            // console.log(response.json());
+            response.json()
+            .then(data => {                
+                // console.log("--------------data after response.json()----------------------");
+                // console.log(data.object.specialities);
+                showLoader(false);
+                savePatientsToOffline(data.data);
+                container2.innerHTML = data.data.map(mapPatients).join('\n\n');
+                // return data;
+            });
+            
+        }
+        
+        
+    } catch (error) 
+    {
+        console.log("error => "+error.message);  
+        fetchOfflinePatients(container2);
+        // fetchOfflineSpecialties(inp_specialty);
+        showLoader(false);
+    }
+
+}
+
+async function fetchTeleMedList(container2)
+{
+    console.log("fetchTeleMedList => starting");
+
+
+    try {
+
+
+        // showMessage("processing. please wait.");
+        showLoader(true);
+
+        const url=rootUrl+"patientList";
+        console.log("complete url=> "+url);
+
+        let personId=window.sessionStorage.getItem("personId");
+        let actionId="12";
+
+        ////dummy data
+        const bulkArrAct = JSON.parse(`{
+            "detail": "Data Returnd",
+            "status": "Ok 200",
+            "object": null,
+            "data": [
+                {
+                    "personId": 42941,
+                    "name": "123.. .",
+                    "mrNo": "01-18-0037602",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 10283,
+                    "name": "AABISH  FARRUKH D/O FARRUKH DAUD   ",
+                    "mrNo": "01-16-0007929",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 23120,
+                    "name": "MUHAMMAD  RIAZ S/O PEERAK BUGTI   ",
+                    "mrNo": "01-16-0020766",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 9627,
+                    "name": "AYESHA FARAZ AHMED D/O Faraz Ahmed",
+                    "mrNo": "01-16-0007273",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 36625,
+                    "name": "AHMED ALI S/O KAMAL Khan",
+                    "mrNo": "01-17-0031339",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 14267,
+                    "name": "AISHA   D/O SHAH JEHAN BUGTI  ",
+                    "mrNo": "01-16-0011913",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 7254,
+                    "name": "MRS. ASIA M. ALI KHAN W/O MOHAMMAD ALI KHAN  ",
+                    "mrNo": "01-16-0004900",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 7254,
+                    "name": "MRS. ASIA M. ALI KHAN W/O MOHAMMAD ALI KHAN  ",
+                    "mrNo": "01-16-0004900",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 41087,
+                    "name": "MOHAMMAD DANISH . S/O GHULAM Shabbir Bugti",
+                    "mrNo": "01-17-0035749",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 22873,
+                    "name": "MEHBOOB  ALI S/O RAJ MOHAMMAD BUGTI  ",
+                    "mrNo": "01-16-0020519",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 42826,
+                    "name": "MRS. KHALIDA PARVEEN . W/O KHALID MOHAMMAD   ",
+                    "mrNo": "01-18-0037488",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 42826,
+                    "name": "MRS. KHALIDA PARVEEN . W/O KHALID MOHAMMAD   ",
+                    "mrNo": "01-18-0037488",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 25798,
+                    "name": "FARHAT  BANO W/O MANDO ALI BUGTI  ",
+                    "mrNo": "01-16-0023444",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 30552,
+                    "name": "SALMA  JAVED W/O JAVED Ali",
+                    "mrNo": "01-17-0025283",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 30552,
+                    "name": "SALMA  JAVED W/O JAVED Ali",
+                    "mrNo": "01-17-0025283",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 43575,
+                    "name": "FARAZ AHMED",
+                    "mrNo": "01-18-0038234",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 15798,
+                    "name": "TAMIZUDDIN   H/O ZAIB-UN-NISA   ",
+                    "mrNo": "01-16-0013444",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 36702,
+                    "name": "SADAR Din",
+                    "mrNo": "01-17-0031416",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 5767,
+                    "name": "Faraz Ahmed",
+                    "mrNo": "01-16-0003413",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 43735,
+                    "name": "MOHAMMAD RAEES . S/O WAZIR MOHAMMAD BUGTI  ",
+                    "mrNo": "01-18-0038394",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 5767,
+                    "name": "Faraz Ahmed",
+                    "mrNo": "01-16-0003413",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 4437,
+                    "name": "RAZA MOHAMMAD BUGTI  ",
+                    "mrNo": "01-16-0002083",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 5767,
+                    "name": "Faraz Ahmed",
+                    "mrNo": "01-16-0003413",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 23874,
+                    "name": "SARA . W/O GAZI BUGTI",
+                    "mrNo": "01-16-0021520",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 45393,
+                    "name": "AMIR SAEED",
+                    "mrNo": "01-18-0040050",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 31182,
+                    "name": "ABDUL  MUREED S/O ABDUL AZEEM BUGTI  ",
+                    "mrNo": "01-17-0025913",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 36702,
+                    "name": "SADAR Din",
+                    "mrNo": "01-17-0031416",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 36880,
+                    "name": "HAKEEM KHATOON W/O SADAR Din",
+                    "mrNo": "01-17-0031591",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 5767,
+                    "name": "Faraz Ahmed",
+                    "mrNo": "01-16-0003413",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 9628,
+                    "name": "ASMA FARAZ AHMED D/O Faraz Ahmed",
+                    "mrNo": "01-16-0007274",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 4745,
+                    "name": "SHER Mohammed Bugti",
+                    "mrNo": "01-16-0002391",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 4596,
+                    "name": "NABI BAKHSH   ",
+                    "mrNo": "01-16-0002242",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 4903,
+                    "name": "ZAHRI KHAN BUGTI  ",
+                    "mrNo": "01-16-0002549",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 23294,
+                    "name": "ANEETA   W/O MUHAMMAD IDREES BUGTI  ",
+                    "mrNo": "01-16-0020940",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 18814,
+                    "name": "JATOO   S/O JAMIL BUGTI   ",
+                    "mrNo": "01-16-0016460",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 13283,
+                    "name": "KALSOOM   D/O MOHAMMAD ZAFAR   ",
+                    "mrNo": "01-16-0010929",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 4710,
+                    "name": "S ISHAQ HUSAIN SHAH ",
+                    "mrNo": "01-16-0002356",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 7154,
+                    "name": "KOMAL . D/O ILYAS MASIH",
+                    "mrNo": "01-16-0004800",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 6468,
+                    "name": "MUHAMMAD ZAHID BUGTI  ",
+                    "mrNo": "01-16-0004114",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 36702,
+                    "name": "SADAR Din",
+                    "mrNo": "01-17-0031416",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 46082,
+                    "name": "EJAZ . S/O SADAR Din",
+                    "mrNo": "01-18-0040738",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 36880,
+                    "name": "HAKEEM KHATOON W/O SADAR Din",
+                    "mrNo": "01-17-0031591",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 16995,
+                    "name": "MRS. KHATOON W/O BALACH BUGTI   ",
+                    "mrNo": "01-16-0014641",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 36347,
+                    "name": "SAJAN BIBI M/O MOHAMMAD JAN",
+                    "mrNo": "01-17-0031061",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 14350,
+                    "name": "MARRIUM  BIBI D/O HOURAN Bugti",
+                    "mrNo": "01-16-0011996",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 35006,
+                    "name": "MRS.  GOLO W/O SHARF DIN BUGTI  ",
+                    "mrNo": "01-17-0029737",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 5198,
+                    "name": "ABDUL Hameed Bugti",
+                    "mrNo": "01-16-0002844",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 25016,
+                    "name": "SHAR  KHATOON W/O DUR MUHAMMAD BUGTI  ",
+                    "mrNo": "01-16-0022662",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 25857,
+                    "name": "JAMILA  BIBI W/O RIASAT Bugti",
+                    "mrNo": "01-16-0023503",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 44757,
+                    "name": "MUHAMMAD ASIF S/O ALLAH BUX",
+                    "mrNo": "01-18-0039415",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 36707,
+                    "name": "SAMANY BIBI M/O JAMAL Khan",
+                    "mrNo": "01-17-0031421",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 19429,
+                    "name": "FAROOQ   S/O NASEEBAN BUGTI   ",
+                    "mrNo": "01-16-0017075",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 24539,
+                    "name": "FAROOQ   S/O ABDUL KARIM BUGTI  ",
+                    "mrNo": "01-16-0022185",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 30792,
+                    "name": "FATIMA   D/O ABDUL KARIM BUGTI  ",
+                    "mrNo": "01-17-0025523",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 37884,
+                    "name": "AABIS FAREED Khan S/O ABDUL Fareed",
+                    "mrNo": "01-17-0032558",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 29723,
+                    "name": "A HALEEM KHAN  ",
+                    "mrNo": "01-17-0024454",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 29723,
+                    "name": "A HALEEM KHAN  ",
+                    "mrNo": "01-17-0024454",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48093,
+                    "name": "PATIENT G Test5",
+                    "mrNo": "01-18-0042741",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 38148,
+                    "name": "A MEER",
+                    "mrNo": "01-17-0032822",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 46892,
+                    "name": "A DINA",
+                    "mrNo": "01-18-0041547",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48097,
+                    "name": "PATIENT H Test S/O Doctor INTERACTIVE Group",
+                    "mrNo": "01-18-0042743",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48100,
+                    "name": "26TH OCTOBER 26TH OCTOBER",
+                    "mrNo": "01-18-0042746",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 23333,
+                    "name": "NAAZ  GUL W/O LAL KHAN BUGTI  ",
+                    "mrNo": "01-16-0020979",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 32290,
+                    "name": "'WAZIR  Mohd W/O Wazir Mohd",
+                    "mrNo": "01-17-0027021",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48128,
+                    "name": "HAROON TEST ADIL",
+                    "mrNo": "01-18-0042769",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48140,
+                    "name": "ABDUL REHMAN",
+                    "mrNo": "01-18-0042781",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48136,
+                    "name": "MUHAMMAD Saeed S/O 2 2 3673",
+                    "mrNo": "01-18-0042777",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48154,
+                    "name": "ABDUL RAHMAN",
+                    "mrNo": "01-18-0042795",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 38051,
+                    "name": "A QADER",
+                    "mrNo": "01-17-0032725",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 46892,
+                    "name": "A DINA",
+                    "mrNo": "01-18-0041547",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 30792,
+                    "name": "FATIMA   D/O ABDUL KARIM BUGTI  ",
+                    "mrNo": "01-17-0025523",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 41220,
+                    "name": "AADIL ALI . S/O SONA Khan Bugti",
+                    "mrNo": "01-17-0035882",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48161,
+                    "name": "AMIR SHAHZAD",
+                    "mrNo": "01-18-0042802",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48163,
+                    "name": "ALI KHAN",
+                    "mrNo": "01-18-0042804",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48165,
+                    "name": "BILL GATES",
+                    "mrNo": "01-18-0042806",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48138,
+                    "name": "HAYAT Farooq M/O 2 2 3673",
+                    "mrNo": "01-18-0042779",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48137,
+                    "name": "HAYAT Farooq F/O FYHG TR",
+                    "mrNo": "01-18-0042778",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48101,
+                    "name": "26TH OCTOBER 2 H OCTOBER",
+                    "mrNo": "01-18-0042747",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48119,
+                    "name": "PATIENT L TEST5",
+                    "mrNo": "01-18-0042766",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 5352,
+                    "name": "Doctor MOHAMMAD ALI KHAN",
+                    "mrNo": "01-16-0002998",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48115,
+                    "name": "6TH NOVEMBER 6TH NOVEMBER",
+                    "mrNo": "01-18-0042762",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48251,
+                    "name": "SAN PATIENT",
+                    "mrNo": "01-18-0042892",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48086,
+                    "name": "PATIENT D TEST4",
+                    "mrNo": "01-18-0042734",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 25296,
+                    "name": "KHADIJA   D/O ABDUL SATTAR BUGTI  ",
+                    "mrNo": "01-16-0022942",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48139,
+                    "name": "HAYAT FAROOQ",
+                    "mrNo": "01-18-0042780",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48110,
+                    "name": "FATHER INTERACTIVE F/O Doctor INTERACTIVE Group",
+                    "mrNo": "01-18-0042757",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48275,
+                    "name": "SOBIA KHALID",
+                    "mrNo": "01-18-0042921",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 46247,
+                    "name": "123 DFS  DF SDFS  DF SDFS  DF SDFS  DF SDFS  DF SDFS 45",
+                    "mrNo": "01-18-0040903",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 42700,
+                    "name": "123456 .",
+                    "mrNo": "01-18-0037362",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48276,
+                    "name": "3 DECEMBER1 3 DECEMBER1",
+                    "mrNo": "01-18-0042922",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48265,
+                    "name": "EXPENSE REPORT",
+                    "mrNo": "01-18-0042911",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48283,
+                    "name": "TRY 1",
+                    "mrNo": "01-18-0042929",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48401,
+                    "name": "ANONYMOUS Anonymous",
+                    "mrNo": "01-18-0043043",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48400,
+                    "name": "ANONYMOUS Anonymous",
+                    "mrNo": "01-18-0043042",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48347,
+                    "name": "DR . ABC Xyz",
+                    "mrNo": "01-18-0042990",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48439,
+                    "name": "ANONYMOUS Anonymous",
+                    "mrNo": "01-18-0043081",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48448,
+                    "name": "18TH DECEMBER 18TH DECEMBER",
+                    "mrNo": "01-18-0043090",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 9620,
+                    "name": "ZAIN-UL-ABIDIN  ",
+                    "mrNo": "01-16-0007266",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 9619,
+                    "name": "ATTA-UR-REHMAN  ",
+                    "mrNo": "01-16-0007265",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48465,
+                    "name": "DRSTHGF ERTSDHG",
+                    "mrNo": "01-18-0043107",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 4482,
+                    "name": "SHAD MOHAMMAD BUGTI  ",
+                    "mrNo": "01-16-0002128",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48469,
+                    "name": "DB Gdbx",
+                    "mrNo": "01-18-0043111",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48204,
+                    "name": "MY LAST SMOKE",
+                    "mrNo": "01-18-0042845",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48481,
+                    "name": "SANITY CHECKING 1.40.5",
+                    "mrNo": "01-18-0043123",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48136,
+                    "name": "MUHAMMAD Saeed S/O 2 2 3673",
+                    "mrNo": "01-18-0042777",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48352,
+                    "name": "11 December 4 11 December 4",
+                    "mrNo": "01-18-0042994",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48487,
+                    "name": "GROW Buddy",
+                    "mrNo": "01-18-0043129",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48488,
+                    "name": "GO BROTHA",
+                    "mrNo": "01-18-0043130",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48486,
+                    "name": "WEDNESDAY CHECKING",
+                    "mrNo": "01-18-0043128",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48273,
+                    "name": "ALPHA TEST",
+                    "mrNo": "01-18-0042919",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48497,
+                    "name": "AAJ DUSRA NEYA DUSRA NEYA",
+                    "mrNo": "01-18-0043139",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48504,
+                    "name": "ABDUL REHMAN",
+                    "mrNo": "01-18-0043146",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 46247,
+                    "name": "123 DFS  DF SDFS  DF SDFS  DF SDFS  DF SDFS  DF SDFS 45",
+                    "mrNo": "01-18-0040903",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 88797,
+                    "name": "Anonymous Anonymous",
+                    "mrNo": "01-19-0040279",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 88783,
+                    "name": "DZFXZDV DXFDV",
+                    "mrNo": "01-19-0040265",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89239,
+                    "name": "Anonymous Anonymous",
+                    "mrNo": "01-19-0040852",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 88406,
+                    "name": "12TH FEB 12TH FEB",
+                    "mrNo": "01-19-0039853",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89242,
+                    "name": "23R 4R",
+                    "mrNo": "01-19-0040855",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89243,
+                    "name": "Anonymous Anonymous",
+                    "mrNo": "01-19-0040856",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89304,
+                    "name": "Anonymous Anonymous",
+                    "mrNo": "01-19-0040938",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89349,
+                    "name": "Anonymous Anonymous",
+                    "mrNo": "01-19-0040992",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89373,
+                    "name": "Anonymous Anonymous",
+                    "mrNo": "01-19-0041043",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89378,
+                    "name": "RAZA KHAN",
+                    "mrNo": "01-19-0041055",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89390,
+                    "name": "VISIT CONFIRMATION",
+                    "mrNo": "01-19-0041079",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89398,
+                    "name": "Anonymous Anonymous",
+                    "mrNo": "01-19-0041087",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48588,
+                    "name": "11 12222 J",
+                    "mrNo": "01-19-0000144",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89679,
+                    "name": "MUTTI UR REHMAN",
+                    "mrNo": "01-19-0041496",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 42483,
+                    "name": "A WAHID",
+                    "mrNo": "01-18-0037145",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 18534,
+                    "name": "A.  WAHID S/O ZAHEERUDDIN BUGTI   ",
+                    "mrNo": "01-16-0016180",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48000,
+                    "name": "BABY OF AABDUL RASHID   D/O AABDUL RASHID  ",
+                    "mrNo": "01-18-0042648",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 29825,
+                    "name": "AABDUL RASHID  ",
+                    "mrNo": "01-17-0024556",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48001,
+                    "name": "BABY OF AABDUL RASHID   S/O AABDUL RASHID  ",
+                    "mrNo": "01-18-0042649",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 32125,
+                    "name": "HASAN  Bano W/O AABDUL RASHID  ",
+                    "mrNo": "01-17-0026856",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 90005,
+                    "name": "TEST 30 NEW",
+                    "mrNo": "01-19-0042076",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 88412,
+                    "name": "T34E46Y 345Y 345Y D/O .Maryam Usman",
+                    "mrNo": "01-19-0039859",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 92104,
+                    "name": "ABU TALHA",
+                    "mrNo": "01-20-0043819",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 4633,
+                    "name": "Dr. MOHAMMAD JAMIL BUGTI",
+                    "mrNo": "01-16-0002279",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 39052,
+                    "name": "000 .",
+                    "mrNo": "01-17-0033716",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48809,
+                    "name": "236 23 26 F/O 000 .",
+                    "mrNo": "01-19-0000425",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48818,
+                    "name": "ERH WETH D/O 000 .",
+                    "mrNo": "01-19-0000434",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48786,
+                    "name": "SD ST ST D/O 000 .",
+                    "mrNo": "01-19-0000402",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 92114,
+                    "name": "Test Test 1",
+                    "mrNo": "01-20-0043880",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 92117,
+                    "name": "TEST GYNAE TEST GYNAE S/O TEST GYNAE",
+                    "mrNo": "01-20-0043900",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 12460,
+                    "name": "MUHAMMAD  SHOAIB S/O MOHAMMAD JAMIL BUGTI  ",
+                    "mrNo": "01-16-0010106",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 4633,
+                    "name": "Dr. MOHAMMAD JAMIL BUGTI",
+                    "mrNo": "01-16-0002279",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48229,
+                    "name": "HAJI ULLAH",
+                    "mrNo": "01-18-0042870",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48231,
+                    "name": "HASSAN FARAZ",
+                    "mrNo": "01-18-0042872",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48238,
+                    "name": "IMRAN ALI",
+                    "mrNo": "01-18-0042879",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48239,
+                    "name": "ALI MUMTAZ",
+                    "mrNo": "01-18-0042880",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48164,
+                    "name": "OMER ALI",
+                    "mrNo": "01-18-0042805",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48164,
+                    "name": "OMER ALI",
+                    "mrNo": "01-18-0042805",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89092,
+                    "name": "Miss NEW EMPLOYEE ONE",
+                    "mrNo": "01-19-0040658",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 89687,
+                    "name": "FARAHANA SAEED",
+                    "mrNo": "01-19-0041504",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 322,
+                    "name": "Captain TEST EMPLOYEE",
+                    "mrNo": "12-13-0000272",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                },
+                {
+                    "personId": 48560,
+                    "name": "10TH JA2 10TH JA2",
+                    "mrNo": "01-19-0000108",
+                    "gender": null,
+                    "age": null,
+                    "number": null,
+                    "bloodGroup": null,
+                    "firstName": null,
+                    "middleName": null,
+                    "lastname": null,
+                    "dob": null,
+                    "maritalStatus": null,
+                    "cnic": null,
+                    "email": null,
+                    "streetAddress": null,
+                    "district": null,
+                    "province": null,
+                    "city": null,
+                    "country": null,
+                    "base64EncodedPicture": null,
+                    "designation": null,
+                    "speciality": null,
+                    "qualification": null,
+                    "languages": null,
+                    "experiance": null,
+                    "hospital": null
+                }
+            ]
+        }`);
+        saveTelemedsToOffline(bulkArrAct.data);
+        //--dummy data--//
+
+        //   //post
+        var response = await fetch(url, 
+        {
+            method: "POST", // POST, PUT, DELETE, etc.
+            headers: 
+            {
+            // the content type header value is usually auto-set
+            // depending on the request body
+            "Content-Type": "application/json;charset=UTF-8",
+            "Host": "203.99.60.222:1701",
+            // "Origin": "http://localhost:81"
+            "Origin": "https://admin.aldermin.com"
+            },
+            body: JSON.stringify(
+                    {
+                        personId:personId,
+                        actionId:actionId
+                    }
+                ), 
+            // string, FormData, Blob, BufferSource, or URLSearchParams
+            // referrer: "about:client", // or "" to send no Referer header,
+            // or an url from the current origin
+            // referrerPolicy: "no-referrer-when-downgrade", // no-referrer, origin, same-origin...
+            mode: "cors", // same-origin, no-cors
+            credentials: "same-origin", // omit, include
+            cache: "default", // no-store, reload, no-cache, force-cache, or only-if-cached
+            redirect: "follow", // manual, error
+            integrity: "", // a hash, like "sha256-abcdef1234567890"
+            keepalive: false, // true
+            signal: undefined, // AbortController to abort request
+            window: window // null
+        });
+
+        if (!response.ok) {
+            console.log("unsuccessfull");
+            showLoader(false);
+            fetchOfflineTelemeds(container2);
+        }
+        else{
+            console.log("successfull");
+            // console.log("--------------response.json()----------------------");
+            // console.log(response.json());
+            response.json()
+            .then(data => {                
+                // console.log("--------------data after response.json()----------------------");
+                // console.log(data.object.specialities);
+                showLoader(false);
+                saveTelemedsToOffline(data.data);
+                container2.innerHTML = data.data.map(mapTelemeds).join('\n\n');
+                // return data;
+            });
+            
+        }
+        
+        
+    } catch (error) 
+    {
+        console.log("error => "+error.message);  
+        fetchOfflineTelemeds(container2);
+        // fetchOfflineSpecialties(inp_specialty);
+        showLoader(false);
+    }
+
+}
+//--------//
 
 
 function handleLoginResponse(response)
@@ -2353,7 +11203,7 @@ function mapActivities(activities)
         //my waiting list
         return `<div class="list-group list-custom-small list-icon-0">
                 <a data-toggle="collapse" href="#collapse-${activities.id}">
-                <i class="fa font-14 fa fa-user color-blue2-dark"></i>
+                    <img src="images/ic_waitinglist.jpg" height=30 width=30 style="margin-right:5px"/>
                     <span class="font-14">${activities.name}</span>
                     <i class="fa fa-angle-down"></i>
                 </a>
@@ -2367,7 +11217,7 @@ function mapActivities(activities)
         //my Appointments
         return `<div class="list-group list-custom-small list-icon-0">
                 <a data-toggle="collapse" href="#collapse-${activities.id}">
-                <i class="fa font-14 fa fa-user color-blue2-dark"></i>
+                    <img src="images/ic_myappnt.png" height=30 width=30 style="margin-right:5px"/>
                     <span class="font-14">${activities.name}</span>
                     <i class="fa fa-angle-down"></i>
                 </a>
@@ -2381,7 +11231,7 @@ function mapActivities(activities)
         //my Attendend Patient
         return `<div class="list-group list-custom-small list-icon-0">
                 <a data-toggle="collapse" href="#collapse-${activities.id}">
-                <i class="fa font-14 fa fa-user color-blue2-dark"></i>
+                    <img src="images/ic_myattended.png" height=30 width=30 style="margin-right:5px"/>
                     <span class="font-14">${activities.name}</span>
                     <i class="fa fa-angle-down"></i>
                 </a>
@@ -2595,8 +11445,6 @@ function mapAction(actions)
     
 }
 
-
-
 function mapVitals(vitals)
 {
 
@@ -2646,56 +11494,15 @@ function mapVitals(vitals)
     return dataRow;
 }
 
-
-
-
-
-
-
-// (function() {
-//     'use strict';
-//     var tabs = [
-        // {paneId: 'tab1', title_medi: '1', content_medi: '<div class="row mb-3 mt-4"> <h5 class="col-4 text-left font-15">Medicene : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Panadol CF Tablets</h5> <h5 class="col-4 text-left font-15">Treatment Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">13-Oct-2020</h5> <h5 class="col-4 text-left font-15">Doctor : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Dr. Farhan</h5> <h5 class="col-4 text-left font-15">Diagnosis : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Paratyphoid fever C</h5> <h5 class="col-4 text-left font-15">Dosage : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">2+2+2+2 - Tablet</h5> <h5 class="col-4 text-left font-15">Frequency : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">^ Hourly</h5> <h5 class="col-4 text-left font-15">Route : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Oral</h5> <h5 class="col-4 text-left font-15">Start Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">05-May-2020</h5> <h5 class="col-4 text-left font-15">End Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">08-May-2020</h5> <h5 class="col-4 text-left font-15">Doctor Remarks : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Recommended Bed Rest 8 Days Take Leave From Office Work From Home </h5> </div>', active_tab: true, disabled: false},
-//         {paneId: 'tab2', title_medi: '2', content_medi: 'Index 2 Content', active_tab: false, disabled: false}
-    
-//   ],
-//   lastTabId = 11;
-//   $(activate);
-//   function activate() {
-//     $('.tabs-inside-here').scrollingTabs({
-//       tabs: tabs, // required,
-//       propPaneId: 'paneId', // optional - pass in default value for demo purposes
-//       propTitle: 'title_medi', // optional - pass in default value for demo purposes
-//       propActive: 'active_tab', // optional - pass in default value for demo purposes
-//       propDisabled: 'disabled', // optional - pass in default value for demo purposes
-//       propContent: 'content_medi', // optional - pass in default value for demo purposes
-//       scrollToTabEdge: false, // optional - pass in default value for demo purposes
-//       disableScrollArrowsOnFullyScrolled: false // optional- pass in default value for demo purposes
-//     });
-//   }
-// }());
-
-
-
-
-
-
-
-
-
-
-
-
-
 async function getMedicationTabsArray() 
 {   
 
     ///////////////////FETCHING Online Medication
     try {
-
+        var tabs = [];
 
         // showMessage("processing. please wait.");
-        // showLoader(true);
+        showLoader(true);
 
         const url=rootUrl+"viewMedications";
         console.log("complete url=> "+url);
@@ -2703,7 +11510,7 @@ async function getMedicationTabsArray()
         let personId=window.sessionStorage.getItem("personId");
         let actionId="7";
 
-        //dummyy input
+        // //dummyy input
         const bulkArrAct = JSON.parse(`{
             "detail": "Data Returnd",
             "status": "Ok 200",
@@ -2731,9 +11538,9 @@ async function getMedicationTabsArray()
 
         
         
-        //--dummy input
+        // //--dummy input
 
-        //   //post
+        // //   //post
         var response = await fetch(url, 
         {
             method: "POST", // POST, PUT, DELETE, etc.
@@ -2797,7 +11604,7 @@ async function getMedicationTabsArray()
                 //populating tabs
                 try {
                     var medication = result;
-                    var tabs=[];
+                    tabs=[];
                     for (let i = 0; i < medication.length; i++) 
                     {
                         // const element = array[i];
@@ -2818,7 +11625,7 @@ async function getMedicationTabsArray()
 
                     console.log("returning tab 1 => ");
                     console.log(tabs);
-                    return tabs;
+                    // return tabs;
             
                     // activate(tabs, container2);
                     // container2.innerHTML = tabs[0].content_medi;
@@ -2827,14 +11634,15 @@ async function getMedicationTabsArray()
                     console.error(error);
 
                     console.log("returning tab 2 => null");
-                    return null;
+                    // tab
+                    // return null;
                 }
             })
             .catch(function(error)
             {
                 console.log("error in offline medication fetch");
                 console.log("returning tab 3 => null");
-                return null;
+                // return null;
 
                 // alert("view result");
                 // alert("user not found");
@@ -2860,7 +11668,7 @@ async function getMedicationTabsArray()
                 //populating tabs
                 try {
                     var medication = data;
-                    var tabs=[];
+                    tabs=[];
                     for (let i = 0; i < medication.length; i++) 
                     {
                         // const element = array[i];
@@ -2880,7 +11688,7 @@ async function getMedicationTabsArray()
                     }
                     console.log("returning tab 4 => ");
                     console.log(tabs);
-                    return tabs;
+                    // return tabs;
             
                     // activate(tabs, container2);
                     // container2.innerHTML = tabs[0].content_medi;
@@ -2888,19 +11696,22 @@ async function getMedicationTabsArray()
                 } catch (error) {
                     console.error(error);
                     console.log("returning tab 5 => null");
-                    return null;
+                    // return null;
                 }
             });
             
         }
+
+        showLoader(false);
         
     } catch (error) 
     {
-        console.log("error => "+error.message);  
+        showLoader(false);
+        console.log("main error => "+error.message);  
         // fetchOfflineMedications(container2);
         
         
-        /////////////////////////offline fetch////////////////////
+        // /////////////////////////offline fetch////////////////////
         //db open
         let dbname = "icalite_index";
         let dbversion=1;
@@ -2929,7 +11740,7 @@ async function getMedicationTabsArray()
             //populating tabs
             try {
                 var medication = result;
-                var tabs=[];
+                tabs=[];
                 for (let i = 0; i < medication.length; i++) 
                 {
                     // const element = array[i];
@@ -2947,17 +11758,24 @@ async function getMedicationTabsArray()
         
                     
                 }
+                tabs.push({paneId: 2, title_medi: '2', content_medi: '<div class="row mb-3 mt-4"> <h5 class="col-4 text-left font-15">Medicene : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">med</h5> <h5 class="col-4 text-left font-15">Treatment Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">dts</h5> <h5 class="col-4 text-left font-15">Doctor : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">doc</h5> <h5 class="col-4 text-left font-15">Diagnosis : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">diag</h5> <h5 class="col-4 text-left font-15">Dosage : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">dos</h5> <h5 class="col-4 text-left font-15">Frequency : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">freq</h5> <h5 class="col-4 text-left font-15">Route : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">route</h5> <h5 class="col-4 text-left font-15">Start Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">dts</h5> <h5 class="col-4 text-left font-15">End Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">edate</h5> <h5 class="col-4 text-left font-15">Doctor Remarks : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">rmrs </h5> </div>', active_tab: false, disabled: false});
                 console.log("returning tab 6 => ");
-                console.log(tabs);
-                return tabs;
+                
+                // var tabs = [
+                //     {paneId: 'tab1', title_medi: '1', content_medi: '<div class="row mb-3 mt-4"> <h5 class="col-4 text-left font-15">Medicene : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Panadol CF Tablets</h5> <h5 class="col-4 text-left font-15">Treatment Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">13-Oct-2020</h5> <h5 class="col-4 text-left font-15">Doctor : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Dr. Farhan</h5> <h5 class="col-4 text-left font-15">Diagnosis : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Paratyphoid fever C</h5> <h5 class="col-4 text-left font-15">Dosage : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">2+2+2+2 - Tablet</h5> <h5 class="col-4 text-left font-15">Frequency : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">^ Hourly</h5> <h5 class="col-4 text-left font-15">Route : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Oral</h5> <h5 class="col-4 text-left font-15">Start Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">05-May-2020</h5> <h5 class="col-4 text-left font-15">End Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">08-May-2020</h5> <h5 class="col-4 text-left font-15">Doctor Remarks : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">Recommended Bed Rest 8 Days Take Leave From Office Work From Home </h5> </div>', active_tab: true, disabled: false},
+                //     {paneId: 'tab2', title_medi: '2', content_medi: 'Index 2 Content', active_tab: false, disabled: false},
+                //     {paneId: 'tab3', title_medi: '3', content_medi: 'Index 3 Content', active_tab: false, disabled: false}
+                // ];
+                // console.log(tabs);
+                // return tabs;
         
                 // activate(tabs, container2);
                 // container2.innerHTML = tabs[0].content_medi;
                 
             } catch (error) {
-                console.error(error);
+                console.error(error.message);
                 console.log("returning tab 7 => null");
-                return null;
+                // return null;
             }
 
 
@@ -2968,12 +11786,13 @@ async function getMedicationTabsArray()
         .catch(function(error)
         {
             console.log("error in offline medication fetch");
+            console.log("error => "+error.message);
             console.log("returning tab 8 => null");
-            return null;
+            // return null;
             // alert("view result");
             // alert("user not found");
         });
-        //---------------------------------------------------------//
+        // //---------------------------------------------------------//
     }
     //---------------------------------------------------------------------------------//
 
@@ -3004,215 +11823,17 @@ async function getMedicationTabsArray()
     //                 {paneId: 'tab3', title_medi: '3', content_medi: 'Index 3 Content', active_tab: false, disabled: false}
     //             ];
 
+    
+    //             console.log("tabs => ");
+    //             console.log(tabs);
+                // console.log("tabs stringify=> ");
+                // console.log(JSON.stringify(tabs));
+                // console.log("tabs => parse");
+                // console.log(JSON.parse(tabs));
 
 
-    // return tabs;
+    return tabs;
 }
-
-// function mapMedications(medication, container2)
-// {
-
-//     // let scriptString = `(function() {
-//     //     'use strict';
-//     //     var tabs = [`;
-
-
-//     // for (let i = 0; i < medication.length; i++) 
-//     // {
-//     //     var obj = medication[i];
-
-//     //     let treatmentDate = new Date(obj.treatmentDate);
-//     //     let sDate = new Date(obj.startDate);
-//     //     let eDate = new Date(obj.endDate);
-
-//     //     if (i == (medication.length-1)) 
-//     //     {
-//     //         console.log("last index");
-//     //         scriptString+=`{paneId: `+(i+1)+`, title_medi: '`+(i+1)+`', content_medi: '<div class="row mb-3 mt-4"> <h5 class="col-4 text-left font-15">Medicene : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.medicine+'</h5> <h5 class="col-4 text-left font-15">Treatment Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'`+treatmentDate.toDateString()+`'</h5> <h5 class="col-4 text-left font-15">Doctor : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.doctor+'</h5> <h5 class="col-4 text-left font-15">Diagnosis : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.diagnosis+'</h5> <h5 class="col-4 text-left font-15">Dosage : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.dosage+'</h5> <h5 class="col-4 text-left font-15">Frequency : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.frequency+'</h5> <h5 class="col-4 text-left font-15">Route : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.route+'</h5> <h5 class="col-4 text-left font-15">Start Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'`+sDate.toDateString()+`'</h5> <h5 class="col-4 text-left font-15">End Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'`+eDate.toDateString()+`'</h5> <h5 class="col-4 text-left font-15">Doctor Remarks : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.remarks+' </h5> </div>', active_tab: true, disabled: false}`;  
-//     //     }
-//     //     else{
-//     //         console.log("not last index");
-//     //         scriptString+=`{paneId: `+(i+1)+`, title_medi: '`+(i+1)+`', content_medi: '<div class="row mb-3 mt-4"> <h5 class="col-4 text-left font-15">Medicene : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.medicine+'</h5> <h5 class="col-4 text-left font-15">Treatment Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'`+treatmentDate.toDateString()+`'</h5> <h5 class="col-4 text-left font-15">Doctor : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.doctor+'</h5> <h5 class="col-4 text-left font-15">Diagnosis : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.diagnosis+'</h5> <h5 class="col-4 text-left font-15">Dosage : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.dosage+'</h5> <h5 class="col-4 text-left font-15">Frequency : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.frequency+'</h5> <h5 class="col-4 text-left font-15">Route : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.route+'</h5> <h5 class="col-4 text-left font-15">Start Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'`+sDate.toDateString()+`'</h5> <h5 class="col-4 text-left font-15">End Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'`+eDate.toDateString()+`'</h5> <h5 class="col-4 text-left font-15">Doctor Remarks : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.remarks+' </h5> </div>', active_tab: true, disabled: false},`;
-//     //     }
-//     // }
-
-//     // scriptString+=`],
-//     //     lastTabId = 11;
-//     //     $(activate);
-//     //     function activate() {
-//     //         $('.tabs-inside-here').scrollingTabs({
-//     //         tabs: tabs, // required,
-//     //         propPaneId: 'paneId', // optional - pass in default value for demo purposes
-//     //         propTitle: 'title_medi', // optional - pass in default value for demo purposes
-//     //         propActive: 'active_tab', // optional - pass in default value for demo purposes
-//     //         propDisabled: 'disabled', // optional - pass in default value for demo purposes
-//     //         propContent: 'content_medi', // optional - pass in default value for demo purposes
-//     //         scrollToTabEdge: false, // optional - pass in default value for demo purposes
-//     //         disableScrollArrowsOnFullyScrolled: false // optional- pass in default value for demo purposes
-//     //         });
-//     //     }
-//     //     }());`;
-        
-
-
-//     //     //scrolling tabs import
-//     // var scrollTabScript = document.createElement('script');  
-//     // scrollTabScript.type = "text/javascript";
-//     // scrollTabScript.innerHTML = scriptString;
-//     // // scrollTabScript.setAttribute('src',scriptString);
-//     // document.appendChild(scrollTabScript);
-//         // document.head.appendChild(scrollTabScript);
-//         //--//
-
-
-//         //   container2.innerHTML = scriptString;
-
-
-
-//         //   console.log("complete script string =>");
-//         //   console.log(scriptString);
-
-
-//             // tabs.push({paneId: (i+1), title_medi: '1', content_medi: '<div class="row mb-3 mt-4"> <h5 class="col-4 text-left font-15">Medicene : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.medicine+'</h5> <h5 class="col-4 text-left font-15">Treatment Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+treatmentDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">Doctor : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.doctor+'</h5> <h5 class="col-4 text-left font-15">Diagnosis : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.diagnosis+'</h5> <h5 class="col-4 text-left font-15">Dosage : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.dosage+'</h5> <h5 class="col-4 text-left font-15">Frequency : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.frequency+'</h5> <h5 class="col-4 text-left font-15">Route : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.route+'</h5> <h5 class="col-4 text-left font-15">Start Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+sDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">End Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+eDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">Doctor Remarks : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.remarks+' </h5> </div>', active_tab: true, disabled: false});
-
-
-            
-//         // }
-
-
-
-
-
-
-
-//     // console.log("mapping medications");
-//     // console.log(medication);
-//     // console.log("00=> ");
-//     // console.log("lenght=> "+medication.length);
-
-    // try {
-    //     var tabs=[];
-    //     for (let i = 0; i < medication.length; i++) 
-    //     {
-    //         // const element = array[i];
-    //         // console.log(i+"=> ");
-    //         // console.log(medication[i]);
-
-    //         var obj = medication[i];
-
-    //         let treatmentDate = new Date(obj.treatmentDate);
-    //         let sDate = new Date(obj.startDate);
-    //         let eDate = new Date(obj.endDate);
-
-    //         tabs.push({paneId: (i+1), title_medi: '1', content_medi: '<div class="row mb-3 mt-4"> <h5 class="col-4 text-left font-15">Medicene : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.medicine+'</h5> <h5 class="col-4 text-left font-15">Treatment Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+treatmentDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">Doctor : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.doctor+'</h5> <h5 class="col-4 text-left font-15">Diagnosis : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.diagnosis+'</h5> <h5 class="col-4 text-left font-15">Dosage : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.dosage+'</h5> <h5 class="col-4 text-left font-15">Frequency : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.frequency+'</h5> <h5 class="col-4 text-left font-15">Route : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.route+'</h5> <h5 class="col-4 text-left font-15">Start Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+sDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">End Date : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+eDate.toDateString()+'</h5> <h5 class="col-4 text-left font-15">Doctor Remarks : </h5> <h5 class="col-8 text-right font-14 opacity-60 font-400">'+obj.remarks+' </h5> </div>', active_tab: true, disabled: false});
-
-
-            
-    //     }
-
-    //     // activate(tabs, container2);
-    //     container2.innerHTML = tabs[0].content_medi;
-        
-    // } catch (error) {
-    //     console.error(error);
-    // }
-
-    
-
-//     // console.log(tabs);
-//     // console.log(tabs[0]);
-//     // console.log(tabs[0].content_medi);
-
-
-
-    
-    
-    
-    
-//     // scrollingTabs({
-//     //     tabs: tabs, // required,
-//     //     propPaneId: 'paneId', // optional - pass in default value for demo purposes
-//     //     propTitle: 'title_medi', // optional - pass in default value for demo purposes
-//     //     propActive: 'active_tab', // optional - pass in default value for demo purposes
-//     //     propDisabled: 'disabled', // optional - pass in default value for demo purposes
-//     //     propContent: 'content_medi', // optional - pass in default value for demo purposes
-//     //     scrollToTabEdge: false, // optional - pass in default value for demo purposes
-//     //     disableScrollArrowsOnFullyScrolled: false // optional- pass in default value for demo purposes
-//     // });
-
-
-
-
-
-
-//     // let vitalDate = new Date(vitals.vitalDate);
-
-//     // let
-//     // // day = vitalDate.getDay(),
-//     //  dd = vitalDate.getDate(),
-//     //  mm = vitalDate.getMonth(), 
-//     //  yy = vitalDate.getFullYear(), 
-//     //  hh = vitalDate.getHours(),
-//     // min = vitalDate.getMinutes(), 
-//     // sec = vitalDate.getSeconds(),
-//     // meridian="AM";
-
-//     // // var days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
-//     // var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-//     // if(hh<12)
-//     // {
-//     //     meridian = "PM";
-//     // }
-//     // else{
-//     //     meridian = "AM";   
-//     // }
-
-//     // let date = dd+"-"+months[mm]+"-"+yy,
-//     // time = hh+":"+min+":"+sec+" "+meridian;
-
-    
-    
-//     // // console.log(vitals);
-    
-//     // let dataRow = `<tr>
-//     //                     <td class="color-green1-dark">`+date+`</td>
-//     //                     <td class="color-green1-dark">`+time+`</td>
-//     //                     <td><i onclick='setSelectedVitalDetails(${vitals.vitalId})' title="view details" class="fa fa-arrow-right rotate-45 color-green1-dark"></a></td>
-//     //                 </tr>`;   
-    
-    
-    
-
-//     // return dataRow;
-// }
-// function activate(tabs, container2) {
-
-//     // $('.tabs-inside-here')
-
-//     try {
-
-//         // (document.getElementsByClassName('tabs-inside-here'))
-//         // container2
-//         $('.tabs-inside-here')
-//         .scrollingTabs({
-//         tabs: tabs, // required,
-//         propPaneId: 'paneId', // optional - pass in default value for demo purposes
-//         propTitle: 'title_medi', // optional - pass in default value for demo purposes
-//         propActive: 'active_tab', // optional - pass in default value for demo purposes
-//         propDisabled: 'disabled', // optional - pass in default value for demo purposes
-//         propContent: 'content_medi', // optional - pass in default value for demo purposes
-//         scrollToTabEdge: false, // optional - pass in default value for demo purposes
-//         disableScrollArrowsOnFullyScrolled: false // optional- pass in default value for demo purposes
-//         });
-//     } catch (error) {
-//         console.error(error);
-//     }
-
-    
-//   }
-
-
 
 function mapAppointments(appointments)
 {
@@ -3282,7 +11903,7 @@ function mapSpecialties(specialties)
 function mapDoctors(doctors)
 {
     console.log("mapDoctors => ");
-    console.log(doctors);
+    // console.log(doctors);
     // let date = new Date(reports.insertDate);
     let name = doctors.name;   
 
@@ -3294,7 +11915,7 @@ function mapDoctors(doctors)
                 <p class="mb-2 pl-2 mb-n1">MBBS, MHSC, D.P.D</p>
             </div>
             <div class="align-self-center ml-auto">
-                <a href="#"><img src="images/user-dummy.jpg" width="64" class="rounded-circle shadow-xl" /></a>
+                <a href="#"><img src="images/user-dummy.png" width="64" class="rounded-circle shadow-xl" /></a>
             </div>
         </div>
         <div class="divider mt-3 mb-3"></div>
@@ -3326,6 +11947,133 @@ function mapDoctors(doctors)
 
     return dataRow;
 }
+function mapPatients(patients)
+{
+    // console.log("mapPatients => ");
+    // console.log(doctors);
+    // let date = new Date(reports.insertDate);
+    let name = patients.name;   
+    let mrNo = patients.mrNo;   
+    let age = patients.age;   
+    let gender = patients.gender;   
+    let pic = patients.base64EncodedPicture;   
+
+    if (name==null) 
+    {
+        name = "~";
+    }
+
+    if (mrNo==null) 
+    {
+        mrNo = "~";
+    }
+
+    if (age==null) 
+    {
+        age = "~";
+    }
+
+    if (gender==null) 
+    {
+        gender = "~";
+    }
+
+    if (pic == null) 
+    {
+        pic="images/user-dummy.png";
+        // console.log("avt pic => "+pic);
+    }
+    else{
+        pic="data:img/png;base64, "+pic;
+        // console.log("avt pic => "+pic);
+    }
+    // console.log("avt pic => "+pic);
+    let dataRow =`<div class="row mb-0 justify-content-center">
+                    <div class=" pl-0 pr-0 pb-0 pt-0" >
+                        <img src=`+pic+` class="img-fluid" width="50px" height="50px">
+                    </div>
+                    <div class="col-6 pr-1 pl-1" >
+                        <span class="font-16 color-theme"><strong>`+name+`</strong> </span>
+                        <p >
+                        MR#`+mrNo+`, `+age+` Years, `+gender+`
+                        </p>
+                    </div>
+                    <div class="pr-0 pl-0 " >
+                        <a href="#" onclick="setSelectedPatientDetails(${patients.personId})" class="icon icon-xs rounded-xl shadow-m ml-2 mb-2 bg-blue2-dark"><i class="fa fa-external-link-alt"></i></a>
+                        <a href="#" onclick="showtoastMsg(0, 'work in progress')" class="icon icon-xs rounded-xl shadow-m ml-2 bg-red2-dark"><i class="fa fa-file-invoice"></i></a>
+                        
+                    </div>
+                </div>
+                <div class="divider bg-blue2-dark mt-2 mb-2"></div>` ;
+
+    return dataRow;
+}
+
+function mapTelemeds(telemeds)
+{
+    // console.log("mapTelemeds => ");
+    // console.log(doctors);
+    // let date = new Date(reports.insertDate);
+    let name = telemeds.name;   
+    let mrNo = telemeds.mrNo;   
+    let age = telemeds.age;   
+    let gender = telemeds.gender;   
+    let pic = telemeds.base64EncodedPicture;   
+
+    if (name==null) 
+    {
+        name = "~";
+    }
+
+    if (mrNo==null) 
+    {
+        mrNo = "~";
+    }
+
+    if (age==null) 
+    {
+        age = "~";
+    }
+
+    if (gender==null) 
+    {
+        gender = "~";
+    }
+
+    if (pic == null) 
+    {
+        pic="images/user-dummy.png";
+        // console.log("avt pic => "+pic);
+    }
+    else{
+        pic="data:img/png;base64, "+pic;
+        // console.log("avt pic => "+pic);
+    }
+    // console.log("avt pic => "+pic);
+    let dataRow =`<div class="row mb-0 justify-content-center">
+                    <div class=" pl-0 pr-0 pb-0 pt-0" >
+                        <img src=`+pic+` class="img-fluid" width="50px" height="50px">
+                    </div>
+                    <div class="col-6 pr-1 pl-1" >
+                        <span class="font-16 color-theme"><strong>`+name+`</strong> </span>
+                        <p >
+                        MR#`+mrNo+`, `+age+` Years, `+gender+`
+                        </p>
+                    </div>
+                    <div class="pr-0 pl-0 " >
+                        <a href="#" class="icon icon-xs rounded-xl shadow-m ml-0 mb-1 bg-blue2-dark" onclick="setSelectedTelemedDetails(${telemeds.personId})"><i class="fa fa-external-link-alt"></i></a>
+                        <a href="#" class="icon icon-xs rounded-xl shadow-m ml-0 mb-1 bg-red2-dark" onclick="showtoastMsg(0, 'work in progress')" ><i class="fa fa-file-invoice"></i></a>
+                        <a href="#" class="icon icon-xs rounded-xl shadow-m ml-0 mb-1 bg-phone" onclick="showCallDialog(true)" ><i class="fa fa-phone"></i></a>                        
+                    </div>
+                </div>
+                <div class="divider bg-blue2-dark mt-2 mb-2"></div>` ;
+
+    return dataRow;
+}
+
+
+
+//------------------//
 
 async function prepareNewAppointment(inp_specialty, container2)
 {
@@ -3337,6 +12085,10 @@ async function prepareNewAppointment(inp_specialty, container2)
     //onitemselect
     try {
         
+        //fetching 0 index values on start
+        fetchDoctors(inp_specialty.value, container2);
+
+
         console.log("setting event");
 
         inp_specialty.addEventListener("change", function () 
@@ -3403,7 +12155,7 @@ function populateDemographicsData(demograph)
         //pic
     if (imgvw_avt == "" || imgvw_avt == null || imgvw_avt=="0") 
     {
-        demogrp_img_avt.src = "images/user-dummy.jpg";
+        demogrp_img_avt.src = "images/user-dummy.png";
     }
     else
     {
@@ -3566,6 +12318,130 @@ function populateDemographicsUpdData(demograph)
     });
 }
 
+function preparePatientEncounterForm(patients)
+{
+    console.log("preparePatientEncounterForm => ");
+    // console.log(patients);
+    // window.sessionStorage.setItem("doctorId", doctorId);
+
+    try {
+
+        let inp_imgvw_avt = document.getElementById("inp_imgvw_avt");
+        let inp_name = document.getElementById("inp_name");
+        let inp_dets = document.getElementById("inp_dets");
+
+        var imgEncoded = patients.base64EncodedPicture,
+            name = patients.name,
+            mrNo = patients.mrNo,
+            age = patients.age,
+            gender = patients.gender;
+
+        if (imgEncoded == null) 
+        {
+            imgEncoded = "images/user-dummy.png";
+        }
+        else{
+            imgEncoded = "data:img/png;base64, "+imgEncoded;
+        }
+
+
+
+        if (name == null) 
+        {
+            name = "~";
+        }
+
+        if (mrNo == null) 
+        {
+            mrNo = "~";
+        }
+
+        if (age == null) 
+        {
+            age = "~";
+        }
+
+        if (gender == null) 
+        {
+            gender = "~";
+        }
+
+        inp_imgvw_avt.src = imgEncoded;
+        inp_name.innerHTML = name;
+        inp_dets.innerHTML = "MR#"+mrNo+", "+age+" Years, "+gender;
+
+    } catch (error) 
+    {
+        inp_name.innerHTML = "~";
+        inp_dets.innerHTML = "MR#~, ~ Years, ~";
+        console.log("preparePatientEncounterForm; error => "+error.message);
+    }
+    
+
+}
+
+function prepareTelemedEncounterForm(telemeds)
+{
+    console.log("prepareTelemedEncounterForm => ");
+    // console.log(telemeds);
+    // window.sessionStorage.setItem("doctorId", doctorId);
+
+    try {
+
+        let inp_imgvw_avt = document.getElementById("inp_imgvw_avt");
+        let inp_name = document.getElementById("inp_name");
+        let inp_dets = document.getElementById("inp_dets");
+
+        var imgEncoded = telemeds.base64EncodedPicture,
+            name = telemeds.name,
+            mrNo = telemeds.mrNo,
+            age = telemeds.age,
+            gender = telemeds.gender;
+
+        if (imgEncoded == null) 
+        {
+            imgEncoded = "images/user-dummy.png";
+        }
+        else{
+            imgEncoded = "data:img/png;base64, "+imgEncoded;
+        }
+
+
+
+        if (name == null) 
+        {
+            name = "~";
+        }
+
+        if (mrNo == null) 
+        {
+            mrNo = "~";
+        }
+
+        if (age == null) 
+        {
+            age = "~";
+        }
+
+        if (gender == null) 
+        {
+            gender = "~";
+        }
+
+        inp_imgvw_avt.src = imgEncoded;
+        inp_name.innerHTML = name;
+        inp_dets.innerHTML = "MR#"+mrNo+", "+age+" Years, "+gender;
+
+    } catch (error) 
+    {
+        inp_name.innerHTML = "~";
+        inp_dets.innerHTML = "MR#~, ~ Years, ~";
+        console.log("prepareTelemedEncounterForm; error => "+error.message);
+    }
+    
+
+}
+
 //--//
 function populateDrawerData()
 {
@@ -3608,7 +12484,7 @@ function populateDrawerData()
                 //--//
                 if (imageSrc == "" || imageSrc == null || imageSrc=="0") 
                 {
-                    imgv_avt.src = "images/user-dummy.jpg";
+                    imgv_avt.src = "images/user-dummy.png";
                 }
                 else
                 {
@@ -4320,110 +13196,6 @@ async function fetchOfflineSpecialties(inp_specialty)
      // console.log(resp);
 
 
-
-
-
-
-    // var bulkArrAct = JSON.parse(`{
-    //     "detail": "Data Returnd",
-    //     "status": "Ok 200",
-    //     "object": {
-    //         "priorities": [
-    //             {
-    //                 "hmsAudit": {
-    //                     "insertDate": null,
-    //                     "updateDate": null,
-    //                     "isDelete": false
-    //                 },
-    //                 "lastUpdatedDateTime": null,
-    //                 "id": 1,
-    //                 "name": "Normal"
-    //             },
-    //             {
-    //                 "hmsAudit": {
-    //                     "insertDate": null,
-    //                     "updateDate": null,
-    //                     "isDelete": false
-    //                 },
-    //                 "lastUpdatedDateTime": null,
-    //                 "id": 2,
-    //                 "name": "Urgent"
-    //             },
-    //             {
-    //                 "hmsAudit": {
-    //                     "insertDate": null,
-    //                     "updateDate": null,
-    //                     "isDelete": false
-    //                 },
-    //                 "lastUpdatedDateTime": null,
-    //                 "id": 3,
-    //                 "name": "VIP"
-    //             }
-    //         ],
-    //         "specialities": [
-    //             {
-    //                 "hmsAudit": {
-    //                     "insertDate": null,
-    //                     "updateDate": null,
-    //                     "isDelete": false
-    //                 },
-    //                 "lastUpdatedDateTime": null,
-    //                 "id": 885,
-    //                 "name": "Skin",
-    //                 "lookUPType": {
-    //                     "hmsAudit": {
-    //                         "insertDate": null,
-    //                         "updateDate": null,
-    //                         "isDelete": false
-    //                     },
-    //                     "lastUpdatedDateTime": null,
-    //                     "id": null,
-    //                     "name": null
-    //                 },
-    //                 "answer": false,
-    //                 "duration": null,
-    //                 "compulsory": false,
-    //                 "defaultSelected": false,
-    //                 "label": null,
-    //                 "sortBy": null,
-    //                 "translatedName": null
-    //             },
-    //             {
-    //                 "hmsAudit": {
-    //                     "insertDate": null,
-    //                     "updateDate": null,
-    //                     "isDelete": false
-    //                 },
-    //                 "lastUpdatedDateTime": null,
-    //                 "id": 886,
-    //                 "name": "Gynaecologist",
-    //                 "lookUPType": {
-    //                     "hmsAudit": {
-    //                         "insertDate": null,
-    //                         "updateDate": null,
-    //                         "isDelete": false
-    //                     },
-    //                     "lastUpdatedDateTime": null,
-    //                     "id": null,
-    //                     "name": null
-    //                 },
-    //                 "answer": false,
-    //                 "duration": null,
-    //                 "compulsory": false,
-    //                 "defaultSelected": false,
-    //                 "label": null,
-    //                 "sortBy": null,
-    //                 "translatedName": null
-    //             }
-    //         ]
-    //     },
-    //     "data": null
-    // }`);
-
-    // console.log("fetchOfflineSpecialties => ");
-    // console.log(bulkArrAct.object.specialities);
-    // inp_specialty.innerHTML = bulkArrAct.object.specialities.map(mapSpecialties).join('\n\n');
-
     
 }
 function fetchOfflineDoctors(container2)
@@ -4526,6 +13298,238 @@ async function fetchOfflineDoctorsWhere()
 
     
 }
+//doctors portal
+//patients
+async function fetchOfflinePatients(container2)
+{
+    //db open
+    let dbname = "icalite_index";
+    let dbversion=1;
+
+    db = new Dexie(dbname);
+    db.version(dbversion).stores(
+            {
+                patients: "personId"
+            }
+        );
+    db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
+    });
+// //--//
+
+    await db.patients.toArray()
+    .then(function (result) {
+        // console.log("result => ");
+        // console.log(result);
+       //  container2.innerHTML = result.map(mapAppointments).join('\n\n');
+       container2.innerHTML = result.map(mapPatients).join('\n\n');
+        // alert("view result");
+    })
+    .catch(function(error)
+    {
+        console.log("error in offline specialties fetch");
+
+        // alert("view result");
+        // alert("user not found");
+    });
+    // console.log("get response =>");
+    // console.log(resp);
+
+    // var bulkArrAct = JSON.parse(`{
+    //         "detail": "Data Returnd",
+    //         "status": "Ok 200",
+    //         "object": null,
+    //         "data": [
+    //             {
+    //                 "personId": 38995,
+    //                 "name": "Doctor INTERACTIVE Group",
+    //                 "mrNo": null,
+    //                 "gender": null,
+    //                 "age": null,
+    //                 "number": null,
+    //                 "bloodGroup": null,
+    //                 "firstName": null,
+    //                 "middleName": null,
+    //                 "lastname": null,
+    //                 "dob": null,
+    //                 "maritalStatus": null,
+    //                 "cnic": null,
+    //                 "email": null,
+    //                 "streetAddress": null,
+    //                 "district": null,
+    //                 "province": null,
+    //                 "city": null,
+    //                 "country": null,
+    //                 "base64EncodedPicture": null,
+    //                 "designation": null,
+    //                 "speciality": null,
+    //                 "qualification": null,
+    //                 "languages": null,
+    //                 "experiance": "3 years",
+    //                 "hospital": null
+    //             }
+    //         ]
+    //     }`);
+
+    // console.log("fetchOfflineSpecialties => ");
+    // console.log(bulkArrAct.object.specialities);
+    // container2.innerHTML = bulkArrAct.data.map(mapPatients).join('\n\n');
+
+    
+}
+async function fetchOfflinePatientsWhere()
+{
+    var patientId = parseInt(window.sessionStorage.getItem('patientId'));
+
+    // console.log("fetch offline appointment => ");
+    // console.log(appointmentId);
+    // const bulkArrAct = JSON.parse();
+
+    //db open
+    let dbname = "icalite_index";
+    let dbversion=1;
+
+    db = new Dexie(dbname);
+    db.version(dbversion).stores(
+            {
+                patients: "personId"
+            }
+        );
+    await db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
+    });
+// //--//
+
+
+    await db.patients.where({personId:patientId})
+    .first(patients => {
+        // console.log("result where => ");
+        // console.log(appointments);
+
+        // prepareBookAppointment(doctors);
+        preparePatientEncounterForm(patients);
+        // populateAppointmentDetails(appointments);
+
+    })
+    .catch(function (error) {
+        console.log("error in offline appointments fetch");
+    });
+
+
+
+
+
+    // await db.appointments.where('appointmentId').equals(appointmentId)
+    // .then(function(result){
+    //     console.log("result where => ");
+    //     console.log(result);
+
+    //     populateAppointmentDetails(result);
+
+    // })
+    // .catch(function (error) {
+    //     console.log("error in offline appointment fetch");
+    // });
+
+    
+}
+//telemeds
+async function fetchOfflineTelemeds(container2)
+{
+    //db open
+    let dbname = "icalite_index";
+    let dbversion=1;
+
+    db = new Dexie(dbname);
+    db.version(dbversion).stores(
+            {
+                telemeds: "personId"
+            }
+        );
+    db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
+    });
+// //--//
+
+    await db.telemeds.toArray()
+    .then(function (result) {
+        // console.log("result => ");
+        // console.log(result);
+       //  container2.innerHTML = result.map(mapAppointments).join('\n\n');
+       container2.innerHTML = result.map(mapTelemeds).join('\n\n');
+        // alert("view result");
+    })
+    .catch(function(error)
+    {
+        console.log("error in offline telemeds fetch => "+error.message);
+
+        // alert("view result");
+        // alert("user not found");
+    });
+    // console.log("get response =>");
+    // console.log(resp);
+
+    
+
+    
+}
+async function fetchOfflineTelemedsWhere()
+{
+    var telemedId = parseInt(window.sessionStorage.getItem('telemedId'));
+
+    // console.log("fetch offline appointment => ");
+    // console.log(appointmentId);
+    // const bulkArrAct = JSON.parse();
+
+    //db open
+    let dbname = "icalite_index";
+    let dbversion=1;
+
+    db = new Dexie(dbname);
+    db.version(dbversion).stores(
+            {
+                telemeds: "personId"
+            }
+        );
+    await db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
+    });
+// //--//
+
+
+    await db.telemeds.where({personId:telemedId})
+    .first(telemeds => {
+        // console.log("result where => ");
+        // console.log(appointments);
+
+        prepareTelemedEncounterForm(telemeds);
+
+        // showtoastMsg(1, "preapre Telemed Enc Form");
+
+    })
+    .catch(function (error) {
+        console.log("error in offline telemed fetch => "+error.message);
+    });
+
+
+
+
+
+    // await db.appointments.where('appointmentId').equals(appointmentId)
+    // .then(function(result){
+    //     console.log("result where => ");
+    //     console.log(result);
+
+    //     populateAppointmentDetails(result);
+
+    // })
+    // .catch(function (error) {
+    //     console.log("error in offline appointment fetch");
+    // });
+
+    
+}
+//--------//
 
 function logoutApp()
 {
@@ -4792,6 +13796,88 @@ async function saveDoctorsToOffline(doctors)
     console.log("saveDoctorsToOffline---------end-----------");
 }
 
+//patients
+async function savePatientsToOffline(patients)
+{
+    console.log("savePatientsToOffline---------start-----------");
+    // console.log("response=> ");
+    // console.log(vitals);
+
+    
+//db open
+    let dbname = "icalite_index";
+    let dbversion=1;
+
+    db = new Dexie(dbname);
+    db.version(dbversion).stores(
+            {
+                patients: "personId"
+            }
+        );
+    db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
+    });
+// //--//
+
+// //db put//
+
+    
+    await db.patients.bulkPut(patients)
+    .then(function(lastKey){
+        console.error("data saved to offline");
+    })
+    .catch(Dexie.bulkError, function(e) 
+    {
+        console.error("unable to add to offline");
+        // showMessage("incorrect username or password");
+        // alert ("person Ooops: " + error);
+    });
+
+
+    console.log("savePatientsToOffline---------end-----------");
+}
+
+//telemedicine 
+async function saveTelemedsToOffline(telemeds)
+{
+    console.log("saveTelemedsToOffline---------start-----------");
+    // console.log("response=> ");
+    // console.log(vitals);
+
+    
+//db open
+    let dbname = "icalite_index";
+    let dbversion=1;
+
+    db = new Dexie(dbname);
+    db.version(dbversion).stores(
+            {
+                telemeds: "personId"
+            }
+        );
+    db.open().catch (function (err) {
+        console.error('Failed to open db: ' + (err.stack || err));
+    });
+// //--//
+
+// //db put//
+
+    
+    await db.telemeds.bulkPut(telemeds)
+    .then(function(lastKey){
+        console.error("data saved to offline");
+    })
+    .catch(Dexie.bulkError, function(e) 
+    {
+        console.error("unable to add to offline");
+        // showMessage("incorrect username or password");
+        // alert ("person Ooops: " + error);
+    });
+
+
+    console.log("saveTelemedsToOffline---------end-----------");
+}
+
 //dexie initialization
 function indexDbInit()
 {
@@ -4808,7 +13894,9 @@ function indexDbInit()
         medications:'medicationId',
         demographics:'demographicsId',
         doctors:'personId',
-        specialties:'id'
+        specialties:'id',
+        patients:'personId',
+        telemeds:'personId'
     });
 
     //dummy
@@ -5271,10 +14359,45 @@ function initializeView()
             // console.log(appointmentId_slctd);
 
             console.log("patient list");
+
+            const container2 = document.getElementById('container2');
+
+            fetchPatientList(container2);
+
             // prepareNewAppointment();
             // fetchOfflineAppointmentsWhere();
 
             
+        }
+        else if(sPage == patient_encounter_form)
+        {
+            console.log("patient_encounter_form");
+
+            fetchOfflinePatientsWhere();
+        }
+        else if(sPage == telemedicine_list)
+        {
+
+            // console.log("appointments det view");
+            // console.log("appointmentId_slctd => ");
+            // console.log(appointmentId_slctd);
+
+            console.log("telemedicine_list");
+
+            const container2 = document.getElementById('container2');
+
+            fetchTeleMedList(container2);
+
+            // prepareNewAppointment();
+            // fetchOfflineAppointmentsWhere();
+
+            
+        }
+        else if(sPage == telemed_encounter_form)
+        {
+            console.log("telemed_encounter_form");
+
+            fetchOfflineTelemedsWhere();
         }
         else
         {
@@ -5342,6 +14465,12 @@ function goToPatientListView()
     // console.log("going to next view");
     // window.location.href = "report_view.html";
     window.location.href = patient_list;
+}
+function goToTelemedicineListView()
+{
+    // console.log("going to next view");
+    // window.location.href = "report_view.html";
+    window.location.href = telemedicine_list;
 }
 
 function viewReport(fileName, fileType, fileStr)
@@ -5796,6 +14925,36 @@ function setSelectedDoctorDetails(doctorId)
     window.location.assign(appnt_new_book);
     
 }
+
+//selected patient
+function setSelectedPatientDetails(patientId)
+{
+    window.sessionStorage.setItem("patientId", patientId);
+
+    // console.log("setSelectedAppointmentDetails");
+    // console.log("appointment id => "+appointmentId);    
+    // appointmentId_slctd = appointmentId;
+    // console.log("appointmentId_slctd => "+appointmentId_slctd);
+    // alert("check values");
+    // window.location.assign('appnt_view_det.html');
+    window.location.assign(patient_encounter_form);
+    
+}
+
+//selected teleMed
+function setSelectedTelemedDetails(telemedId)
+{
+    window.sessionStorage.setItem("telemedId", telemedId);
+
+    // console.log("setSelectedAppointmentDetails");
+    // console.log("appointment id => "+appointmentId);    
+    // appointmentId_slctd = appointmentId;
+    // console.log("appointmentId_slctd => "+appointmentId_slctd);
+    // alert("check values");
+    // window.location.assign('appnt_view_det.html');
+    window.location.assign(telemed_encounter_form);
+    
+}
 //-------------------------------VIEW HANDLING----------------------------//
 
 
@@ -5977,7 +15136,7 @@ function showLoader(isShown, message)
     try {
         if (isShown) 
         {
-            // console.log("showing");
+            console.log("showing loader");
             
             if (message == "" || message == null) 
             {
@@ -5992,14 +15151,195 @@ function showLoader(isShown, message)
             
         }
         else{
-            console.log("hidden");
+            console.log("hidden loader");
             document.getElementById('loader_process').classList.remove("show");
         }
     } catch (error) {
+        // console.log("hidden loader");
         console.log("showLoader error => "+error);
     }
     
 }
+
+/////////////////////////CALL HANDLING///////////////////////////////////
+
+function showCallDialog(isShown)
+{
+    console.log("showCallDialog => "+isShown);
+    // document.getElementById("menu-call").classList.add("show");//.showMenu();
+    // document.getElementById("menu-call").showMenu();
+    if (isShown) 
+    {
+        $('#menu-call').showMenu();
+        prepareCallDialog();
+    }
+    else{
+        $('#menu-call').hideMenu();
+    }
+
+    
+    
+}
+
+function prepareCallDialog() 
+{
+    console.log("prepareCallDialog");
+    try {
+
+        // const dialCall = document.getElementById("menu-call");
+        const dialCall = document.getElementById("dial_callbtns");
+        // const anchorPhone = document.getElementById("anchor_phone");
+        const anchorPhone = `<a id="anchor_phone" href="tel: 03212900497" class="icon icon-xs rounded-xl shadow-m ml-1 mb-1 bg-blue2-dark" >
+            <i class="fa fa-phone"></i>
+        </a>`;
+        // const anchorSkype = document.getElementById("anchor_skype");
+        const anchorSkype = `<a id="anchor_skype" href="skype:sharjeel_anwar?call" class="icon icon-xs rounded-xl shadow-m ml-1 mb-1 bg-twitter">
+            <i class="fab fa-skype"></i>
+        </a>`;
+        // const anchorWhatsapp = document.getElementById("anchor_whatsapp");
+        const anchorWhatsapp = `<a id="anchor_whatsapp" target="_blank" href="https://wa.me/923212900497" class="icon icon-xs rounded-xl shadow-m ml-1 mb-1 bg-whatsapp" >
+            <i class="fab fa-whatsapp"></i>
+        </a>`;
+        // const anchorFacetime = document.getElementById("anchor_facetime");
+        const anchorFacetime = `<a id="anchor_facetime" href="facetime:03212900497" class="icon icon-xs rounded-xl shadow-m ml-1 mb-1 bg-phone" >
+            <i class="fa fa-video"></i>
+        </a>`;
+
+
+        if (getOS().toLowerCase() == "windows") 
+        {
+            dialCall.innerHTML = anchorSkype+anchorWhatsapp;
+        }
+        else{
+
+            if (getOS().toLowerCase() == "mac os") 
+            {
+                dialCall.innerHTML = anchorSkype+anchorWhatsapp+anchorFacetime;
+            }
+            else if (getOS().toLowerCase() == "ios") 
+            {
+                dialCall.innerHTML = anchorPhone+anchorSkype+anchorWhatsapp+anchorFacetime;
+            }
+            else if (getOS().toLowerCase() == "android") 
+            {
+                dialCall.innerHTML = anchorPhone+anchorSkype+anchorWhatsapp;
+            }
+            else{
+                
+            }
+
+        }
+
+
+
+        // anchorPhone.addEventListener("click", function()
+        //     {
+        //         console.log("phone call clicked");
+        //         // showtoastMsg("1", "phone call");        
+        //         triggerPhoneCall(anchorPhone, "03212900497");
+        //     }
+        // );
+        // console.log("phone call prepared");
+        // anchorSkype.addEventListener("click", function()
+        //     {
+        //         console.log("skype call clicked");
+        //         triggerSkypeCall(anchorSkype, "sharjeel_anwar");        
+        //     }
+        // );
+        // console.log("skype call prepared");
+        // anchorWhatsapp.addEventListener("click", function()
+        //     {
+        //         console.log("whatsapp call clicked");
+        //         triggerWhatsappCall(anchorWhatsapp, "923212900497");
+        //         // triggerWhatsappCall(anchorWhatsapp, "923332389849");
+        //     }
+        // );
+        // console.log("whatsapp call prepared");
+        // anchorFacetime.addEventListener("click", function()
+        //     {
+        //         console.log("facetime call clicked");
+        //         triggerFacetimeCall(anchorFacetime, "923212900497");
+        //         // triggerWhatsappCall(anchorWhatsapp, "923332389849");
+        //     }
+        // );
+        // console.log("facetime call prepared");
+    } catch (error) 
+    {
+        console.log("prepareCallDialog error => "+error.message);
+    }
+
+}
+
+// function preparePhoneCallTrigger(anchor, phoneNumber)
+// {
+//     try {
+        
+//     } catch (error) 
+//     {
+//         console.log("preparePhoneCallTrigger => "+error.message);
+//     }
+// }
+
+function triggerPhoneCall(anchor, phoneNumber) 
+{
+    console.log("triggerPhoneCall => "+phoneNumber);
+    try {
+        
+        anchor.href = "tel: "+phoneNumber;
+        console.log("triggerPhoneCall => in try catch");
+        // showCallDialog(false);
+
+    } catch (error) {
+        console.log("triggerPhoneCall error => "+error.message );
+    }
+}
+
+function triggerSkypeCall(anchor, skypeUser) 
+{
+    console.log("triggerSkypeCall");
+    try {
+        
+        anchor.href = "skype:"+skypeUser+"?call";
+
+        // showCallDialog(false);
+
+    } catch (error) {
+        console.log("triggerSkypeCall error => "+error.message );
+    }
+}
+
+function triggerWhatsappCall(anchor, phoneNumber) 
+{
+    console.log("triggerWhatsappCall");
+    try {
+        
+        // anchor.href = "whatsapp://send?phone="+phoneNumber;
+        anchor.href = "https://wa.me/"+phoneNumber;
+
+        // showCallDialog(false);
+
+    } catch (error) {
+        console.log("triggerWhatsappCall error => "+error.message );
+    }
+}
+
+function triggerFacetimeCall(anchor, phoneNumber) 
+{
+    console.log("triggerFacetimeCall");
+    try {
+        
+        // anchor.href = "whatsapp://send?phone="+phoneNumber;
+        // anchor.href = "facetime://"+phoneNumber;
+        anchor.href = "facetime:"+phoneNumber;
+
+        // showCallDialog(false);
+
+    } catch (error) {
+        console.log("triggerFacetimeCall error => "+error.message );
+    }
+}
+//------------------------CALL HANDLING-----------------------------------//
+
 //-----------------UTILS
 
 
